@@ -114,3 +114,33 @@ spec:
         name: build-pipelinebinding
       template:
         name: build-triggertemplate
+
+      interceptor:
+        objectRef:
+          kind: Service
+          name: webhook-validator
+          apiVersion: v1
+          namespace: sig-build
+
+---
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: build-listener
+  namespace: sig-build
+  labels:
+    app: build-listener
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: tf-build-event
+
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /webhook/*
+        backend:
+          serviceName: el-build-listener
+          servicePort: 8080
+
+---

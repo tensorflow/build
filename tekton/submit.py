@@ -6,10 +6,16 @@ import hmac
 import os
 import sys
 
+from pprint import pprint
+
 
 # forward to listener with:
 # kubectl port-forward svc/el-build-listener 7070:8080 --namespace=sig-build
 HOOKURL = 'http://localhost:7070/'
+
+HEADERS = {
+    'X-GitHub-Event': 'push',
+}
 
 DATA = {
     "head_commit":
@@ -32,12 +38,20 @@ if len(secret) < 1:
     print('Set env var GITHUB_SECRET')
     sys.exit(1)
 
-request = requests.Request('POST', HOOKURL, data=DATA)
+secret = secret.encode('utf-8')
+
+request = requests.Request('POST', HOOKURL, headers=HEADERS, json=DATA)
 prepped = request.prepare()
 
 sig = hmac.new(secret, prepped.body, hashlib.sha1)
 prepped.headers['X-Hub-Signature'] = "sha1=%s" % sig.hexdigest()
 
 with requests.Session() as session:
-    response = session.send(prepped)
+    r = session.send(prepped)
+
+print("Response status code:", r.status_code)
+print("Response headers:")
+pprint(r.headers)
+print("\nResponse text:")
+print(r.text)
 
