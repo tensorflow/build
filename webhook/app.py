@@ -29,7 +29,7 @@ def verify_github_signature(req):
 @app.route('/', methods=['GET', 'POST'])
 def root():
     if request.method != 'POST':
-        return 'Hello, TensorFlow SIG-Build!'
+        return '', 204
 
     # Fail if the sig does not match
     if not verify_github_signature(request):

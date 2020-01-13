@@ -1,6 +1,4 @@
-FROM python:3.6-jessie
-
-RUN apt update
+FROM python:3.6-alpine
 
 WORKDIR /app
 
@@ -9,5 +7,5 @@ RUN pip install -r /app/requirements.txt
 
 ADD ./*.py /app
 
-ENV PORT 80
+ENV PORT 5000
 CMD ["gunicorn", "app:app", "--config=config.py"]
