@@ -124,6 +124,17 @@ spec:
 
 ---
 
+apiVersion: networking.gke.io/v1beta1
+kind: ManagedCertificate
+metadata:
+  name: tfbuild-cert
+  namespace: sig-build
+spec:
+  domains:
+    - tfbuild.perfinion.com
+
+---
+
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -133,6 +144,7 @@ metadata:
     app: build-listener
   annotations:
     kubernetes.io/ingress.global-static-ip-name: tf-build-event
+    networking.gke.io/managed-certificates: tfbuild-cert
 
 spec:
   rules:
