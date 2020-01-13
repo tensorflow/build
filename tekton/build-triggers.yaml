@@ -1,0 +1,116 @@
+---
+
+apiVersion: tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: build-triggertemplate
+  namespace: sig-build
+
+spec:
+  params:
+    - name: gitrevision
+      description: The git revision
+      default: master
+
+    - name: gitrepositoryurl
+      description: The git repository url
+
+    - name: namespace
+      description: The namespace to create the resources
+
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1alpha1
+      kind: PipelineResource
+      metadata:
+        name: source-repo-$(uid)
+        namespace: $(params.namespace)
+      spec:
+        type: git
+        params:
+        - name: revision
+          value: $(params.gitrevision)
+        - name: url
+          value: $(params.gitrepositoryurl)
+
+    - apiVersion: tekton.dev/v1alpha1
+      kind: PipelineResource
+      metadata:
+        name: image-webhook-$(uid)
+        namespace: $(params.namespace)
+      spec:
+        type: image
+        params:
+          - name: url
+            value: gcr.io/perfinion/tensorflow-build/webhook:latest
+
+    - apiVersion: tekton.dev/v1alpha1
+      kind: PipelineResource
+      metadata:
+        name: image-linuxcpu-$(uid)
+        namespace: $(params.namespace)
+      spec:
+        type: image
+        params:
+          - name: url
+            value: gcr.io/perfinion/tensorflow-build/linux/cpu:latest
+
+    - apiVersion: tekton.dev/v1alpha1
+      kind: PipelineRun
+      metadata:
+        name: build-pipeline-run-$(uid)
+        namespace: $(params.namespace)
+      spec:
+        serviceAccountName: kaniko-push
+
+        pipelineRef:
+          name: build-pipeline
+
+        resources:
+          - name: source-repo
+            resourceRef:
+              name: source-repo-$(uid)
+
+          - name: image-webhook
+            resourceRef:
+              name: image-webhook-$(uid)
+
+          - name: image-linuxcpu
+            resourceRef:
+              name: image-linuxcpu-$(uid)
+
+---
+
+apiVersion: tekton.dev/v1alpha1
+kind: TriggerBinding
+metadata:
+  name: build-pipelinebinding
+  namespace: sig-build
+
+spec:
+  params:
+    - name: gitrevision
+      value: $(body.head_commit.id)
+
+    - name: namespace
+      value: sig-build
+
+    - name: gitrepositoryurl
+      value: "https://github.com/$(body.repository.full_name).git"
+
+---
+
+apiVersion: tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  name: build-listener
+  namespace: sig-build
+
+spec:
+  serviceAccountName: tekton-triggers-admin
+  serviceType: NodePort
+  triggers:
+    - name: github-trigger
+      binding:
+        name: build-pipelinebinding
+      template:
+        name: build-triggertemplate

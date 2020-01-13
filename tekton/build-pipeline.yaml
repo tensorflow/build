@@ -1,0 +1,55 @@
+---
+
+apiVersion: tekton.dev/v1alpha1
+kind: Pipeline
+metadata:
+  name: build-pipeline
+  namespace: sig-build
+
+spec:
+  resources:
+    - name: source-repo
+      type: git
+    - name: image-webhook
+      type: image
+    - name: image-linuxcpu
+      type: image
+
+  tasks:
+    - name: build-webhook-validator
+      taskRef:
+        name: build-image
+
+      params:
+        - name: dockerfile
+          value: Dockerfile
+        - name: context-path
+          value: /workspace/workspace/webhook
+
+      resources:
+        inputs:
+          - name: workspace
+            resource: source-repo
+        outputs:
+          - name: built-image
+            resource: image-webhook
+
+    - name: build-image-linux-cpu
+      taskRef:
+        name: build-image
+
+      params:
+        - name: dockerfile
+          value: Dockerfile.linux.cpu
+        - name: context-path
+          value: /workspace/workspace/images
+
+      resources:
+        inputs:
+          - name: workspace
+            resource: source-repo
+        outputs:
+          - name: built-image
+            resource: image-linuxcpu
+
+---

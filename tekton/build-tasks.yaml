@@ -1,0 +1,59 @@
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kaniko-push
+  namespace: sig-build
+secrets:
+  - name: kaniko-push
+
+---
+
+# Builds an image via kaniko and pushes it to registry.
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: build-image
+  namespace: sig-build
+
+spec:
+  inputs:
+    resources:
+      - name: workspace
+        type: git
+
+    params:
+      - name: dockerfile
+        description: The path to the Dockerfile to build
+        default: Dockerfile
+      - name: context-path
+        description: The build context used by Kaniko (https://github.com/GoogleContainerTools/kaniko#kaniko-build-contexts)
+        default: /workspace/workspace/images
+
+  outputs:
+    resources:
+      - name: built-image
+        type: image
+
+  steps:
+  - name: build-and-push
+    image: gcr.io/kaniko-project/executor:v0.15.0
+    args:
+      - --dockerfile=$(inputs.params.context-path)/$(inputs.params.dockerfile)
+      - --destination=$(outputs.resources.built-image.url)
+      - --context=$(inputs.params.context-path)
+      - --oci-layout-path=$(inputs.resources.built-image.path)
+      - --reproducible
+    env:
+      - name: DOCKER_CONFIG # specifying DOCKER_CONFIG is required to allow kaniko to detect docker credential
+        value: /builder/home/.docker/
+    securityContext:
+      runAsUser: 0
+
+  sidecars:
+    - image: registry
+      name: registry
+
+---
+
