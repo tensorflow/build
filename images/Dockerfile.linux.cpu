@@ -2,15 +2,25 @@ FROM ubuntu:16.04
 
 LABEL maintainer="Jason Zaman <jason@perfinion.com>"
 
-# Copy and run the install scripts.
-COPY install/*.sh /install/
+# Copy and run each install script one at a time for better layer caching.
 
+COPY install/install_deb_packages.sh /install/
 RUN /install/install_deb_packages.sh
-RUN /install/install_pip_packages.sh
-RUN /install/install_bazel.sh
-RUN /install/install_proto3.sh
-RUN /install/install_buildifier.sh
+
+COPY install/install_golang.sh /install/
 RUN /install/install_golang.sh
+
+COPY install/install_proto3.sh /install/
+RUN /install/install_proto3.sh
+
+COPY install/install_buildifier.sh /install/
+RUN /install/install_buildifier.sh
+
+COPY install/install_bazel.sh /install/
+RUN /install/install_bazel.sh
+
+COPY install/install_pip_packages.sh /install/
+RUN /install/install_pip_packages.sh
 
 # Set up the master bazelrc configuration file.
 COPY install/bazelrc /etc/bazel.bazelrc
