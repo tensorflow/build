@@ -8,15 +8,20 @@ metadata:
 
 spec:
   params:
-    - name: gitrevision
+    - name: namespace
+      description: The namespace to create the resources
+      default: sig-build
+
+    - name: git-revision
       description: The git revision
       default: master
 
-    - name: gitrepositoryurl
-      description: The git repository url
+    - name: git-repo-owner
+      description: The github repository owner
 
-    - name: namespace
-      description: The namespace to create the resources
+    - name: git-repo-name
+      description: The github repository name
+
 
   resourcetemplates:
     - apiVersion: tekton.dev/v1alpha1
@@ -28,9 +33,9 @@ spec:
         type: git
         params:
         - name: revision
-          value: $(params.gitrevision)
+          value: $(params.git-revision)
         - name: url
-          value: $(params.gitrepositoryurl)
+          value: "https://github.com/$(params.git-repo-owner)/$(params.git-repo-name).git"
 
     - apiVersion: tekton.dev/v1alpha1
       kind: PipelineResource
@@ -41,7 +46,7 @@ spec:
         type: image
         params:
           - name: url
-            value: gcr.io/perfinion/tensorflow-build/webhook:latest
+            value: gcr.io/perfinion/$(params.git-repo-owner)-$(params.git-repo-name)/webhook:latest
 
     - apiVersion: tekton.dev/v1alpha1
       kind: PipelineResource
@@ -52,7 +57,7 @@ spec:
         type: image
         params:
           - name: url
-            value: gcr.io/perfinion/tensorflow-build/linux/cpu:latest
+            value: gcr.io/perfinion/$(params.git-repo-owner)-$(params.git-repo-name)/linux/cpu:latest
 
     - apiVersion: tekton.dev/v1alpha1
       kind: PipelineRun
@@ -88,14 +93,17 @@ metadata:
 
 spec:
   params:
-    - name: gitrevision
-      value: $(body.head_commit.id)
-
     - name: namespace
       value: sig-build
 
-    - name: gitrepositoryurl
-      value: "https://github.com/$(body.repository.full_name).git"
+    - name: git-revision
+      value: $(body.head_commit.id)
+
+    - name: git-repo-owner
+      value: $(body.repository.owner.name)
+
+    - name: git-repo-name
+      value: $(body.repository.name)
 
 ---
 

@@ -11,7 +11,7 @@ from pprint import pprint
 
 # forward to listener with:
 # kubectl port-forward svc/el-build-listener 7070:8080 --namespace=sig-build
-HOOKURL = 'http://tfbuild.perfinion.com/webhook/'
+HOOKURL = 'https://tfbuild.perfinion.com/webhook/'
 
 HEADERS = {
     'X-GitHub-Event': 'push',
@@ -24,8 +24,12 @@ DATA = {
     },
     "repository":
     {
+        "name": "build",
         "full_name": "perfinion/build",
-        "branch": "master"
+        "owner":
+        {
+            "name": "perfinion",
+        },
     }
 
 }
