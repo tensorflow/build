@@ -24,7 +24,7 @@ spec:
         - name: dockerfile
           value: Dockerfile
         - name: context-path
-          value: /workspace/workspace/webhook
+          value: webhook
 
       resources:
         inputs:
@@ -42,7 +42,7 @@ spec:
         - name: dockerfile
           value: Dockerfile.linux.cpu
         - name: context-path
-          value: /workspace/workspace/images
+          value: images
 
       resources:
         inputs:

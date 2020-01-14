@@ -29,7 +29,7 @@ spec:
         default: Dockerfile
       - name: context-path
         description: The build context used by Kaniko (https://github.com/GoogleContainerTools/kaniko#kaniko-build-contexts)
-        default: /workspace/workspace/images
+        default: ./
 
   outputs:
     resources:
@@ -40,9 +40,9 @@ spec:
   - name: build-and-push
     image: gcr.io/kaniko-project/executor:v0.15.0
     args:
-      - --dockerfile=$(inputs.params.context-path)/$(inputs.params.dockerfile)
+      - --dockerfile=$(inputs.params.dockerfile)
       - --destination=$(outputs.resources.built-image.url)
-      - --context=$(inputs.params.context-path)
+      - --context=/workspace/workspace/$(inputs.params.context-path)
       - --oci-layout-path=$(inputs.resources.built-image.path)
       - --reproducible
     env:
