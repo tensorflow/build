@@ -70,6 +70,10 @@ spec:
         pipelineRef:
           name: build-pipeline
 
+        podTemplate:
+          nodeSelector:
+            cloud.google.com/gke-nodepool: pool-n1-s2
+
         resources:
           - name: source-repo
             resourceRef:
