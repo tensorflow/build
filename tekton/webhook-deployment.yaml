@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
         - name: webhook-validator
-          image: gcr.io/perfinion/tensorflow-build/webhook:latest
+          image: gcr.io/tensorflow-build-224104/tensorflow-build/webhook:latest
           imagePullPolicy: IfNotPresent
 
           ports:

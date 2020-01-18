@@ -10,3 +10,14 @@ spec:
   finalizers:
     - kubernetes
 
+---
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tensorflow
+
+spec:
+  finalizers:
+    - kubernetes
+

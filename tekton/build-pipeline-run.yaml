@@ -1,0 +1,71 @@
+---
+
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineResource
+metadata:
+  name: repo-perfinion-build
+  namespace: sig-build
+
+spec:
+  type: git
+  params:
+    - name: revision
+      value: master
+    - name: url
+      value: https://github.com/perfinion/build.git
+
+---
+
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineResource
+metadata:
+  name: image-linuxcpu
+  namespace: sig-build
+spec:
+  type: image
+  params:
+    - name: url
+      value: gcr.io/tensorflow-build-224104/tensorflow-build/linux/cpu:latest
+
+---
+
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineResource
+metadata:
+  name: image-webhook
+  namespace: sig-build
+spec:
+  type: image
+  params:
+    - name: url
+      value: gcr.io/tensorflow-build-224104/tensorflow-build/webhook:latest
+
+---
+
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineRun
+metadata:
+  name: build-pipeline-run
+  namespace: sig-build
+
+spec:
+  pipelineRef:
+    name: build-pipeline
+
+  serviceAccountName: kaniko-push
+
+  resources:
+    - name: source-repo
+      resourceRef:
+        name: repo-perfinion-build
+
+    - name: image-webhook
+      resourceRef:
+        name: image-webhook
+
+    - name: image-linuxcpu
+      resourceRef:
+        name: image-linuxcpu
+
+---
+

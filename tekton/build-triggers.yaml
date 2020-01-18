@@ -46,7 +46,7 @@ spec:
         type: image
         params:
           - name: url
-            value: gcr.io/perfinion/$(params.git-repo-owner)-$(params.git-repo-name)/webhook:latest
+            value: gcr.io/tensorflow-build-224104/$(params.git-repo-owner)-$(params.git-repo-name)/webhook:latest
 
     - apiVersion: tekton.dev/v1alpha1
       kind: PipelineResource
@@ -57,7 +57,7 @@ spec:
         type: image
         params:
           - name: url
-            value: gcr.io/perfinion/$(params.git-repo-owner)-$(params.git-repo-name)/linux/cpu:latest
+            value: gcr.io/tensorflow-build-224104/$(params.git-repo-owner)-$(params.git-repo-name)/linux/cpu:latest
 
     - apiVersion: tekton.dev/v1alpha1
       kind: PipelineRun
