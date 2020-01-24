@@ -70,9 +70,9 @@ spec:
         pipelineRef:
           name: build-pipeline
 
-        podTemplate:
-          nodeSelector:
-            cloud.google.com/gke-nodepool: pool-n1-s2
+          #podTemplate:
+          #nodeSelector:
+          #  cloud.google.com/gke-nodepool: pool-n1-s2
 
         resources:
           - name: source-repo
@@ -155,7 +155,7 @@ metadata:
   labels:
     app: build-listener
   annotations:
-    kubernetes.io/ingress.global-static-ip-name: tf-build-event
+    kubernetes.io/ingress.global-static-ip-name: tfbuild
     networking.gke.io/managed-certificates: tfbuild-cert
 
 spec:
