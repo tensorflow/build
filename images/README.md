@@ -17,10 +17,10 @@ bazel build -c opt --cxxopt="-D_GLIBCXX_USE_CXX11_ABI=0" --verbose_failures //te
 ```
 
 ## Distroless Dockerfiles
-Distroless Dockerfiles for CPU (`Dockerfile.cpu`) and GPU (`Dockerfile.distroless`) are hosted in the [rivanna-docker repo (University of Virginia)](https://github.com/uvarc/rivanna-docker). Using the [MNIST benchmark](https://www.tensorflow.org/tutorials/quickstart/beginner), the containers were tested on UVA's HPC cluster Rivanna to have the same performance as the official ones.
+Distroless Dockerfiles for CPU (`Dockerfile.cpu`) and GPU (`Dockerfile.distroless`) are hosted in the [rivanna-docker repo (Research Computing, University of Virginia)](https://github.com/uvarc/rivanna-docker). Using the [MNIST benchmark](https://www.tensorflow.org/tutorials/quickstart/beginner), the containers were tested on UVA's HPC Rivanna cluster to have the same performance as the official ones.
 
 Image size comparison:
-| [Official](https://hub.docker.com/r/tensorflow/tensorflow/tags) | Size | [Distroless](https://hub.docker.com/r/uvarc/tensorflow/tags) | Size | % Reduction |
+| [Official](https://hub.docker.com/r/tensorflow/tensorflow/tags) | Size | [Distroless](https://hub.docker.com/r/uvarc/tensorflow/tags) | Size | Reduction |
 |---|---|---|---|---|
 | `2.3.0` | 582 MB | `2.3.0-cpu` | 227 MB | 61% |
 | `2.3.0-gpu` | 1.44 GB | `2.3.0-distroless` | 1.18 GB | 18% |
