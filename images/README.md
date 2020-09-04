@@ -5,6 +5,7 @@ Run the below commands to create manylinux2014 build environment.
 ```
 docker build -t build/manylinux2014 -f Dockerfile.manylinux2014.cpu .
 docker run -it build/manylinux2014:latest /bin/bash
+```
 
 Run the below commands to build TF.  
 ```
