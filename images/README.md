@@ -16,7 +16,7 @@ cd tensorflow/
 bazel build -c opt --cxxopt="-D_GLIBCXX_USE_CXX11_ABI=0" --verbose_failures //tensorflow/tools/pip_package:build_pip_package
 ```
 
-## Distroless Dockerfiles
+## Distroless Images
 The [Distroless](https://github.com/GoogleContainerTools/distroless) base images developed by Google are meant to contain an application and its runtime dependencies only. Please visit their GitHub for more information.
 
 Distroless Dockerfiles for TensorFlow CPU (`Dockerfile.cpu`) and GPU (`Dockerfile.distroless`) are hosted in the [rivanna-docker repo (Research Computing, University of Virginia)](https://github.com/uvarc/rivanna-docker). Using the [MNIST benchmark](https://www.tensorflow.org/tutorials/quickstart/beginner), the containers were tested on UVA's HPC Rivanna cluster to have the same performance as the official ones.
@@ -27,3 +27,8 @@ Image size comparison:
 | `2.3.0` | 582 MB | `2.3.0-cpu` | 227 MB | 61% |
 | `2.3.0-gpu` | 1.44 GB | `2.3.0-distroless` | 1.18 GB | 18% |
 | `nightly-gpu` | 2.27 GB | `2.4.0-distroless` | 1.47 GB | 35% |
+
+Pull command:
+```
+docker pull uvarc/tensorflow:<tag>
+```
