@@ -19,7 +19,7 @@ bazel build -c opt --cxxopt="-D_GLIBCXX_USE_CXX11_ABI=0" --verbose_failures //te
 ## Distroless Images
 The [Distroless](https://github.com/GoogleContainerTools/distroless) base images developed by Google are meant to contain an application and its runtime dependencies only. Please visit their GitHub for more information.
 
-Distroless Dockerfiles for TensorFlow CPU (`Dockerfile.cpu`) and GPU (`Dockerfile.distroless`) are hosted in the [rivanna-docker repo (Research Computing, University of Virginia)](https://github.com/uvarc/rivanna-docker). Using the [MNIST benchmark](https://www.tensorflow.org/tutorials/quickstart/beginner), the containers were tested on UVA's HPC Rivanna cluster to have the same performance as the official ones.
+Distroless Dockerfiles for TensorFlow CPU (`Dockerfile.cpu`) and GPU (`Dockerfile.distroless`) are hosted in the [rivanna-docker repository](https://github.com/uvarc/rivanna-docker). Using the [MNIST benchmark](https://www.tensorflow.org/tutorials/quickstart/beginner), the containers were tested on UVA's HPC Rivanna cluster to have the same performance as the official ones.
 
 Image size comparison:
 | [Official](https://hub.docker.com/r/tensorflow/tensorflow/tags) | Size | [Distroless](https://hub.docker.com/r/uvarc/tensorflow/tags) | Size | Reduction |
@@ -32,3 +32,6 @@ Pull command:
 ```
 docker pull uvarc/tensorflow:<tag>
 ```
+
+### Contact
+Research Computing at the University of Virginia (external) maintains Distroless Dockerfiles for TensorFlow in the [rivanna-docker repository](https://github.com/uvarc/rivanna-docker). Please reach out to hpc-support@virginia.edu for questions and feedback.
