@@ -32,6 +32,9 @@ By participating, you are expected to uphold this code.
 
 ## Project Showcase
 
+Want to add your own project to this list? It's easy: check out
+[CONTRIBUTING.md](CONTRIBUTING.md).
+
 ### Docker
 
 * [**Manylinux 2014 Docker Images**](manylinux_2014_docker_images):
