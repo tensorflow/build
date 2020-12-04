@@ -32,22 +32,19 @@ By participating, you are expected to uphold this code.
 
 ## Showcase
 
-* **ppc64le Builds** ([ppc64le_builds](ppc64le_builds)): Dockerfiles and wheel
-  build scripts for building TF on ppc64le.
+* [**ppc64le Builds**](ppc64le_builds): Dockerfiles and wheel build scripts for
+  building TF on ppc64le.
 
 ### Docker
 
-* **Manylinux 2014 Docker Images**
-  ([manylinux2014_docker_images](manylinux_2014_docker_images): `manylinux2014`
-  build environment for TensorFlow packages.
-* **Distroless Dockerfiles**
-  ([uvarc/rivanna-docker](https://github.com/uvarc/rivanna-docker): Distroless
-  ([info](https://github.com/GoogleContainerTools)) TensorFlow images, which are
-  smaller than TensorFlow's official images.
+* [**Manylinux 2014 Docker Images**](manylinux_2014_docker_images):
+  `manylinux2014` build environment for TensorFlow packages.
+* [**Distroless Dockerfiles**](https://github.com/uvarc/rivanna-docker):
+  Distroless ([info](https://github.com/GoogleContainerTools)) TensorFlow
+  images, which are smaller than TensorFlow's official images.
 
 ### WIP / Other
 
-* **Tekton CI** ([tekton](tekton): perfinion's experimental directory for using Tekton 
+* [**Tekton CI**](tekton): perfinion's experimental directory for using Tekton 
   CI with TensorFlow
-* **Directory Template** ([directory_template](directory_template)]): Example
-  short description.
+* [**Directory Template**](directory_template): Example short description.
