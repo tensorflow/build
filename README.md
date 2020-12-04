@@ -32,11 +32,6 @@ By participating, you are expected to uphold this code.
 
 ## Project Showcase
 
-### Platforms
-
-* [**ppc64le Builds**](ppc64le_builds): Dockerfiles and wheel build scripts for
-  building TF on ppc64le.
-
 ### Docker
 
 * [**Manylinux 2014 Docker Images**](manylinux_2014_docker_images):
@@ -44,6 +39,11 @@ By participating, you are expected to uphold this code.
 * [**Distroless Dockerfiles**](https://github.com/uvarc/rivanna-docker):
   Distroless ([info](https://github.com/GoogleContainerTools)) TensorFlow
   images, which are smaller than TensorFlow's official images.
+
+### Platforms
+
+* [**ppc64le Builds**](ppc64le_builds): Dockerfiles and wheel build scripts for
+  building TF on ppc64le.
 
 ### WIP / Other
 
