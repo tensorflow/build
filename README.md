@@ -39,7 +39,7 @@ By participating, you are expected to uphold this code.
 
 * [**Manylinux 2014 Docker Images**](manylinux_2014_docker_images):
   `manylinux2014` build environment for TensorFlow packages.
-* [**_Distroless Dockerfiles_**](https://github.com/uvarc/rivanna-docker):
+* [**Distroless Dockerfiles**](https://github.com/uvarc/rivanna-docker):
   Distroless ([info](https://github.com/GoogleContainerTools)) TensorFlow
   images, which are smaller than TensorFlow's official images.
 
