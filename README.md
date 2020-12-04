@@ -30,7 +30,9 @@ By participating, you are expected to uphold this code.
 ### License
 [Apache License 2.0](LICENSE)
 
-## Showcase
+## Project Showcase
+
+### Platforms
 
 * [**ppc64le Builds**](ppc64le_builds): Dockerfiles and wheel build scripts for
   building TF on ppc64le.
