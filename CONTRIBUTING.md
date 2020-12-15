@@ -1,7 +1,19 @@
 # How to Contribute
 
-We'd love to accept your patches and contributions to this project. There are
-just a few small guidelines you need to follow.
+To add your own project to our showcase, you can:
+
+* Add a link and a short description to [README.md](README.md) in the same
+  format as the other links, and then file a PR, or,
+* Copy the [Directory Template](directory_template) into a new folder, fill in
+  the template, and add it to the showcase. Make sure to update
+  [CODEOWNERS](CODEOWNERS) as well.
+
+This repo is a good place for small additions, but if the project is a big one,
+it may be better to maintain it in your own repository for better encapsulation
+of responsibility (and so you can make your own rules for further
+contributions).
+
+There are just a few small standard guidelines you need to follow as well:
 
 ## Contributor License Agreement
 

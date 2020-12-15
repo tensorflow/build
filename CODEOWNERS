@@ -1,0 +1,9 @@
+# SIG Leads are default for PRs unless a specific owner is listed below
+* @angerson @perfinion
+
+# These should match the Maintainer: line in your README.md
+# Please sort them in alphabetical order.
+/directory_template @angerson @perfinion
+/manylinux_2014_docker_images @sub-mod
+/ppc64le @wdirons
+/tekton @perfinion
