@@ -47,6 +47,7 @@ Want to add your own project to this list? It's easy: check out
 
 * [**ppc64le Builds**](ppc64le_builds): Dockerfiles and wheel build scripts for
   building TF on ppc64le.
+* [**WSL2 GPU**](wsl2_gpu_guide): Guide for enabling GPU in WSL2.
 
 ### WIP / Other
 
