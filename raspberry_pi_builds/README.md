@@ -6,12 +6,12 @@ Maintainer: @angerson (TensorFlow, SIG Build)
 
 * * *
 
-Important: TensorFlow for the Raspberry Pi is no longer supported by the
+**Important: TensorFlow for the Raspberry Pi is no longer supported by the
 TensorFlow team. (last tested on 2.3.0rc2). See the [Build TensorFlow Lite for
-Raspberry Pi](https://www.tensorflow.org/lite/guide/build_rpi) guide.
+Raspberry Pi](https://www.tensorflow.org/lite/guide/build_rpi) guide.**
 
-This guide is a mirror of the old official documentation and may not work. If
-you'd like to own this and keep it up-to-date, please file a PR!
+**This guide is a mirror of the old official documentation and may not work. If
+you'd like to own this and keep it up-to-date, please file a PR!**
 
 # Build from source for the Raspberry Pi
 
@@ -70,28 +70,28 @@ among Python 3.8, Python 3.7, Python 3.5 and Python 2.7 for the target package:
 ### Python 3.5
 
 ```
-tensorflow/tools/ci_build/ci_build.sh PI-PYTHON3 \\
+tensorflow/tools/ci_build/ci_build.sh PI-PYTHON3 \
     tensorflow/tools/ci_build/pi/build_raspberry_pi.sh
 ```
 
 ### Python 3.7
 
 ```
-tensorflow/tools/ci_build/ci_build.sh PI-PYTHON37 \\
+tensorflow/tools/ci_build/ci_build.sh PI-PYTHON37 \
     tensorflow/tools/ci_build/pi/build_raspberry_pi.sh
 ```
 
 ### Python 3.8 (64bit)
 
 ```
-tensorflow/tools/ci_build/ci_build.sh PI-PYTHON38 \\
+tensorflow/tools/ci_build/ci_build.sh PI-PYTHON38 \
     tensorflow/tools/ci_build/pi/build_raspberry_pi.sh AARCH64
 ```
 
 ### Python 2.7
 
 ```
-tensorflow/tools/ci_build/ci_build.sh PI \\
+tensorflow/tools/ci_build/ci_build.sh PI \
     tensorflow/tools/ci_build/pi/build_raspberry_pi.sh
 ```
 
