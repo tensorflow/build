@@ -47,6 +47,9 @@ Want to add your own project to this list? It's easy: check out
 
 * [**ppc64le Builds**](ppc64le_builds): Dockerfiles and wheel build scripts for
   building TF on ppc64le.
+* [**Raspberry Pi Builds**](raspberry_pi_builds): TensorFlow's old official docs
+  for building on Raspberry Pi. Needs an owner.
+
 
 ### WIP / Other
 
