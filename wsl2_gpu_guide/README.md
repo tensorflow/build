@@ -1,8 +1,8 @@
-# WSL2 gpu guide
+# WSL2 GPU Guide
 
-The directory contains instructions for enabling GPU with Tensorflow on a WSL2 virtual machine.
+Instructions for enabling GPU with Tensorflow on a WSL2 virtual machine.
 
-Maintainer: @Avditvs (Independant)
+Maintainer: @Avditvs (Independent)
 
 ***
 
