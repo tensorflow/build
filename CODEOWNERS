@@ -7,3 +7,4 @@
 /manylinux_2014_docker_images @sub-mod
 /ppc64le @wdirons
 /tekton @perfinion
+/wsl2_gpu_guide @Avditvs
