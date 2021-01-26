@@ -1,0 +1,46 @@
+build --action_env PYTHON_BIN_PATH="/root/.pyenv/shims/python3.8"
+build --action_env PYTHON_LIB_PATH="/root/.pyenv/versions/3.8.2/lib/python3.8/site-packages"
+build --python_path="/root/.pyenv/shims/python3.8"
+build --config=xla
+build --config=tensorrt
+build --action_env TF_CUDA_VERSION="11"
+build --action_env TF_CUDNN_VERSION="8"
+build --action_env CUDA_TOOLKIT_PATH="/usr/local/cuda-11.0"
+build --action_env TENSORRT_INSTALL_PATH="/usr"
+build --action_env TF_CUDA_COMPUTE_CAPABILITIES="sm_61"
+build --action_env LD_LIBRARY_PATH="/usr/local/cuda:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64:/usr/lib"
+build --action_env GCC_HOST_COMPILER_PATH="/usr/bin/x86_64-linux-gnu-gcc-7"
+build --config=cuda
+build:opt --copt=-mavx
+build:opt --host_copt=-mavx
+build:opt --copt=-march=native
+build:opt --host_copt=-march=native
+build:opt --define with_default_optimizations=true
+test --flaky_test_attempts=3
+test --test_size_filters=small,medium
+test --test_env=LD_LIBRARY_PATH
+test:v1 --test_tag_filters=-benchmark-test,-no_oss,-no_gpu,-oss_serial
+test:v1 --build_tag_filters=-benchmark-test,-no_oss,-no_gpu
+test:v2 --test_tag_filters=-benchmark-test,-no_oss,-no_gpu,-oss_serial,-v1only
+test:v2 --build_tag_filters=-benchmark-test,-no_oss,-no_gpu,-v1only
+build --action_env TF_CONFIGURE_IOS="0"
+
+
+build --crosstool_top=//third_party/toolchains/preconfig/ubuntu16.04/gcc7_manylinux2010-nvcc-cuda11:toolchain
+build --linkopt=-lrt
+test --action_env=TF2_BEHAVIOR=1
+test --test_lang_filters=py
+test --build_tag_filters="gpu,requires-gpu,-no_gpu,-no_oss,-oss_serial,-no_oss_py38,-no_cuda11"
+test --test_tag_filters="gpu,requires-gpu,-no_gpu,-no_oss,-oss_serial,-no_oss_py38,-no_cuda11"
+test --test_timeout="300,450,1200,3600" --local_test_jobs=4
+test --test_output=errors --verbose_failures=true --keep_going
+test --run_under=//tensorflow/tools/ci_build/gpu_build:parallel_gpu_execute
+
+# test -- ${DEFAULT_BAZEL_TARGETS} -//tensorflow/lite/...
+
+# test //tensorflow/... \
+# -//tensorflow/python/integration_testing/... \
+# -//tensorflow/compiler/tf2tensorrt/... \
+# -//tensorflow/compiler/xrt/... \
+# -//tensorflow/lite/micro/examples/... \
+# -//tensorflow/core/tpu/..."

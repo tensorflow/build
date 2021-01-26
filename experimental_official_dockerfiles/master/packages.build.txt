@@ -17,6 +17,7 @@ tk-dev
 wget
 xz-utils
 zlib1g-dev
+git
 
 # Packages needed to build devtoolset
 file
