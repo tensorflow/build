@@ -1,21 +1,45 @@
+# Pyenv
 build --action_env PYTHON_BIN_PATH="/root/.pyenv/shims/python3.8"
 build --action_env PYTHON_LIB_PATH="/root/.pyenv/versions/3.8.2/lib/python3.8/site-packages"
 build --python_path="/root/.pyenv/shims/python3.8"
+
+# Build Env
+build --action_env ABI_VERSION="gcc"
+build --action_env ABI_LIBC_VERSION="glibc_2.19"
+build --action_env BAZEL_COMPILER="/dt7/usr/bin/gcc"
+build --action_env BAZEL_HOST_SYSTEM="i686-unknown-linux-gnu"
+build --action_env BAZEL_TARGET_LIBC="glibc_2.19"
+build --action_env BAZEL_TARGET_CPU="k8"
+build --action_env BAZEL_TARGET_SYSTEM="x86_64-unknown-linux-gnu"
+build --action_env CC_TOOLCHAIN_NAME="linux_gnu_x86"
+build --action_env CC="/dt7/usr/bin/gcc"
+build --action_env CLEAR_CACHE=1
+build --action_env HOST_CXX_COMPILER="/dt7/usr/bin/gcc"
+build --action_env HOST_C_COMPILER="/dt7/usr/bin/gcc"
+
+# CUDA env
+build --config=release_gpu_linux
+# build --action_env TF_CUDA_VERSION="11"
+# build --action_env TF_CUDNN_VERSION="8"
+# build --action_env CUDA_TOOLKIT_PATH="/usr/local/cuda-11.2"
+# build --action_env TENSORRT_INSTALL_PATH="/usr"
+# # build --action_env LD_LIBRARY_PATH="/usr/local/cuda:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64:/usr/lib"
+# # TODO set this to whatever our canon config is
+# build --action_env TF_CUDA_COMPUTE_CAPABILITIES="sm_61"
+
+# This build
 build --config=xla
 build --config=tensorrt
-build --action_env TF_CUDA_VERSION="11"
-build --action_env TF_CUDNN_VERSION="8"
-build --action_env CUDA_TOOLKIT_PATH="/usr/local/cuda-11.0"
-build --action_env TENSORRT_INSTALL_PATH="/usr"
-build --action_env TF_CUDA_COMPUTE_CAPABILITIES="sm_61"
-build --action_env LD_LIBRARY_PATH="/usr/local/cuda:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64:/usr/lib"
-build --action_env GCC_HOST_COMPILER_PATH="/usr/bin/x86_64-linux-gnu-gcc-7"
 build --config=cuda
+
+# Standard
 build:opt --copt=-mavx
 build:opt --host_copt=-mavx
 build:opt --copt=-march=native
 build:opt --host_copt=-march=native
 build:opt --define with_default_optimizations=true
+ 
+# Testing
 test --flaky_test_attempts=3
 test --test_size_filters=small,medium
 test --test_env=LD_LIBRARY_PATH
@@ -26,7 +50,7 @@ test:v2 --build_tag_filters=-benchmark-test,-no_oss,-no_gpu,-v1only
 build --action_env TF_CONFIGURE_IOS="0"
 
 
-build --crosstool_top=//third_party/toolchains/preconfig/ubuntu16.04/gcc7_manylinux2010-nvcc-cuda11:toolchain
+build --crosstool_top=//third_party/toolchains/preconfig/ubuntu16.04/gcc7_manylinux2010-nvcc-cuda11.2:toolchain
 build --linkopt=-lrt
 test --action_env=TF2_BEHAVIOR=1
 test --test_lang_filters=py
