@@ -1,7 +1,7 @@
 #docker build -f Dockerfile.manylinux_2014 -t ibmcom/tensorflow-ppc64le:devel-manylinux2014 .
 FROM quay.io/pypa/manylinux2014_ppc64le
 
-ARG BAZEL_VERSION=2.0.0
+ARG BAZEL_VERSION=3.7.2
 ENV PATH=/opt/python/cp36-cp36m/bin:$PATH
 
 RUN yum install -y java-11-openjdk-devel wget zip && \
