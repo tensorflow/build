@@ -43,6 +43,13 @@ Want to add your own project to this list? It's easy: check out
   Distroless ([info](https://github.com/GoogleContainerTools)) TensorFlow
   images, which are smaller than TensorFlow's official images.
 
+
+### Language Bindings
+
+* [**Golang Install Guide**](golang_install_guide): TensorFlow's old official
+  docs for installing the (deprecated) Go bindings. Needs an owner.
+
+
 ### Platforms
 
 * [**ppc64le Builds**](ppc64le_builds): Dockerfiles and wheel build scripts for
@@ -53,7 +60,6 @@ Want to add your own project to this list? It's easy: check out
 
 * [**Raspberry Pi Builds**](raspberry_pi_builds): TensorFlow's old official docs
   for building on Raspberry Pi. Needs an owner.
-
 
 
 ### WIP / Other
