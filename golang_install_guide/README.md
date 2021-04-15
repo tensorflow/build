@@ -1,6 +1,6 @@
 # Golang Install Guide 
 
-TensorFlow's old official docs for installing the (deprecated) Go bindings.
+TensorFlow's old official docs for installing the (unsupported) Go bindings.
 Needs an owner.
 
 Maintainer: @angerson (TensorFlow, SIG Build)
