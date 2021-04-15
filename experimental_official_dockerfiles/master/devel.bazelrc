@@ -17,17 +17,8 @@ build --action_env CLEAR_CACHE=1
 build --action_env HOST_CXX_COMPILER="/dt7/usr/bin/gcc"
 build --action_env HOST_C_COMPILER="/dt7/usr/bin/gcc"
 
-# CUDA env
-build --config=release_gpu_linux
-# build --action_env TF_CUDA_VERSION="11"
-# build --action_env TF_CUDNN_VERSION="8"
-# build --action_env CUDA_TOOLKIT_PATH="/usr/local/cuda-11.2"
-# build --action_env TENSORRT_INSTALL_PATH="/usr"
-# # build --action_env LD_LIBRARY_PATH="/usr/local/cuda:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64:/usr/lib"
-# # TODO set this to whatever our canon config is
-# build --action_env TF_CUDA_COMPUTE_CAPABILITIES="sm_61"
-
 # This build
+build --config=release_gpu_linux
 build --config=xla
 build --config=tensorrt
 build --config=cuda
@@ -48,7 +39,6 @@ test:v1 --build_tag_filters=-benchmark-test,-no_oss,-no_gpu
 test:v2 --test_tag_filters=-benchmark-test,-no_oss,-no_gpu,-oss_serial,-v1only
 test:v2 --build_tag_filters=-benchmark-test,-no_oss,-no_gpu,-v1only
 build --action_env TF_CONFIGURE_IOS="0"
-
 
 build --crosstool_top=//third_party/toolchains/preconfig/ubuntu16.04/gcc7_manylinux2010-nvcc-cuda11.2:toolchain
 build --linkopt=-lrt
