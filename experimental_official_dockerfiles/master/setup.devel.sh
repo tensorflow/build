@@ -1,4 +1,7 @@
 #!/bin/bash
+# angerson: this file isn't used, but it used to be, so I have it here for
+# reference while I work on the files
+# TODO(angerson) Delete this file before PR gets merged
  
 ################################################################################
 
