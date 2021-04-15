@@ -56,6 +56,7 @@ COPY devel.build_tf.sh /devel.build_tf.sh
 # RUN /setup.virtualenv.sh 3.8.2 tf-38 requirements.txt
 # RUN /setup.virtualenv.sh 3.9.1 tf-39 requirements.txt
 
+
 ################################################################################
 FROM builder as onlydefaultpy
 RUN cd /root/.pyenv/versions && rm -rf 3.6.9 3.7.7 3.9.1
