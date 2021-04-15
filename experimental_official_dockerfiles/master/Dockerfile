@@ -51,6 +51,7 @@ ENV PYENV_VERSION tf-38
 ENV PATH /root/.pyenv/shims:/root/.pyenv/bin:$PATH
 COPY devel.bazelrc /devel.bazelrc
 COPY devel.build_tf.sh /devel.build_tf.sh
+COPY devel.build_addons.sh /devel.build_addons.sh
 # RUN /setup.virtualenv.sh 3.6.9 tf-36 requirements.txt
 # RUN /setup.virtualenv.sh 3.7.7 tf-37 requirements.txt
 # RUN /setup.virtualenv.sh 3.8.2 tf-38 requirements.txt
