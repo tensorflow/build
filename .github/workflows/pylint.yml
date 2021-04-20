@@ -8,14 +8,18 @@ jobs:
       image: tensorflow/tensorflow:devel
     steps:
       - name: python3.8
-        shell: bash
-        run: add-apt-repository ppa:deadsnakes/ppa -y && apt-get install --assume-yes python3.8
+        run: |
+          add-apt-repository ppa:deadsnakes/ppa -y
+          apt-get install --assume-yes python3.8
       - name: pylint-install
         shell: bash
         run:  python3.8 -m pip install pylint==2.7.4 
       - name: branch-checkout
           shell: bash
-          run: cd /tensorflow_src && git fetch origin pull/48294/head:pylint_silence && git checkout pylint_silence 
+          run: |
+          cd /tensorflow_src
+          git fetch origin pull/48294/head:pylint_silence
+          git checkout pylint_silence
       . name: pylint
           run: |
           python3.8 -m pylint -j$(nproc)  ./tensorflow/"
@@ -25,13 +29,18 @@ jobs:
       image: tensorflow/tensorflow:devel
     steps:
       - name: python3.8
-        shell: bash
-        run: add-apt-repository ppa:deadsnakes/ppa -y && apt-get install --assume-yes python3.8
+        run: |
+          add-apt-repository ppa:deadsnakes/ppa -y
+          apt-get install --assume-yes python3.8
       - name: pylint-install
         shell: bash
-        run: python3.8 -m pip install pylint==2.7.4 
+        run:  python3.8 -m pip install pylint==2.7.4 
       - name: branch-checkout
           shell: bash
-          run: cd /tensorflow_src && git fetch origin pull/48294/head:pylint_silence && git checkout pylint_silence 
-        run: |
+          run: |
+          cd /tensorflow_src
+          git fetch origin pull/48294/head:pylint_silence
+          git checkout pylint_silence
+        name: ci_sanity.sh
+          run: |
           ./tensorflow/tools/ci_build/ci_sanity.sh --pylint
