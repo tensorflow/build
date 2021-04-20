@@ -21,7 +21,7 @@ jobs:
         git checkout pylint_silence
     - name: pylint
       run: |
-       python3.8 -m pylint -j$(nproc)  ./tensorflow/"
+        python3.8 -m pylint -j$(nproc) tensorflow
   ci-sanity:
     runs-on: ubuntu-latest
     container:
