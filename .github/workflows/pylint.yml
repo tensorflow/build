@@ -10,7 +10,7 @@ jobs:
       - name: pylint
         run: |
           /bin/bash -c "add-apt-repository ppa:deadsnakes/ppa -y && apt-get install --assume-yes python3.8 && python3.8 -m pip install pylint==2.7.4 \
-          && cd /tensorflow_src && git fetch origin pull/48294/head:pylint_silence && git checkout pylint_silence && pylint -j4  ./tensorflow/"
+          && cd /tensorflow_src && git fetch origin pull/48294/head:pylint_silence && git checkout pylint_silence && pylint -j$(nproc)  ./tensorflow/"
   ci-sanity:
     runs-on: ubuntu-latest
     container:
