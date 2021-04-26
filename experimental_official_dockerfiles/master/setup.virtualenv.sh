@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -xe
 
 # Usage: setup_virtualenv.sh <pyversion> <virtualenv-name> <requirements.txt>
 # setup_virtualenv.sh 3.6.9 tf-36 requirements.txt
@@ -9,5 +9,6 @@ NAME=$2
 REQUIREMENTS=$3
 pyenv virtualenv $VERSION $NAME
 pyenv activate $NAME
-pip install --upgrade pip
-pip install -r $REQUIREMENTS -U
+# Disable the cache dir to save image space
+pip install --no-cache-dir --upgrade pip
+pip install --no-cache-dir -r $REQUIREMENTS -U

@@ -25,6 +25,7 @@ automake
 build-essential
 ca-certificates
 clang-8
+clang-format
 curl
 ffmpeg
 git

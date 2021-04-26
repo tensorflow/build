@@ -3,8 +3,8 @@
 # ??? Magic ???
 
 # Delete uneccessary static libraries, which we don't need for some reason.
-find /usr/local/cuda-11.0/lib64/ -type f -name 'lib*_static.a' -not -name 'libcudart_static.a' -delete
-rm /usr/lib/x86_64-linux-gnu/libcudnn_static_v8.a
+find /usr/local/cuda-*/lib*/ -type f -name 'lib*_static.a' -not -name 'libcudart_static.a' -delete
+rm /usr/lib/x86_64-linux-gnu/libcudnn_static_v*.a
 
 
 # Link the libcuda stub to the location where tensorflow is searching for it and reconfigure
