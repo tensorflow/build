@@ -2,11 +2,16 @@
 
 To add your own project to our showcase, you can:
 
-* Add a link and a short description to [README.md](README.md) in the same
-  format as the other links, and then file a PR, or,
+* Add a row to one of the Community build tables in [README.md](README.md) in
+  the same format as the other rows, and then file a PR, or,
+* Add a link and a short description to the Project Showcase in
+  [README.md](README.md) in the same format as the other links, and then file a
+  PR, or,
 * Copy the [Directory Template](directory_template) into a new folder, fill in
   the template, and add it to the showcase. Make sure to update
   [CODEOWNERS](CODEOWNERS) as well.
+
+Please try to keep lists and tables in alphabetical sort order.
 
 This repo is a good place for small additions, but if the project is a big one,
 it may be better to maintain it in your own repository for better encapsulation
