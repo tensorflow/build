@@ -13,7 +13,7 @@ jobs:
         apt-get install --assume-yes python3.8
     - name: pylint-install
       run:  |
-        python3.8 -m pip install pylint==2.7.4 
+        python3.8 -m pip install pylint==2.7.4 numpy~=1.19.2
     - name: branch-checkout
       working-directory: /tensorflow_src
       run: |
@@ -33,7 +33,7 @@ jobs:
         add-apt-repository ppa:deadsnakes/ppa -y
         apt-get install --assume-yes python3.8
     - name: pylint-install
-      run:  python3.8 -m pip install pylint==2.7.4 
+      run:  python3.8 -m pip install pylint==2.7.4 numpy~=1.19.2
     - name: branch-checkout
       working-directory: /tensorflow_src
       run: |
