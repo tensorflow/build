@@ -1,3 +1,12 @@
+# This bazelrc can build a GPU-supporting TF package compatible with
+# manylinux2010.
+#
+# It includes some test query settings ripped from TensorFlow's testing setup,
+# but I'm not exactly sure which CI builds they match. Note that we have a
+# no_oss_py38 tag, which implies there are other tags for disabling tests with
+# specific python versions. Since tag_filters flags aren't accumulative,
+# this means using shared bazelrc files could become difficult.
+
 # Python settings
 build --action_env PYTHON_BIN_PATH="/usr/bin/python3"
 build --action_env PYTHON_LIB_PATH="/usr/lib/tf_python"
@@ -50,8 +59,11 @@ test --test_timeout="300,450,1200,3600" --local_test_jobs=4
 test --test_output=errors --verbose_failures=true --keep_going
 test --run_under=//tensorflow/tools/ci_build/gpu_build:parallel_gpu_execute
 
-# test -- ${DEFAULT_BAZEL_TARGETS} -//tensorflow/lite/...
 
+# These are the way that a similar bazelrc as this was invoked, but I can't
+# remember where from.
+#
+# test -- ${DEFAULT_BAZEL_TARGETS} -//tensorflow/lite/...
 # test //tensorflow/... \
 # -//tensorflow/python/integration_testing/... \
 # -//tensorflow/compiler/tf2tensorrt/... \
