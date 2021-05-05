@@ -1,8 +1,6 @@
 #!/bin/bash
 set -e
-source ~/.bashrc
-pyenv global tf-38
-cd /tmp/dockertests
+cd /tf
 rm -rf addons
 git clone https://github.com/tensorflow/addons && cd addons
 
