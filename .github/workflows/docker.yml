@@ -1,9 +1,6 @@
-name: ci
+name: Upload docker containers
 
-on:
-  push:
-    branches:
-      - 'master'
+on: [pull_request]
 
 jobs:
   docker:
