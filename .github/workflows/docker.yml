@@ -28,6 +28,7 @@ jobs:
         with:
           push: true
           context: ./experimental_official_dockerfiles/master
+          target: devel
           build-args: |
             PYTHON_VERSION=python3.8
           tags: angersson/tensorflow-build:latest
