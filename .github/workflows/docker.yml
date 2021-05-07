@@ -5,6 +5,9 @@ on: [pull_request]
 jobs:
   docker:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [python3.7, python3.8, python3.9]
     steps:
       -
         name: Checkout
@@ -30,8 +33,10 @@ jobs:
           context: ./experimental_official_dockerfiles/master
           target: devel
           build-args: |
-            PYTHON_VERSION=python3.8
-          tags: angersson/tensorflow-build:latest
+            PYTHON_VERSION=${{ matrix.python-version }}
+          tags: angersson/tensorflow-build:latest-${{ matrix.python-version }}
+          cache-from: type=registry,ref=angersson/tensorflow-build:latest-${{ matrix.python-version }}
+          cache-to: type=inline
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
