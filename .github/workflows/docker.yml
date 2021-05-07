@@ -24,7 +24,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          context: experimental_official_dockerfiles/master
+          context: ./experimental_official_dockerfiles/master
           build-args: |
             PYTHON_VERSION=python3.8
           tags: angersson/tensorflow-build:latest
