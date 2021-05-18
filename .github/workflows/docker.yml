@@ -1,6 +1,13 @@
+# Containers go to angersson/tensorflow-build to avoid polluting the
+# TensorFlow namespace until we're sure these are useful.
 name: Upload docker containers
 
-on: [pull_request]
+on:
+  push:
+    paths:
+      - 'experimental_official_dockerfiles/**'
+    branches:
+      - master
 
 jobs:
   docker:
