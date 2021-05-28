@@ -26,35 +26,114 @@ Caution: The TensorFlow Go API is *not* covered by the TensorFlow
 
 ## Supported Platforms
 
-TensorFlow for Go is supported on the following systems:
+The Go bindings for TensorFlow work on the following systems, and likely others:
 
 * Linux, 64-bit, x86
 * macOS, Version 10.12.6 (Sierra) or higher
 
 
-## Setup
+## Installation and Setup
 
-### TensorFlow C library
+### 1. Install the TensorFlow C library
 
-Install the [TensorFlow C library](https://www.tensorflow.org/install/lang_c) which is required for the
-TensorFlow Go package.
+Install the [TensorFlow C library](https://www.tensorflow.org/install/lang_c). This
+library is required for use of the TensorFlow Go package at runtime. For example,
+on Linux (64-bit, x86):
 
-### Download
+  ```sh
+  $ curl -L https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-cpu-linux-x86_64-2.5.0.tar.gz | tar xz --directory /usr/local
+  $ ldconfig
+  ```
 
-Download and install the TensorFlow Go package and its dependencies:
+### 2. Install the Protocol Buffer Compiler (Protoc)
 
+Install the [Protocol Buffer Compiler](https://developers.google.com/protocol-buffers).
+This compiler is required to install the Go bindings but is not needed at runtime.
+
+- Linux, using `apt` or `apt-get`, for example:
+
+  ```sh
+  $ apt install -y protobuf-compiler
+  ```
+
+- MacOS, using [Homebrew](https://brew.sh/):
+
+  ```sh
+  $ brew install protobuf
+  ```
+
+### 3. Install and Setup the Tensorflow Go API
+
+***The use of `go get` is not currently supported for installation of the Tensorflow Go API.
+Instead, follow these instructions.***
+
+- Decide on a location to install the API, such as within the `src` folder immediately below
+the Go workspace (e.g., the location of $GOPATH).  The location `/go/src/github.com/tensorflow/tensorflow`
+will be used in these instructions.
+
+- Clone the Tensorflow source respository to the install location
+
+  ```sh
+  $ git clone --branch v2.5.0 https://github.com/tensorflow/tensorflow.git /go/src/github.com/tensorflow/tensorflow
+  ```
+
+- Change the working directory to the install location.
+ 
+   ```sh
+   $ cd /go/src/github.com/tensorflow/tensorflow
+   ```
+
+- Apply a patch to declare the Go package within Tensorflow's proto definition files
+
+   ```sh
+   $ git format-patch -1 835d7da --stdout | git apply
+   ```
+
+- Initialize a new go.mod file
+
+   ```sh
+   $ go mod init github.com/tensorflow/tensorflow
+   ```
+
+- Generate the protocol buffers and move the generating files to their correct locations.  You
+will receive two errors (`no required module provides package ...`), which you can ignore.
+
+   ```sh
+   $ cd tensorflow/go
+   $ go generate ./...
+   $ mv vendor/github.com/tensorflow/tensorflow/tensorflow/go/* .
+   ```
+
+- Add missing modules
+
+   ```sh
+   $ go mod tidy
+   ```
+
+- Test the installation
+   ```sh
+   $ go test ./...
+   ``` 
+
+
+## Usage
+
+### Applications must use Go Mod's `replace` directive
+
+The `replace` directive instructs Go to use the local installation.  Point this
+to the installation location (such as `/go/src/github.com/tensorflow/tensorflow`
+from the above installation instructions).
+
+This directive must be added for each Go module that uses the Go API. As an
+example: 
+
+```sh
+$ go mod init hello-world
+$ go mod edit -require github.com/tensorflow/tensorflow@v2.5.0+incompatible
+$ go mod edit -replace github.com/tensorflow/tensorflow=/go/src/github.com/tensorflow/tensorflow
+$ go mod tidy
 ```
-go get github.com/tensorflow/tensorflow/tensorflow/go
-```
 
-And validate your installation:
-
-```
-go test github.com/tensorflow/tensorflow/tensorflow/go
-```
-
-
-## Build
 
 ### Example program
 
@@ -92,12 +171,19 @@ func main() {
 }
 ```
 
-### Run
+#### Initialize go.mod for the example program:
 
-Run the example program:
-
+```sh
+$ go mod init app
+$ go mod edit -require github.com/tensorflow/tensorflow@v2.5.0+incompatible
+$ go mod edit -replace github.com/tensorflow/tensorflow=/go/src/github.com/tensorflow/tensorflow
+$ go mod tidy
 ```
-go run hello_tf.go
+
+#### Then, run the example program:
+
+```sh
+$ go run hello_tf.go
 ```
 
 The command outputs: `Hello from TensorFlow version *number*`
