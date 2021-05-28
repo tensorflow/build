@@ -198,6 +198,19 @@ wasn't compiled to use *Type* instructions, but these are available on your
 machine and could speed up CPU computations.
 ```
 
+## Docker Example
+
+A [Dockerfile is available](https://github.com/tensorflow/build/tree/master/golang_install_guide/example-program),
+which executes the installation and setup process for the Go bindings and
+builds the example program.  To use,
+[install Docker](https://www.docker.com/get-started) and then run the
+following commands:
+
+```sh
+$ docker build -t tensorflow/build:golang-example https://github.com/tensorflow/build.git#:golang_install_guide/example-program
+$ docker run -it --rm tensorflow/build:golang-example
+```
+
 ## Build from source
 
 TensorFlow is open source. Read
