@@ -1,17 +1,13 @@
 # Golang Install Guide 
 
-TensorFlow's old official docs for installing the (unsupported) Go bindings.
-Needs an owner.
+Documentation for installing the Go bindings for Tensorflow.
 
-Maintainer: @angerson (TensorFlow, SIG Build)
+Maintainer: @wamuir
 
 * * *
 
 **Important: TensorFlow for Go is no longer supported by the
 TensorFlow team.**
-
-**This guide is a mirror of the old official documentation and may not work. If
-you'd like to own this and keep it up-to-date, please file a PR!**
 
 # Install TensorFlow for Go
 

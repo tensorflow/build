@@ -45,8 +45,8 @@ Want to add your own project to this list? It's easy: check out
 
 ### Language Bindings
 
-* [**Golang Install Guide**](golang_install_guide): TensorFlow's old official
-  docs for installing the (deprecated) Go bindings. Needs an owner.
+* [**Golang Install Guide**](golang_install_guide): Documentation for installing
+  the Go bindings.
 
 ### Platforms
 
