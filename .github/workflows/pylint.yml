@@ -9,7 +9,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: tensorflow/tensorflow
-      - name: Featch PR
+      - name: Fetch PR
         run: | 
           git fetch origin pull/48371/head:48371
           git checkout 48371
@@ -35,8 +35,8 @@ jobs:
           --output "type=docker" \
           --platform linux/amd64 \
           tensorflow/tools/dockerfiles/ -f tensorflow/tools/dockerfiles/dockerfiles/devel-cpu.Dockerfile \
-          --tag tensorflow/tensorflow:devel
+          --tag tensorflow:devel
       - name: CI Santity
         run: |
-          docker run -v ${PWD}:/tensorflow -w /tensorflow tensorflow/tensorflow:devel \
+          docker run -v ${PWD}:/tensorflow -w /tensorflow tensorflow:devel \
           tensorflow/tools/ci_build/ci_sanity.sh
