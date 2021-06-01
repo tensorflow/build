@@ -2,44 +2,40 @@ name: ci
 
 on: [push, pull_request]
 jobs:
-  pylint-sanity:
+  buildx:
     runs-on: ubuntu-latest
-    container:
-      image: tensorflow/tensorflow:devel
     steps:
-    - name: python3.8
-      run: |
-        add-apt-repository ppa:deadsnakes/ppa -y
-        apt-get install --assume-yes python3.8
-    - name: pylint-install
-      run:  |
-        python3.8 -m pip install pylint==2.7.4 numpy~=1.19.2
-    - name: branch-checkout
-      working-directory: /tensorflow_src
-      run: |
-        git fetch origin pull/48294/head:pylint_silence
-        git checkout pylint_silence
-    - name: pylint
-      working-directory: /tensorflow_src
-      run: |
-        python3.8 -m pylint -j$(nproc) tensorflow
-  ci-sanity:
-    runs-on: ubuntu-latest
-    container:
-      image: tensorflow/tensorflow:devel
-    steps:
-    - name: python3.8
-      run: |
-        add-apt-repository ppa:deadsnakes/ppa -y
-        apt-get install --assume-yes python3.8
-    - name: pylint-install
-      run:  python3.8 -m pip install pylint==2.7.4 numpy~=1.19.2
-    - name: branch-checkout
-      working-directory: /tensorflow_src
-      run: |
-        git fetch origin pull/48294/head:pylint_silence
-        git checkout pylint_silence
-    - name: ci_sanity.sh
-      working-directory: /tensorflow_src
-      run: |
-        ./tensorflow/tools/ci_build/ci_sanity.sh --pylint
+      - name: Checkout
+      - uses: actions/checkout@v2
+      - with:
+          repository: tensorflow/tensorflow
+      - run: | 
+          git fetch origin pull/48371/head:48371
+          git checkout 48371
+        
+      -
+        uses: docker/setup-buildx-action@v1
+        id: buildx
+        with:
+          install: true
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+      -
+        name: Build Image
+        run: |
+          docker buildx build \
+          --cache-from "type=local,src=/tmp/.buildx-cache" \
+          --cache-to "type=local,dest=/tmp/.buildx-cache" \
+          --output "type=docker" \
+          --platform linux/amd64 \
+          tensorflow/tools/dockerfiles/ -f tensorflow/tools/dockerfiles/dockerfiles/devel-cpu.Dockerfile \
+          --tag tensorflow/tensorflow:devel
+      - name: CI Santity
+        run: |
+          docker run -v ${PWD}:/tensorflow -w /tensorflow tensorflow/tensorflow:devel \
+          tensorflow/tools/ci_build/ci_sanity.sh
