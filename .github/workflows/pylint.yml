@@ -6,10 +6,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-      - uses: actions/checkout@v2
-      - with:
+        uses: actions/checkout@v2
+        with:
           repository: tensorflow/tensorflow
-      - run: | 
+      - name: Featch PR
+        run: | 
           git fetch origin pull/48371/head:48371
           git checkout 48371
         
