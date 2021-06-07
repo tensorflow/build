@@ -38,7 +38,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          context: ./experimental_official_dockerfiles/master
+          context: ./official_build_environments/master/linux
           target: devel
           build-args: |
             PYTHON_VERSION=${{ matrix.python-version }}
