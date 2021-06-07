@@ -46,6 +46,8 @@ RUN /setup.python.sh $PYTHON_VERSION devel.requirements.txt
 
 # Setup build 
 COPY devel.user_tools /user_tools
+COPY ../../experimental_official_bazelrcs/master /bazelrcs
+RUN touch /bazelrcs/mounted.bazelrc
 
 ################################################################################
 FROM nvidia/cuda:11.2.1-cudnn8-runtime-ubuntu20.04 as runtime

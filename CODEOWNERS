@@ -6,6 +6,7 @@
 /directory_template @angerson @perfinion
 /golang_install_guide @wamuir
 /manylinux_2014_docker_images @sub-mod
+/official_build_environments @angerson @perfinion
 /ppc64le @wdirons
 /tekton @perfinion
 /wsl2_gpu_guide @Avditvs

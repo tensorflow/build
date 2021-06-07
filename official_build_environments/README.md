@@ -1,15 +1,25 @@
-# [Experimental] Official Dockerfiles
+# Official Dockerfiles
 
-Rework of TensorFlow's Dockerfiles
+**Experimental.**
+
+Standard Dockerfiles and configurations for TensorFlow builds.
 
 Maintainer: @angerson (TensorFlow, SIG Build)
 
 * * *
 
-WIP Dockerfiles for building and using TensorFlow and related packages.
+This directory contains experimental work on standardizing TF's development
+environment for ease of maintenance and contribution.
+
+Each directory is for a TF branch, and its subdirectories are for files relating
+to each platform (Windows, MacOS, Linux). Only linux has progress right now.
 
 Nothing here is constant! If you see something that doesn't make sense or could
 be better, chances are it could be improved.
+
+## Dockerfiles
+
+Dockerfiles for building and using TensorFlow and related packages.
 
 The idea here is to create an easy-to-maintain Docker image that can build
 TensorFlow and related tools. Challenges include reducing image size (CUDA for
@@ -26,6 +36,7 @@ Initial versions of the `devel` images are available at
 You can build the images yourself like this:
 
 ```
+$ cd master/linux
 $ DOCKER_BUILDKIT=1 docker build --target=devel --build-arg PYTHON_VERSION=python3.8 -t tensorflow-build-devel .
 ```
 

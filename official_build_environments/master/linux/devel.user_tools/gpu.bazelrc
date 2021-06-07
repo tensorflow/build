@@ -1,6 +1,14 @@
 # This bazelrc can build a GPU-supporting TF package.
 # Hopefully it's compatible with manylinux2010.
 
+# Convenient cache configurations
+# Use a cache directory mounted to /tf/cache. Very useful!
+build:sigbuild_local_cache --disk_cache=/tf/cache
+# Use the public-access TF DevInfra cache (read only)
+build:sigbuild_remote_cache --remote_cache="https://storage.googleapis.com/tensorflow-devinfra-bazel-cache" --remote_upload_local_results=false
+# Write to the TF DevInfra cache (only works for internal TF CI)
+build:sigbuild_remote_cache_push --remote_cache="https://storage.googleapis.com/tensorflow-devinfra-bazel-cache" --google_default_credentials
+
 # Use Python 3.X as installed in container image
 build --action_env PYTHON_BIN_PATH="/usr/bin/python3"
 build --action_env PYTHON_LIB_PATH="/usr/lib/tf_python"

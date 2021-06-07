@@ -1,0 +1,2 @@
+# You can mount your own bazelrc over this file in Docker with
+# -v $HOME/my/bazelrc:/user_tools/mounted.bazelrc

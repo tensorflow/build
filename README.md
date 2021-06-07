@@ -59,10 +59,8 @@ Want to add your own project to this list? It's easy: check out
 
 ### WIP / Other
 
-* [**(Experimental) Official Dockerfiles**](experimental_official_dockerfiles):
-  Rework of TensorFlow's Dockerfiles
-* [**(Experimental) Official Bazelrcs**](experimental_official_bazelrcs):
-  Standard configurations for TensorFlow builds
+* [**Official Build Environments**](official_build_environments):
+  (Experimental) Standard Dockerfiles and configurations for TensorFlow builds
 * [**Directory Template**](directory_template): Example short description.
 * [**Tekton CI**](tekton): perfinion's experimental directory for using Tekton 
   CI with TensorFlow
