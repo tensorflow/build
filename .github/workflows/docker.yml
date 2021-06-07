@@ -5,7 +5,7 @@ name: Upload docker containers
 on:
   push:
     paths:
-      - 'experimental_official_dockerfiles/**'
+      - 'official_build_environments/**'
     branches:
       - master
 
