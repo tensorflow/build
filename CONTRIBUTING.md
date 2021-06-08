@@ -1,15 +1,16 @@
 # How to Contribute
 
+## Project Showcase
+
 To add your own project to our showcase, you can:
 
-* Add a row to one of the Community build tables in [README.md](README.md) in
-  the same format as the other rows, and then file a PR, or,
 * Add a link and a short description to the Project Showcase in
   [README.md](README.md) in the same format as the other links, and then file a
   PR, or,
 * Copy the [Directory Template](directory_template) into a new folder, fill in
   the template, and add it to the showcase. Make sure to update
-  [CODEOWNERS](CODEOWNERS) as well.
+  [CODEOWNERS](CODEOWNERS) as well. If you contribute code, you're expected to
+  own it.
 
 Please try to keep lists and tables in alphabetical sort order.
 
@@ -18,9 +19,32 @@ it may be better to maintain it in your own repository for better encapsulation
 of responsibility (and so you can make your own rules for further
 contributions).
 
-There are just a few small standard guidelines you need to follow as well:
+## Community Builds Table
+
+We maintain a list of community-maintained TensorFlow builds and packages in
+[README.md](README.md). If you'd like to add your own build to the list,
+please file a PR. Your build must follow these rules:
+
+1. Your build cannot be more than two weeks late. So e.g. a "nightly" build
+   shouldn't be more than two weeks old, and a "release" build should include
+   TensorFlow 2.X.Y within two weeks after 2.X.Y is released by the TensorFlow
+   team. After two weeks we'll reach out to you. At worst, we'll remove the
+   entry from the table while you fix it.
+   
+   We'd prefer to feature community builds that are up-to-date with the latest
+   TF release, but you can also specify that your build is a legacy build that
+   only targets old versions of TF.  Please keep up with patch releases for
+   the latest official TF version.
+   
+2. Please list a main contact and a backup contact who can update the build
+   table if it gets out of date. Add these to the "Community Build Infra
+   Owners" table in the README.
+   
+Thank you!
 
 ## Contributor License Agreement
+
+There are just a few small standard guidelines you need to follow as well:
 
 Contributions to this project must be accompanied by a Contributor License
 Agreement. You (or your employer) retain the copyright to your contribution;
