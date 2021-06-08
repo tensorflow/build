@@ -9,8 +9,8 @@ To add your own project to our showcase, you can:
   PR, or,
 * Copy the [Directory Template](directory_template) into a new folder, fill in
   the template, and add it to the showcase. Make sure to update
-  [CODEOWNERS](CODEOWNERS) as well. If you contribute code, you're expected to
-  own it.
+  [CODEOWNERS](CODEOWNERS) as well. If you contribute a new project, you're
+  expected to own it.
 
 Please try to keep lists and tables in alphabetical sort order.
 
