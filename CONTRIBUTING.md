@@ -36,9 +36,8 @@ please file a PR. Your build must follow these rules:
    only targets old versions of TF.  Please keep up with patch releases for
    the latest official TF version.
    
-2. Please list a main contact and a backup contact who can update the build
-   table if it gets out of date. Add these to the "Community Build Infra
-   Owners" table in the README.
+2. Your build requires two maintainers: a main contact and a backup contact. 
+   Add these to the "Community Build Infra Owners" table in the README.
    
 Thank you!
 
