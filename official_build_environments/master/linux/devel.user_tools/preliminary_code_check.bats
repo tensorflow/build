@@ -25,6 +25,22 @@ setup_file() {
     tensorflow/tools/ci_build/ci_sanity.sh --pylint
 }
 
+@test "All tensorflow.org/code links point to real files" {
+    for i in `grep -onI 'https://www.tensorflow.org/code/[a-zA-Z0-9/._-]\+' -r tensorflow`; do
+        target=$(echo $i | sed 's!.*https://www.tensorflow.org/code/!!g')
+
+        if [[ ! -f $target ]] && [[ ! -d $target ]]; then
+            echo "$i" >> errors.txt
+        fi
+        if [[ -e errors.txt ]]; then
+            echo "Broken links found:"
+            cat errors.txt
+            rm errors.txt
+            false
+        fi
+    done
+}
+
 teardown_file() {
     bazel shutdown
 }
