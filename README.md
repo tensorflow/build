@@ -102,16 +102,3 @@ Owner | Container Type | Status | Artifacts
 ---: | --- | :---: | :---
 Linaro | **TensorFlow aarch64 Neoverse-N1 CPU** Stable <br> Debian | Static | Release [2.3](https://hub.docker.com/r/linaro/tensorflow-arm-neoverse-n1)
 Arm | **TensorFlow AArch64 Neoverse-N1 CPU** Stable | Static | [Docker Hub](https://hub.docker.com/r/armswdev/tensorflow-arm-neoverse-n1)
-
-### Community Build Infra Owners
-
-If a link needs to be updated, contact the Table Owner for that group.
-
-Owner | Table Owner
----: | ---
-AMD | @deven-amd
-IBM | @wdirons, @jayfurmanek
-Intel | @gaurides, @claynerobison
-Linaro | @hrw, @paulisaacs-linaro
-OpenLab | @bzhaoopenstack
-RedHat | @sub-mod
