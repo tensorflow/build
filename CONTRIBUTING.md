@@ -37,7 +37,7 @@ please file a PR. Your build must follow these rules:
    the latest official TF version.
    
 2. Your build requires two maintainers: a main contact and a backup contact. 
-   Add these to the "Community Build Infra Owners" table in the README.
+   To have your PR approved, send these to angerson@google.com.
    
 Thank you!
 
