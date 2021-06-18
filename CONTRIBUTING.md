@@ -33,10 +33,13 @@ please file a PR. Your build must follow these rules:
    
    We'd prefer to feature community builds that are up-to-date with the latest
    TF release, but you can also specify that your build is a legacy build that
-   only targets old versions of TF.  Please keep up with patch releases for
-   the latest official TF version.
+   only targets old versions of TF. For Stable builds, please keep up with patch
+   releases for the latest official TF version.
    
-2. Your build requires two maintainers: a main contact and a backup contact. 
+2. Add a new full row for each build badge. For example, a "Nightly",
+   "Legacy 1.15", and "Stable 2.X" build suite would be three rows.
+   
+3. Your build requires two maintainers: a main contact and a backup contact. 
    To have your PR approved, send these to angerson@google.com.
    
 Thank you!
