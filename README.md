@@ -92,7 +92,7 @@ Intel | **Linux CPU with Intel oneDNN** Nightly | [![Build Status](https://tenso
 Intel | **Linux CPU with Intel oneDNN** Stable Release | ![Build Status](https://tensorflow-ci.intel.com/job/tensorflow-mkl-build-release-whl/badge/icon) | Release [1.15](https://pypi.org/project/intel-tensorflow/1.15.0/) / [2.x](https://pypi.org/project/intel-tensorflow/)
 Linaro | **Linux aarch64 CPU** Nightly | [![Build Status](https://ci.linaro.org/jenkins/buildStatus/icon?job=ldcg-python-manylinux-tensorflow-nightly)](https://ci.linaro.org/jenkins/job/ldcg-python-manylinux-tensorflow-nightly/) | [Nightly](http://snapshots.linaro.org/ldcg/python/tensorflow-manylinux-nightly/latest/)
 Linaro | **Linux aarch64 CPU** Stable Release | [![Build Status](https://ci.linaro.org/jenkins/buildStatus/icon?job=ldcg-python-manylinux-tensorflow)](https://ci.linaro.org/jenkins/job/ldcg-python-manylinux-tensorflow/) | Release [1.x & 2.x](http://snapshots.linaro.org/ldcg/python/tensorflow-manylinux/)
-RedHat | **Red Hat® Enterprise Linux® 7.6 CPU & GPU** <br> Python 2.7, 3.6 | [![Build Status](https://jenkins-tensorflow.apps.ci.centos.org/buildStatus/icon?job=tensorflow-rhel7-3.6&build=2)](https://jenkins-tensorflow.apps.ci.centos.org/job/tensorflow-rhel7-3.6/2/) | [1.13.1 PyPI](https://tensorflow.pypi.thoth-station.ninja/index/)
+
 
 ### TensorFlow Containers
 
