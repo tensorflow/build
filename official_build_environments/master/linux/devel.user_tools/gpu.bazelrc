@@ -28,6 +28,10 @@ build --distinct_host_configuration=false
 # Target the AVX instruction set
 build --copt=-mavx --host_copt=-mavx
 
+# Helpful for debugging. See https://docs.bazel.build/versions/main/user-manual.html#flag--subcommands
+build --subcommands=pretty_print
+build --verbose_failures
+
 # CUDA: Set up compilation CUDA version and paths
 build --@local_config_cuda//:enable_cuda
 build --repo_env TF_NEED_CUDA=1
