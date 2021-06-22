@@ -90,8 +90,9 @@ IBM | **Linux ppc64le GPU** Stable: TF 2.x | [![Build Status](https://powerci.os
 IBM | **Linux s390x** Nightly | [![Build Status](http://ibmz-ci.osuosl.org/job/TensorFlow_IBMZ_CI/badge/icon)](http://ibmz-ci.osuosl.org/job/TensorFlow_IBMZ_CI/) | [Nightly](http://ibmz-ci.osuosl.org/job/TensorFlow_IBMZ_CI/)
 IBM | **Linux s390x CPU** Stable Release | [![Build Status](http://ibmz-ci.osuosl.org/job/TensorFlow_IBMZ_Release_Build/badge/icon)](https://ibmz-ci.osuosl.org/job/TensorFlow_IBMZ_Release_Build/) | [Release](https://ibmz-ci.osuosl.org/job/TensorFlow_IBMZ_Release_Build/)
 Intel | **Linux CPU with Intel oneDNN** Nightly | [![Build Status](https://tensorflow-ci.intel.com/job/tensorflow-mkl-build-whl-nightly/badge/icon)](https://tensorflow-ci.intel.com/job/tensorflow-mkl-build-whl-nightly/) | [Nightly](https://tensorflow-ci.intel.com/job/tensorflow-mkl-build-whl-nightly/)
-Intel | **Linux CPU with Intel oneDNN** Stable Release 1.x | ![Build Status](NA) | Release [1.15](https://pypi.org/project/intel-tensorflow/1.15.0/)
-Intel | **Linux CPU with Intel oneDNN** Stable Release 2.x | ![Build Status](NA) | Release [2.x](https://pypi.org/project/intel-tensorflow/)
+Intel | **Linux CPU with Intel oneDNN** Stable Release 1.x | NA | Release [1.15](https://pypi.org/project/intel-tensorflow/1.15.0/)
+Intel | **Linux CPU with Intel oneDNN** Stable Release 2.x | NA | Release [2.x](https://pypi.org/project/intel-tensorflow/)
+Intel | **Windows CPU with Intel oneDNN** Stable Release 2.x | NA | Release [2.x](https://pypi.org/project/intel-tensorflow/)
 Linaro | **Linux aarch64 CPU** Nightly | [![Build Status](https://ci.linaro.org/jenkins/buildStatus/icon?job=ldcg-python-manylinux-tensorflow-nightly)](https://ci.linaro.org/jenkins/job/ldcg-python-manylinux-tensorflow-nightly/) | [Nightly](http://snapshots.linaro.org/ldcg/python/tensorflow-manylinux-nightly/latest/)
 Linaro | **Linux aarch64 CPU** Stable Release | [![Build Status](https://ci.linaro.org/jenkins/buildStatus/icon?job=ldcg-python-manylinux-tensorflow)](https://ci.linaro.org/jenkins/job/ldcg-python-manylinux-tensorflow/) | Release [1.x & 2.x](http://snapshots.linaro.org/ldcg/python/tensorflow-manylinux/)
 
