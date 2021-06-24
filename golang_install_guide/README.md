@@ -102,15 +102,8 @@ go run hello_tf.go
 
 The command outputs: `Hello from TensorFlow version *number*`
 
-Success: TensorFlow for Go has been configured.
+### Success: TensorFlow for Go has been configured.
 
-The program may generate the following warning messages, which you can ignore:
-
-```
-W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library
-wasn't compiled to use *Type* instructions, but these are available on your
-machine and could speed up CPU computations.
-```
 
 ## Build from source
 
