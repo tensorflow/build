@@ -8,11 +8,14 @@ VERSION=$1
 REQUIREMENTS=$2
 
 # Install Python packages for this container's version
+# ${VERSION%.6} converts "python3.6-distutils" into "python3-distutils".
+# There is no python3.6-distutils package, just python3-distutils. That special
+# logic should be deleted once Python3.6 support is dropped.
 cat >pythons.txt <<EOF
 $VERSION
 $VERSION-dev
 $VERSION-venv
-$VERSION-distutils
+${VERSION%.6}-distutils
 EOF
 /setup.packages.sh pythons.txt
 
