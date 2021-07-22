@@ -42,8 +42,8 @@ jobs:
           target: devel
           build-args: |
             PYTHON_VERSION=${{ matrix.python-version }}
-          tags: angersson/tensorflow-build:latest-${{ matrix.python-version }}
-          cache-from: type=registry,ref=angersson/tensorflow-build:latest-${{ matrix.python-version }}
+          tags: tensorflow/build:latest-${{ matrix.python-version }}
+          cache-from: type=registry,ref=tensorflow/build:latest-${{ matrix.python-version }}
           cache-to: type=inline
       -
         name: Image digest
