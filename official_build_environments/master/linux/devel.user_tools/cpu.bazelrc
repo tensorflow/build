@@ -30,3 +30,14 @@ build --copt=-mavx --host_copt=-mavx
 
 # Use the NVCC toolchain to compile for manylinux2010
 build --crosstool_top=@org_tensorflow//third_party/toolchains/preconfig/ubuntu16.04/gcc7_manylinux2010-nvcc-cuda11.2:toolchain
+
+# Testing
+test --test_lang_filters=py
+test --local_test_jobs=auto
+test --test_output=errors
+test --test_tag_filters="-no_oss,-oss_serial,-gpu,-tpu,-benchmark-test,-v1only"
+test --build_tag_filters="-no_oss,-oss_serial,-gpu,-tpu,-benchmark-test,-v1only"
+test --test_env=LD_LIBRARY_PATH
+test --output_filter=DONT_MATCH_ANYTHING
+test -- //tensorflow/... -//tensorflow/python/integration_testing/... -//tensorflow/compiler/tf2tensorrt/... -//tensorflow/compiler/xrt/... -//tensorflow/lite/micro/examples/... -//tensorflow/core/tpu/... -//tensorflow/lite/...
+# lite needs some special java related configuration ?

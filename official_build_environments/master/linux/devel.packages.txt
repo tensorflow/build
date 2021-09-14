@@ -1,22 +1,20 @@
 # All required CUDA packages
-cuda-command-line-tools-11-2
-cuda-command-line-tools-11-2
-cuda-cudart-dev-11-2
-cuda-nvprune-11-2
-cuda-nvrtc-11-2
-cuda-nvrtc-dev-11-2
-libcublas-11-2
-libcublas-dev-11-2
-libcudnn8-dev=8.1.0.77-1+cuda11.2
-libcudnn8=8.1.0.77-1+cuda11.2
-libcufft-dev-11-2
-libcurand-dev-11-2
-libcusolver-dev-11-2
-libcusparse-dev-11-2
-libnvinfer-dev=7.2.2-1+cuda11.1
-libnvinfer-plugin-dev=7.2.2-1+cuda11.1
+cuda-11-4
+cuda-command-line-tools-11-4
+cuda-cudart-dev-11-4
+cuda-cupti-11-4
+cuda-nvprune-11-4
+libcufft-11-4
+libcurand-11-4
+libcusolver-dev-11-4
+libcusparse-dev-11-4
+libcublas-dev-11-4
+libcudnn8-dev=8.2.2.26-1+cuda11.4
+libcudnn8=8.2.2.26-1+cuda11.4
 libnvinfer-plugin7=7.2.2-1+cuda11.1
 libnvinfer7=7.2.2-1+cuda11.1
+libnvinfer-dev=7.2.2-1+cuda11.1
+libnvinfer-plugin-dev=7.2.2-1+cuda11.1
 
 # Other build-related tools
 apt-transport-https
