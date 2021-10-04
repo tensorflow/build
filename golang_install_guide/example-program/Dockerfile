@@ -16,8 +16,8 @@
 
 FROM golang:1.16-buster
 
-# 1. Install the TensorFlow C library (v2.5.0)
-RUN curl -L https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-cpu-linux-$(uname -m)-2.5.0.tar.gz \
+# 1. Install the TensorFlow C library (v2.6.0)
+RUN curl -L https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-cpu-linux-$(uname -m)-2.6.0.tar.gz \
     | tar xz --directory /usr/local \
     && ldconfig
 
@@ -27,13 +27,14 @@ RUN apt-get update && apt-get -y install --no-install-recommends \
     protobuf-compiler 
 
 # 3. Install and setup the Tensorflow Go API
-RUN git clone --branch v2.5.0 https://github.com/tensorflow/tensorflow.git /go/src/github.com/tensorflow/tensorflow \
+RUN git clone --branch v2.6.0 https://github.com/tensorflow/tensorflow.git /go/src/github.com/tensorflow/tensorflow \
     && cd /go/src/github.com/tensorflow/tensorflow \
-    && git format-patch -1 835d7da --stdout | git apply  \
     && go mod init github.com/tensorflow/tensorflow \
+    && go get google.golang.org/protobuf/proto \
     && cd tensorflow/go \
-    && (go generate ./... || true) \
+    && (cd genop && go generate) \
     && mv vendor/github.com/tensorflow/tensorflow/tensorflow/go/* . \
+    && (cd op && go generate) \
     && go mod tidy \
     && go test ./...
 
@@ -42,7 +43,7 @@ RUN git clone --branch v2.5.0 https://github.com/tensorflow/tensorflow.git /go/s
 WORKDIR /example-program
 COPY hello_tf.go .
 RUN go mod init app \
-    && go mod edit -require github.com/tensorflow/tensorflow@v2.5.0+incompatible \
+    && go mod edit -require github.com/tensorflow/tensorflow@v2.6.0+incompatible \
     && go mod edit -replace github.com/tensorflow/tensorflow=/go/src/github.com/tensorflow/tensorflow \
     && go mod tidy \
     && go build

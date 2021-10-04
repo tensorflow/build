@@ -37,7 +37,7 @@ library is required for use of the TensorFlow Go package at runtime. For example
 on Linux (64-bit, x86):
 
   ```sh
-  $ curl -L https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-cpu-linux-x86_64-2.5.0.tar.gz | tar xz --directory /usr/local
+  $ curl -L https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-cpu-linux-x86_64-2.6.0.tar.gz | tar xz --directory /usr/local
   $ ldconfig
   ```
 
@@ -70,19 +70,13 @@ will be used in these instructions.
 - Clone the Tensorflow source respository to the install location
 
   ```sh
-  $ git clone --branch v2.5.0 https://github.com/tensorflow/tensorflow.git /go/src/github.com/tensorflow/tensorflow
+  $ git clone --branch v2.6.0 https://github.com/tensorflow/tensorflow.git /go/src/github.com/tensorflow/tensorflow
   ```
 
-- Change the working directory to the install location.
+- Change the working directory to the install location
  
    ```sh
    $ cd /go/src/github.com/tensorflow/tensorflow
-   ```
-
-- Apply a patch to declare the Go package within Tensorflow's proto definition files
-
-   ```sh
-   $ git format-patch -1 835d7da --stdout | git apply
    ```
 
 - Initialize a new go.mod file
@@ -91,14 +85,26 @@ will be used in these instructions.
    $ go mod init github.com/tensorflow/tensorflow
    ```
 
-- Generate the protocol buffers and move the generating files to their correct locations.  You
-will receive two errors (`no required module provides package ...`), which you can ignore.
+- Fetch the Go protocol buffer package
+
+   ```sh
+   $ go get google.golang.org/protobuf/proto
+   ```
+
+- Generate the protocol buffers and move the generated output to its correct location
 
    ```sh
    $ cd tensorflow/go
-   $ go generate ./...
+   $ (cd genop && go generate)
    $ mv vendor/github.com/tensorflow/tensorflow/tensorflow/go/* .
    ```
+
+- Generate wrappers
+
+   ```sh
+   $ (cd op && go generate)
+   ```
+
 
 - Add missing modules
 
@@ -125,7 +131,7 @@ example:
 
 ```sh
 $ go mod init hello-world
-$ go mod edit -require github.com/tensorflow/tensorflow@v2.5.0+incompatible
+$ go mod edit -require github.com/tensorflow/tensorflow@v2.6.0+incompatible
 $ go mod edit -replace github.com/tensorflow/tensorflow=/go/src/github.com/tensorflow/tensorflow
 $ go mod tidy
 ```
@@ -171,7 +177,7 @@ func main() {
 
 ```sh
 $ go mod init app
-$ go mod edit -require github.com/tensorflow/tensorflow@v2.5.0+incompatible
+$ go mod edit -require github.com/tensorflow/tensorflow@v2.6.0+incompatible
 $ go mod edit -replace github.com/tensorflow/tensorflow=/go/src/github.com/tensorflow/tensorflow
 $ go mod tidy
 ```
