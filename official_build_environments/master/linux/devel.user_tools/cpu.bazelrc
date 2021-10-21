@@ -29,7 +29,7 @@ build --distinct_host_configuration=false
 build --copt=-mavx --host_copt=-mavx
 
 # Use the NVCC toolchain to compile for manylinux2010
-build --crosstool_top=@org_tensorflow//third_party/toolchains/preconfig/ubuntu16.04/gcc7_manylinux2010-nvcc-cuda11.2:toolchain
+build --crosstool_top=@ubuntu18.04-gcc7_manylinux2010-cuda11.2-cudnn8.1-tensorrt7.2_config_cuda//crosstool:toolchain
 
 # Testing
 test --test_lang_filters=py

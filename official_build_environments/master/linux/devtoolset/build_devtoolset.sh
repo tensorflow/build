@@ -35,14 +35,14 @@ esac
 
 mkdir -p "${TARGET}"
 # Download binary glibc 2.12 release.
-wget "http://old-releases.ubuntu.com/ubuntu/pool/main/e/eglibc/libc6_2.17-0ubuntu5.1_amd64.deb" && \
-    unar "libc6_2.17-0ubuntu5.1_amd64.deb" && \
-    tar -C "${TARGET}" -xvzf "libc6_2.17-0ubuntu5.1_amd64/data.tar.gz" && \
-    rm -rf "libc6_2.17-0ubuntu5.1_amd64.deb" "libc6_2.17-0ubuntu5.1_amd64"
-wget "http://old-releases.ubuntu.com/ubuntu/pool/main/e/eglibc/libc6-dev_2.17-0ubuntu5.1_amd64.deb" && \
-    unar "libc6-dev_2.17-0ubuntu5.1_amd64.deb" && \
-    tar -C "${TARGET}" -xvzf "libc6-dev_2.17-0ubuntu5.1_amd64/data.tar.gz" && \
-    rm -rf "libc6-dev_2.17-0ubuntu5.1_amd64.deb" "libc6-dev_2.17-0ubuntu5.1_amd64"
+wget "http://old-releases.ubuntu.com/ubuntu/pool/main/e/eglibc/libc6_2.12.1-0ubuntu6_amd64.deb" && \
+    unar "libc6_2.12.1-0ubuntu6_amd64.deb" && \
+    tar -C "${TARGET}" -xvzf "libc6_2.12.1-0ubuntu6_amd64/data.tar.gz" && \
+    rm -rf "libc6_2.12.1-0ubuntu6_amd64.deb" "libc6_2.12.1-0ubuntu6_amd64"
+wget "http://old-releases.ubuntu.com/ubuntu/pool/main/e/eglibc/libc6-dev_2.12.1-0ubuntu6_amd64.deb" && \
+    unar "libc6-dev_2.12.1-0ubuntu6_amd64.deb" && \
+    tar -C "${TARGET}" -xvzf "libc6-dev_2.12.1-0ubuntu6_amd64/data.tar.gz" && \
+    rm -rf "libc6-dev_2.12.1-0ubuntu6_amd64.deb" "libc6-dev_2.12.1-0ubuntu6_amd64"
 
 # Put the current kernel headers from ubuntu in place.
 ln -s "/usr/include/linux" "/${TARGET}/usr/include/linux"
@@ -54,15 +54,15 @@ ln -s "/usr/include/x86_64-linux-gnu/asm" "/${TARGET}/usr/include/asm"
 /fixlinks.sh "/${TARGET}"
 
 # Patch to allow non-glibc 2.12 compatible builds to work.
-# sed -i '54i#define TCP_USER_TIMEOUT 18' "/${TARGET}/usr/include/netinet/tcp.h"
+sed -i '54i#define TCP_USER_TIMEOUT 18' "/${TARGET}/usr/include/netinet/tcp.h"
 
 # Download binary libstdc++ 4.4 release we are going to link against.
 # We only need the shared library, as we're going to develop against the
 # libstdc++ provided by devtoolset.
-wget "http://old-releases.ubuntu.com/ubuntu/pool/main/g/gcc-4.8/libstdc++6_4.8.1-10ubuntu8_amd64.deb" && \
-    unar "libstdc++6_4.8.1-10ubuntu8_amd64.deb" && \
-    tar -C "/${TARGET}" -xvzf "libstdc++6_4.8.1-10ubuntu8_amd64/data.tar.gz" "./usr/lib/libstdc++.so.6.0.18" && \
-    rm -rf "libstdc++6_4.8.1-10ubuntu8_amd64.deb" "libstdc++6_4.8.1-10ubuntu8_amd64"
+wget "http://old-releases.ubuntu.com/ubuntu/pool/main/g/gcc-4.4/libstdc++6_4.4.3-4ubuntu5_amd64.deb" && \
+    unar "libstdc++6_4.4.3-4ubuntu5_amd64.deb" && \
+    tar -C "/${TARGET}" -xvzf "libstdc++6_4.4.3-4ubuntu5_amd64/data.tar.gz" "./usr/lib/libstdc++.so.6.0.13" && \
+    rm -rf "libstdc++6_4.4.3-4ubuntu5_amd64.deb" "libstdc++6_4.4.3-4ubuntu5_amd64"
 
 mkdir -p "${TARGET}-src"
 cd "${TARGET}-src"
@@ -114,20 +114,17 @@ cd "${TARGET}-build"
       --with-linker-hash-style="gnu" \
       --with-tune="generic" \
       && \
-    make -j 72 && \
+    make -j 42 && \
     make install
 
 # Create the devtoolset libstdc++ linkerscript that links dynamically against
 # the system libstdc++ 4.4 and provides all other symbols statically.
-
-mv "/${TARGET}/usr/lib64/libstdc++.so.${LIBSTDCXX_VERSION}" \
-   "/${TARGET}/usr/lib64/libstdc++.so.${LIBSTDCXX_VERSION}.backup"
-echo -e "OUTPUT_FORMAT(elf64-x86-64)\nINPUT ( libstdc++.so.6.0.18 -lstdc++_nonshared48 )" \
+mv "/${TARGET}/usr/lib/libstdc++.so.${LIBSTDCXX_VERSION}" \
+   "/${TARGET}/usr/lib/libstdc++.so.${LIBSTDCXX_VERSION}.backup"
+echo -e "OUTPUT_FORMAT(elf64-x86-64)\nINPUT ( libstdc++.so.6.0.13 -lstdc++_nonshared44 )" \
    > "/${TARGET}/usr/lib/libstdc++.so.${LIBSTDCXX_VERSION}"
-cp "./x86_64-pc-linux-gnu/libstdc++-v3/src/.libs/libstdc++_nonshared48.a" \
+cp "./x86_64-pc-linux-gnu/libstdc++-v3/src/.libs/libstdc++_nonshared44.a" \
    "/${TARGET}/usr/lib"
-cp "./x86_64-pc-linux-gnu/libstdc++-v3/src/.libs/libstdc++_nonshared48.a" \
-   "/${TARGET}/usr/lib64"
 
 # Link in architecture specific includes from the system; note that we cannot
 # link in the whole x86_64-linux-gnu folder, as otherwise we're overlaying
