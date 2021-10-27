@@ -39,5 +39,4 @@ test --test_tag_filters="-no_oss,-oss_serial,-gpu,-tpu,-benchmark-test,-v1only"
 test --build_tag_filters="-no_oss,-oss_serial,-gpu,-tpu,-benchmark-test,-v1only"
 test --test_env=LD_LIBRARY_PATH
 test --output_filter=DONT_MATCH_ANYTHING
-test -- //tensorflow/... -//tensorflow/python/integration_testing/... -//tensorflow/compiler/tf2tensorrt/... -//tensorflow/compiler/xrt/... -//tensorflow/lite/micro/examples/... -//tensorflow/core/tpu/... -//tensorflow/lite/...
-# lite needs some special java related configuration ?
+test -- //tensorflow/... -//tensorflow/python/integration_testing/... -//tensorflow/compiler/tf2tensorrt/... -//tensorflow/compiler/xrt/... -//tensorflow/lite/micro/... -//tensorflow/core/tpu/... -//tensorflow/lite/...

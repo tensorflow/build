@@ -19,23 +19,30 @@ teardown_file() {
 
 @test "Wheel conforms to upstream size limitations" {
     WHEEL_MEGABYTES=$(stat --format %s "$TF_WHEEL" | awk '{print int($1/(1024*1024))}')
+    # Ref. cs/test_tf_whl_size (internal only)
     case "$TF_WHEEL" in
-        *cpu*manylinux*) LARGEST_OK_SIZE=170 ;;
+        # CPU:
+        *cpu*manylinux*) LARGEST_OK_SIZE=175 ;;
         *cpu*win*)       LARGEST_OK_SIZE=170 ;;
-        *manylinux*)     LARGEST_OK_SIZE=450 ;;
-        *win*)           LARGEST_OK_SIZE=350 ;;
-        *macos*)         LARGEST_OK_SIZE=170 ;;
+        *macos*)         LARGEST_OK_SIZE=200 ;;
+        # GPU:
+        *manylinux*)     LARGEST_OK_SIZE=470 ;;
+        *win*)           LARGEST_OK_SIZE=345 ;;
+        # Unknown:
         *)
             echo "The wheel's name is in an unknown format."
             exit 1
             ;;
     esac
-    echo "Size of $TF_WHEEL is $WHEEL_MEGABYTES / $LARGEST_OK_SIZE megabytes."
+    # >&3 forces output in bats even if the test passes. See
+    # https://bats-core.readthedocs.io/en/stable/writing-tests.html#printing-to-the-terminal
+    echo "# Size of $TF_WHEEL is $WHEEL_MEGABYTES / $LARGEST_OK_SIZE megabytes." >&3
     test "$WHEEL_MEGABYTES" -le "$LARGEST_OK_SIZE"
 }
 
-# Note: this runs before the following tests, so TF is installed in the venv
-# and the venv is active
+# Note: this runs before the tests further down the file, so TF is installed in
+# the venv and the venv is active when those tests run. The venv gets cleaned
+# up in teardown_file() above.
 @test "Wheel is installable" {
     python3 -m venv /tf/venv
     source /tf/venv/bin/activate
