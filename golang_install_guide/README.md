@@ -1,13 +1,12 @@
 # Golang Install Guide 
 
-Documentation for installing the Go bindings for Tensorflow.
+Documentation for installing the Go bindings for TensorFlow.
 
 Maintainer: @wamuir
 
 * * *
 
-**Important: TensorFlow for Go is no longer supported by the
-TensorFlow team.**
+**Important: TensorFlow for Go is no longer supported by the TensorFlow team.**
 
 # Install TensorFlow for Go
 
@@ -30,26 +29,27 @@ The Go bindings for TensorFlow work on the following systems, and likely others:
 
 ## Installation and Setup
 
-### 1. Install the TensorFlow C library
+### 1. Install the TensorFlow C Library
 
 Install the [TensorFlow C library](https://www.tensorflow.org/install/lang_c). This
 library is required for use of the TensorFlow Go package at runtime. For example,
 on Linux (64-bit, x86):
 
   ```sh
-  $ curl -L https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-cpu-linux-x86_64-2.6.0.tar.gz | tar xz --directory /usr/local
+  $ curl -L https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-cpu-linux-x86_64-2.7.0.tar.gz | tar xz --directory /usr/local
   $ ldconfig
   ```
 
-### 2. Install the Protocol Buffer Compiler (Protoc)
+### 2. Install the Protocol Buffers Library and Compiler
 
-Install the [Protocol Buffer Compiler](https://developers.google.com/protocol-buffers).
-This compiler is required to install the Go bindings but is not needed at runtime.
+Install the [protocol buffers library and compiler](https://developers.google.com/protocol-buffers).
+The compiler and well-known proto type files from the library are required
+during installation of the Go bindings.
 
 - Linux, using `apt` or `apt-get`, for example:
 
   ```sh
-  $ apt install -y protobuf-compiler
+  $ apt install libprotobuf-dev protobuf-compiler
   ```
 
 - MacOS, using [Homebrew](https://brew.sh/):
@@ -58,61 +58,58 @@ This compiler is required to install the Go bindings but is not needed at runtim
   $ brew install protobuf
   ```
 
-### 3. Install and Setup the Tensorflow Go API
+### 3. Install and Setup the TensorFlow Go API
 
-***The use of `go get` is not currently supported for installation of the Tensorflow Go API.
+***The use of `go get` is not currently supported for installation of the TensorFlow Go API.
 Instead, follow these instructions.***
 
-- Decide on a location to install the API, such as within the `src` folder immediately below
-the Go workspace (e.g., the location of $GOPATH).  The location `/go/src/github.com/tensorflow/tensorflow`
-will be used in these instructions.
-
-- Clone the Tensorflow source respository to the install location
+- First, note the location of your Go workspace. The remaining installation
+  steps must be performed inside your Go workspace.
 
   ```sh
-  $ git clone --branch v2.6.0 https://github.com/tensorflow/tensorflow.git /go/src/github.com/tensorflow/tensorflow
+  $ go env GOPATH
   ```
 
-- Change the working directory to the install location
+- Clone the TensorFlow source respository, substituting the location of your Go
+  workspace for `/go` in the command below.
+
+  ```sh
+  $ git clone --branch v2.7.0 https://github.com/tensorflow/tensorflow.git /go/src/github.com/tensorflow/tensorflow
+  ```
+
+- Change the working directory to the base of the cloned TensorFlow repository,
+  substituting the the location of your Go workspace for `/go` in the command
+  below.
  
    ```sh
    $ cd /go/src/github.com/tensorflow/tensorflow
    ```
 
-- Initialize a new go.mod file
+- Apply a set of required patches to the TensorFlow source code.
+
+   ```sh
+   $ git cherry-pick --strategy-option=no-renames --no-commit 41bfbe8 74bf9d1 a33fba8 aa700a8 b451698 f6a59d6
+   ```
+
+- Initialize a new go.mod file.
 
    ```sh
    $ go mod init github.com/tensorflow/tensorflow
    ```
 
-- Fetch the Go protocol buffer package
+- Generate wrappers and protocol buffers.
 
    ```sh
-   $ go get google.golang.org/protobuf/proto
+   $ (cd tensorflow/go/op && go generate)
    ```
 
-- Generate the protocol buffers and move the generated output to its correct location
-
-   ```sh
-   $ cd tensorflow/go
-   $ (cd genop && go generate)
-   $ mv vendor/github.com/tensorflow/tensorflow/tensorflow/go/* .
-   ```
-
-- Generate wrappers
-
-   ```sh
-   $ (cd op && go generate)
-   ```
-
-
-- Add missing modules
+- Add missing modules.
 
    ```sh
    $ go mod tidy
    ```
 
-- Test the installation
+- Test the installation.
    ```sh
    $ go test ./...
    ``` 
@@ -122,16 +119,15 @@ will be used in these instructions.
 
 ### Applications must use Go Mod's `replace` directive
 
-The `replace` directive instructs Go to use the local installation.  Point this
-to the installation location (such as `/go/src/github.com/tensorflow/tensorflow`
-from the above installation instructions).
-
-This directive must be added for each Go module that uses the Go API. As an
-example: 
+The `replace` directive instructs Go to use the local installation and must be
+added to `go.mod` for every Go module that depends on the API.  Point the
+replace directive to the location within your Go workspace where you [installed
+the API](#installation-and-setup), substituting the location of your Go
+workspace for `/go` in the command below:
 
 ```sh
 $ go mod init hello-world
-$ go mod edit -require github.com/tensorflow/tensorflow@v2.6.0+incompatible
+$ go mod edit -require github.com/tensorflow/tensorflow@v2.7.0+incompatible
 $ go mod edit -replace github.com/tensorflow/tensorflow=/go/src/github.com/tensorflow/tensorflow
 $ go mod tidy
 ```
@@ -139,8 +135,8 @@ $ go mod tidy
 
 ### Example program
 
-With the TensorFlow Go package installed, create an example program with the
-following source code (`hello_tf.go`):
+With the TensorFlow Go API [installed](#installation-and-setup), create an
+example program with the following source code (`hello_tf.go`):
 
 ```go
 package main
@@ -177,7 +173,7 @@ func main() {
 
 ```sh
 $ go mod init app
-$ go mod edit -require github.com/tensorflow/tensorflow@v2.6.0+incompatible
+$ go mod edit -require github.com/tensorflow/tensorflow@v2.7.0+incompatible
 $ go mod edit -replace github.com/tensorflow/tensorflow=/go/src/github.com/tensorflow/tensorflow
 $ go mod tidy
 ```
@@ -190,10 +186,10 @@ $ go run hello_tf.go
 
 The command outputs: `Hello from TensorFlow version *number*`
 
-### Success: TensorFlow for Go has been configured.
+#### Success: TensorFlow for Go has been configured.
 
 
-## Docker Example
+# Docker Example
 
 A [Dockerfile is available](https://github.com/tensorflow/build/tree/master/golang_install_guide/example-program),
 which executes the installation and setup process for the Go bindings and
@@ -203,11 +199,5 @@ following commands:
 
 ```sh
 $ docker build -t tensorflow/build:golang-example https://github.com/tensorflow/build.git#:golang_install_guide/example-program
-$ docker run -it --rm tensorflow/build:golang-example
+$ docker run tensorflow/build:golang-example
 ```
-
-## Build from source
-
-TensorFlow is open source. Read
-[the instructions](https://github.com/tensorflow/tensorflow/blob/master/tensorflow/go/README.md)
-to build TensorFlow for Go from source code.
