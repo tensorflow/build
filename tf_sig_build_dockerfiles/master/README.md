@@ -4,6 +4,27 @@ These Dockerfiles are supported by the TensorFlow team and are published to
 tensorflow/build as latest-python3.6..3.9. The TensorFlow OSS DevInfra team
 is evaluating these containers for building `tf-nightly`.
 
+## Updating the Containers
+
+For simple changes, you can adjust the source files and then make a PR. Send
+it to @angerson for review. Our GitHub Actions workflow deploys the containers
+after approval and submission.
+
+To rebuild the containers after making changes, use this command from this
+directory:
+
+```bash
+# Don't forget the . at the end
+# Optionally, add '--pull' or '--no-cache' if you are having rebuild issues
+DOCKER_BUILDKIT=1 docker build --pull --no-cache --build-arg PYTHON_VERSION=python3.9 --target=devel -t my-tf-devel .
+```
+
+Because we don't have Docker-building presubmits, you'll have to do this if you
+want to check to see if your change works. It will take a long time to build
+devtoolset and install CUDA packages. After it's done, you can use the commands
+below to test your changes -- just replace `tensorflow/build:latest-python3.7`
+with `my-tf-devel` to use your image instead.
+
 ## Building `tf-nightly` packages
 
 The TensorFlow team's scripts aren't visible, but use the configuration files which are
