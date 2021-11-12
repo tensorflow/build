@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'official_build_environments/**'
+      - 'tf_sig_build_dockerfiles/**'
     branches:
       - master
 
@@ -38,7 +38,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          context: ./official_build_environments/master/linux
+          context: ./tf_sig_build_dockerfiles/master
           target: devel
           build-args: |
             PYTHON_VERSION=${{ matrix.python-version }}

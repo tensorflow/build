@@ -1,8 +1,9 @@
-#!/bin/bash
-set -euxo pipefail
-
+#!/usr/bin/env bash
+#
 # Check and rename wheels with auditwheel. Inserts the platform tags like
 # "manylinux_xyz" into the wheel filename.
+set -euxo pipefail
+
 for wheel in /tf/pkg/*.whl; do
   echo "Checking and renaming $wheel..."
   time python3 -m auditwheel repair --plat manylinux2010_x86_64 "$wheel" --wheel-dir /tf/pkg 2>&1 | tee check.txt
@@ -14,5 +15,5 @@ for wheel in /tf/pkg/*.whl; do
     wheel="$new_wheel"
   fi
 
-  TF_WHEEL="$wheel" bats /user_tools/wheel_verification.bats --timing
+  TF_WHEEL="$wheel" bats /usertools/wheel_verification.bats --timing
 done

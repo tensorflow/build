@@ -1,8 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
+#
+# setup.python.sh: Install a specific Python version and packages for it.
+# Usage: setup.python.sh <pyversion> <requirements.txt>
 set -xe
 
-# Usage: setup.python.sh <pyversion> <requirements.txt>
-# setup.python.sh python3.6 requirements.txt
 source ~/.bashrc
 VERSION=$1
 REQUIREMENTS=$2
@@ -28,7 +29,8 @@ for f in $(ls | grep python); do
 done
 popd
 
-# Setup links for TensorFlow to compile; used in devel.bazelrc
+# Setup links for TensorFlow to compile.
+# Referenced in devel.usertools/*.bazelrc
 ln -sf /usr/bin/$VERSION /usr/bin/python3
 ln -sf /usr/bin/$VERSION /usr/bin/python
 ln -sf /usr/lib/$VERSION /usr/lib/tf_python

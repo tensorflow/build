@@ -14,11 +14,10 @@
 #
 # ==============================================================================
 
-# Global setup for Python versions
-
-# Set up interactive stuff only if running interactively
+# Do not print anything if this is not being used interactively
 [ -z "$PS1" ] && return
 
+# Set up attractive prompt
 export PS1="\[\e[31m\]tf-docker\[\e[m\] \[\e[33m\]\w\[\e[m\] > "
 export TERM=xterm-256color
 alias grep="grep --color=auto"

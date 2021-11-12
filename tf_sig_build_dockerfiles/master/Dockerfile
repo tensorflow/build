@@ -8,10 +8,10 @@ COPY builder.packages.txt builder.packages.txt
 RUN /setup.packages.sh /builder.packages.txt
 
 # Install devtoolset-7 in /dt7 with gclibc 2.12 and libstdc++ 4.4, for building
-# manylinux2010-compatible packages. Scripts expect to be in the root directory
-COPY devtoolset/fixlinks.sh /fixlinks.sh
-COPY devtoolset/rpm-patch.sh /rpm-patch.sh
-COPY devtoolset/build_devtoolset.sh /build_devtoolset.sh
+# manylinux2010-compatible packages. Scripts expect to be in the root directory.
+COPY builder.devtoolset/fixlinks.sh /fixlinks.sh
+COPY builder.devtoolset/rpm-patch.sh /rpm-patch.sh
+COPY builder.devtoolset/build_devtoolset.sh /build_devtoolset.sh
 RUN /build_devtoolset.sh devtoolset-7 /dt7 
 
 ################################################################################
@@ -44,18 +44,7 @@ COPY setup.python.sh /setup.python.sh
 COPY devel.requirements.txt /devel.requirements.txt
 RUN /setup.python.sh $PYTHON_VERSION devel.requirements.txt
 
-# Setup build 
-COPY devel.user_tools /user_tools
+# Setup build and environment
+COPY devel.usertools /usertools
+COPY devel.bashrc /root/.bashrc
 
-################################################################################
-FROM nvidia/cuda:11.2.1-cudnn8-runtime-ubuntu20.04 as runtime
-################################################################################
-
-COPY bashrc /root/.bashrc
-COPY runtime.requirements.txt /runtime.requirements.txt
-COPY setup.packages.sh /setup.packages.sh
-COPY setup.python.sh /setup.python.sh
-COPY setup.sources.sh /setup.sources.sh
-
-ARG PYTHON_VERSION
-RUN setup.sources.sh && /setup.python.sh $PYTHON_VERSION runtime.requirements.txt

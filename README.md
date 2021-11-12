@@ -59,8 +59,8 @@ Want to add your own project to this list? It's easy: check out
 
 ### WIP / Other
 
-* [**Official Build Environments**](official_build_environments):
-  (Experimental) Standard Dockerfiles and configurations for TensorFlow builds
+* [**TF SIG Build Dockerfiles**](tf_sig_build_dockerfiles):
+  Standard Dockerfiles for TensorFlow builds
 * [**Directory Template**](directory_template): Example short description.
 * [**Tekton CI**](tekton): perfinion's experimental directory for using Tekton 
   CI with TensorFlow

@@ -1,5 +1,4 @@
 # This bazelrc can build a CPU-supporting TF package.
-# Hopefully it's compatible with manylinux2010.
 
 # Convenient cache configurations
 # Use a cache directory mounted to /tf/cache. Very useful!
@@ -30,13 +29,3 @@ build --copt=-mavx --host_copt=-mavx
 
 # Use the NVCC toolchain to compile for manylinux2010
 build --crosstool_top=@ubuntu18.04-gcc7_manylinux2010-cuda11.2-cudnn8.1-tensorrt7.2_config_cuda//crosstool:toolchain
-
-# Testing
-test --test_lang_filters=py
-test --local_test_jobs=auto
-test --test_output=errors
-test --test_tag_filters="-no_oss,-oss_serial,-gpu,-tpu,-benchmark-test,-v1only"
-test --build_tag_filters="-no_oss,-oss_serial,-gpu,-tpu,-benchmark-test,-v1only"
-test --test_env=LD_LIBRARY_PATH
-test --output_filter=DONT_MATCH_ANYTHING
-test -- //tensorflow/... -//tensorflow/python/integration_testing/... -//tensorflow/compiler/tf2tensorrt/... -//tensorflow/compiler/xrt/... -//tensorflow/lite/micro/... -//tensorflow/core/tpu/... -//tensorflow/lite/...
