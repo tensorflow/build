@@ -34,9 +34,11 @@ The TensorFlow team's scripts aren't visible, but use the configuration files
 which are included in the containers. Here is how to build a TensorFlow package
 with the same configuration as tf-nightly.
 
-Note that the tf-nightly packages on pypi.org do not report their source git
-commit and there is currently no good way to determine it. The `nightly` tag on
-GitHub is not related to the `tf-nightly` packages.
+Note that you can determine the Git commit of a tf-nightly package on pypi.org 
+by checking `tf.version.GIT_VERSION`. The `nightly` tag on GitHub is not
+related to the `tf-nightly` packages. `tf.version.GIT_VERSION` will look
+something like `v1.12.1-67282-g251085598b7`, where the final section is a short
+Git hash: `g251085598b7` for that example.
 
 ```
 # Beforehand, set up:
