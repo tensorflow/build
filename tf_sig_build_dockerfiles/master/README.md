@@ -10,66 +10,94 @@ For simple changes, you can adjust the source files and then make a PR. Send
 it to @angerson for review. Our GitHub Actions workflow deploys the containers
 after approval and submission.
 
-To rebuild the containers after making changes, use this command from this
+To rebuild the containers locally after making changes, use this command from this
 directory:
 
 ```bash
-# Don't forget the . at the end
-# Optionally, add '--pull' or '--no-cache' if you are having rebuild issues
-DOCKER_BUILDKIT=1 docker build --pull --no-cache --build-arg PYTHON_VERSION=python3.9 --target=devel -t my-tf-devel .
+# Tips:
+# - Don't forget the . at the end
+# - Optionally, add '--pull' or '--no-cache' if you are having rebuild issues
+# - The build must work with Python 3.6 through Python 3.9
+DOCKER_BUILDKIT=1 docker build --pull --no-cache \
+  --build-arg PYTHON_VERSION=python3.9 --target=devel -t my-tf-devel .
 ```
 
 Because we don't have Docker-building presubmits, you'll have to do this if you
 want to check to see if your change works. It will take a long time to build
 devtoolset and install CUDA packages. After it's done, you can use the commands
-below to test your changes -- just replace `tensorflow/build:latest-python3.7`
+below to test your changes -- just replace `tensorflow/build:latest-python3.9`
 with `my-tf-devel` to use your image instead.
 
 ## Building `tf-nightly` packages
 
-The TensorFlow team's scripts aren't visible, but use the configuration files which are
-included in the containers. Here is how to build a TensorFlow package with the same
-configuration as tf-nightly:
+The TensorFlow team's scripts aren't visible, but use the configuration files
+which are included in the containers. Here is how to build a TensorFlow package
+with the same configuration as tf-nightly.
+
+Note that the tf-nightly packages on pypi.org do not report their source git
+commit and there is currently no good way to determine it. The `nightly` tag on
+GitHub is not related to the `tf-nightly` packages.
 
 ```
 # Beforehand, set up:
 #  - A directory with the TensorFlow source code, e.g. /tmp/tensorflow
 #  - A directory for TensorFlow packages, e.g. /tmp/packages
-#  - OPTIONAL: A directory for your local bazel cache, e.g. /tmp/bazelcache
+#  - A directory for your local bazel cache, e.g. /tmp/bazelcache
 
-time docker pull tensorflow/build:latest-python3.7
+# See https://hub.docker.com/r/tensorflow/build/tags for version choices
+time docker pull tensorflow/build:latest-python3.9
 docker run --name tf -w /tf/tensorflow -itd --rm \
   -v "/tmp/packages:/tf/pkg" \
   -v "/tmp/tensorflow:/tf/tensorflow" \
   -v "/tmp/bazelcache:/tf/cache" \
-  tensorflow/build:latest-python3.7 \
+  tensorflow/build:latest-python3.9 \
   bash
 
+# Change the TensorFlow version to X.Y.Z.devYYYYMMDD
 time docker exec tf python3 tensorflow/tools/ci_build/update_version.py --nightly
 
-# The local cache will be faster if you're repeatedly testing new changes, and the
-# remote cache will be faster if you have a low-powered computer. We're still not
+# Choose one of the following two build commands. They are different
+# depending on whether you want to build the GPU version or the CPU version.
+#
+# You may also choose to change "sigbuild_remote_cache" to "sigbuild_local_cache"
+# if you have mounted a directory to /tf/cache in the container. The local
+# cache will be faster if you're repeatedly testing new changes, and the remote
+# cache will be faster if you have a low-powered computer. We're still not
 # sure how much the cache helps yet.
+
+# Option 1: tf-nightly (GPU)
 time docker exec tf \
     bazel \
-    --bazelrc=/user_tools/cpu.bazelrc \
-    # OR --bazelrc=/user_tools/gpu.bazelrc \
+    --bazelrc=/usertools/gpu.bazelrc \
     build \
     --config=sigbuild_remote_cache \
-    # OR: --config=sigbuild_local_cache \
     tensorflow/tools/pip_package:build_pip_package
-    
+time docker exec tf \
+    ./bazel-bin/tensorflow/tools/pip_package/build_pip_package \
+    /tf/pkg \
+    --gpu \
+    --nightly_flag
+
+# Option 2: tf-nightly-cpu
+time docker exec tf \
+    bazel \
+    --bazelrc=/usertools/gpu.bazelrc \
+    build \
+    --config=sigbuild_remote_cache \
+    tensorflow/tools/pip_package:build_pip_package
 time docker exec tf \
     ./bazel-bin/tensorflow/tools/pip_package/build_pip_package \
     /tf/pkg \
     --cpu \
-    # OR: --gpu \
     --nightly_flag
-    
-# Check for manylinux compliance and rename the wheels appropriately
-time docker exec tf /user_tools/rename_and_verify_wheels.sh
 
-# Check the newly built wheel
+# Run the rest of the commands no matter which version you chose.
+
+# Check for manylinux compliance and rename the wheels appropriately
+time docker exec tf /usertools/rename_and_verify_wheels.sh
+
+# List the newly built wheel. It will be owned by root, if you ran the container
+# as root.
 ls -al /tmp/packages
 
 # Shut down the container if you are finished.
