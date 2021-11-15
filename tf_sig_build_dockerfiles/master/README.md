@@ -10,6 +10,9 @@ For simple changes, you can adjust the source files and then make a PR. Send
 it to @angerson for review. Our GitHub Actions workflow deploys the containers
 after approval and submission.
 
+- To update Python packages, look at `devel.requirements.txt`
+- To update system packages, look at `devel.packages.txt`
+
 To rebuild the containers locally after making changes, use this command from this
 directory:
 
