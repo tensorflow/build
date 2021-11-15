@@ -40,7 +40,7 @@ related to the `tf-nightly` packages. `tf.version.GIT_VERSION` will look
 something like `v1.12.1-67282-g251085598b7`, where the final section is a short
 Git hash: `g251085598b7` for that example.
 
-```
+```bash
 # Beforehand, set up:
 #  - A directory with the TensorFlow source code, e.g. /tmp/tensorflow
 #  - A directory for TensorFlow packages, e.g. /tmp/packages
