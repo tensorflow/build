@@ -6,9 +6,10 @@ is evaluating these containers for building `tf-nightly`.
 
 ## Updating the Containers
 
-For simple changes, you can adjust the source files and then make a PR. Send
-it to @angerson for review. Our GitHub Actions workflow deploys the containers
-after approval and submission.
+For simple changes, you can adjust the source files and then make a PR. Send it
+to @angerson for review. We have presubmits that will make sure your change
+still builds a container. After approval and submission, our GitHub Actions
+workflow deploys the containers to Docker Hub.
 
 - To update Python packages, look at `devel.requirements.txt`
 - To update system packages, look at `devel.packages.txt`
@@ -26,11 +27,10 @@ DOCKER_BUILDKIT=1 docker build --pull --no-cache \
   --build-arg PYTHON_VERSION=python3.9 --target=devel -t my-tf-devel .
 ```
 
-Because we don't have Docker-building presubmits, you'll have to do this if you
-want to check to see if your change works. It will take a long time to build
-devtoolset and install CUDA packages. After it's done, you can use the commands
-below to test your changes -- just replace `tensorflow/build:latest-python3.9`
-with `my-tf-devel` to use your image instead.
+It will take a long time to build devtoolset and install CUDA packages. After
+it's done, you can use the commands below to test your changes. Just replace
+`tensorflow/build:latest-python3.9` with `my-tf-devel` to use your image
+instead.
 
 ## Building `tf-nightly` packages
 
