@@ -1,5 +1,3 @@
-# Containers go to angersson/tensorflow-build to avoid polluting the
-# TensorFlow namespace until we're sure these are useful.
 name: Upload docker containers
 
 on:
