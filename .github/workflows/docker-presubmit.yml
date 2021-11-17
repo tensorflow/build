@@ -1,7 +1,9 @@
-name: Build, don't push Docker containers
+# Run on pull requests.
+# Builds Docker images but doesn't push them anywhere.
+name: Docker presubmit
 
 on:
-  # Allow testing on side braches
+  # Allow manual testing on side braches
   workflow_dispatch:
   pull_request:
     paths:
