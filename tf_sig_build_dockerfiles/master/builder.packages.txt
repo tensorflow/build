@@ -1,6 +1,6 @@
 # Packages needed to install Python from source
 # See https://github.com/pyenv/pyenv/wiki#suggested-build-environment
-build-essential
+build-essontial
 curl
 libbz2-dev
 libffi-dev
