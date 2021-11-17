@@ -44,68 +44,111 @@ related to the `tf-nightly` packages. `tf.version.GIT_VERSION` will look
 something like `v1.12.1-67282-g251085598b7`, where the final section is a short
 Git hash: `g251085598b7` for that example.
 
-```bash
-# Beforehand, set up:
-#  - A directory with the TensorFlow source code, e.g. /tmp/tensorflow
-#  - A directory for TensorFlow packages, e.g. /tmp/packages
-#  - A directory for your local bazel cache, e.g. /tmp/bazelcache
+1. Set up your directories:
+  - A directory with the TensorFlow source code, e.g. /tmp/tensorflow
+  - A directory for TensorFlow packages built in the container, e.g. /tmp/packages
+  - A directory for your local bazel cache, e.g. /tmp/bazelcache
 
-# See https://hub.docker.com/r/tensorflow/build/tags for version choices
-time docker pull tensorflow/build:latest-python3.9
-docker run --name tf -w /tf/tensorflow -itd --rm \
-  -v "/tmp/packages:/tf/pkg" \
-  -v "/tmp/tensorflow:/tf/tensorflow" \
-  -v "/tmp/bazelcache:/tf/cache" \
-  tensorflow/build:latest-python3.9 \
-  bash
+2. Choose the Docker container to use from [Docker Hub](https://hub.docker.com/r/tensorflow/build/tags). The options are:
+  1. `tensorflow/build:latest-python3.6`
+  2. `tensorflow/build:latest-python3.7`
+  3. `tensorflow/build:latest-python3.8`
+  4. `tensorflow/build:latest-python3.9`
+  For this example we'll use `tensorflow/build:latest-python3.9`.
 
-# Change the TensorFlow version to X.Y.Z.devYYYYMMDD
-time docker exec tf python3 tensorflow/tools/ci_build/update_version.py --nightly
+3. Pull the container you decided to use.
 
-# Choose one of the following two build commands. They are different
-# depending on whether you want to build the GPU version or the CPU version.
-#
-# You may also choose to change "sigbuild_remote_cache" to "sigbuild_local_cache"
-# if you have mounted a directory to /tf/cache in the container. The local
-# cache will be faster if you're repeatedly testing new changes, and the remote
-# cache will be faster if you have a low-powered computer. We're still not
-# sure how much the cache helps yet.
+  ```bash
+  docker pull tensorflow/build:latest-python3.9
+  ```
+  
+4. Start a Docker container with the three folders mounted.
+  - Mount the TensorFlow source code to `/tf/tensorflow`
+  - Mount the directory for built packages to `/tf/pkg`
+  - Mount the bazel cache to `/tf/cache`
 
-# Option 1: tf-nightly (GPU)
-time docker exec tf \
-    bazel \
-    --bazelrc=/usertools/gpu.bazelrc \
-    build \
-    --config=sigbuild_remote_cache \
-    tensorflow/tools/pip_package:build_pip_package
-time docker exec tf \
+  ```bash
+  docker run --name tf -w /tf/tensorflow -itd --rm \
+    -v "/tmp/packages:/tf/pkg" \
+    -v "/tmp/tensorflow:/tf/tensorflow" \
+    -v "/tmp/bazelcache:/tf/cache" \
+    tensorflow/build:latest-python3.9 \
+    bash
+  ```
+  
+5. Apply the `update_version.py` script that changes the TensorFlow version to
+   `X.Y.Z.devYYYYMMDD`. This is used for `tf-nightly` on PyPI and is technically
+   optional.
+
+  ```bash
+  docker exec tf python3 tensorflow/tools/ci_build/update_version.py --nightly
+  ```
+  
+6. Build TensorFlow.
+
+  <details><summary>`tf-nightly-cpu`</summary>
+
+  Build the sources with Bazel:
+
+  ```
+  docker exec tf \
+  bazel \
+  --bazelrc=/usertools/cpu.bazelrc \
+  build \
+  --config=sigbuild_remote_cache \
+  tensorflow/tools/pip_package:build_pip_package
+  ```
+
+  And then construct the pip package:
+
+  ```
+  docker exec tf \
+    ./bazel-bin/tensorflow/tools/pip_package/build_pip_package \
+    /tf/pkg \
+    --nightly_flag
+  ```
+  
+  </details>
+
+  <details><summary>`tf-nightly` (GPU)</summary>
+
+  Build the sources with Bazel:
+
+  ```
+  docker exec tf \
+  bazel \
+  --bazelrc=/usertools/gpu.bazelrc \
+  build \
+  --config=sigbuild_remote_cache \
+  tensorflow/tools/pip_package:build_pip_package
+  ```
+  
+  And then construct the pip package:
+
+  ```
+  docker exec tf \
     ./bazel-bin/tensorflow/tools/pip_package/build_pip_package \
     /tf/pkg \
     --gpu \
     --nightly_flag
+  ```
+  
+  </details>
 
-# Option 2: tf-nightly-cpu
-time docker exec tf \
-    bazel \
-    --bazelrc=/usertools/gpu.bazelrc \
-    build \
-    --config=sigbuild_remote_cache \
-    tensorflow/tools/pip_package:build_pip_package
-time docker exec tf \
-    ./bazel-bin/tensorflow/tools/pip_package/build_pip_package \
-    /tf/pkg \
-    --cpu \
-    --nightly_flag
+7. Run the helper script that checks for manylinux compliance, renames the wheels, and then checks the size of the packages.
 
-# Run the rest of the commands no matter which version you chose.
+  ```
+  docker exec tf /usertools/rename_and_verify_wheels.sh
+  ```
+  
+8. Take a look at the new packages you made
 
-# Check for manylinux compliance and rename the wheels appropriately
-time docker exec tf /usertools/rename_and_verify_wheels.sh
+  ```
+  ls -al /tmp/packages
+  ```
 
-# List the newly built wheel. It will be owned by root, if you ran the container
-# as root.
-ls -al /tmp/packages
+9. Shut down the container if you are finished.
 
-# Shut down the container if you are finished.
-docker stop tf
-```
+  ```
+  docker stop tf
+  ```
