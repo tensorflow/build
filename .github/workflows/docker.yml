@@ -6,7 +6,8 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'tf_sig_build_dockerfiles/**'
+      - 'tf_sig_build_dockerfiles/master/**'
+      - '!tf_sig_build_dockerfiles/master/README.md'
     branches:
       - master
 
