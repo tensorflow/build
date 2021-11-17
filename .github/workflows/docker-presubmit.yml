@@ -1,0 +1,42 @@
+name: Build, don't push Docker containers
+
+on:
+  # Allow testing on side braches
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'tf_sig_build_dockerfiles/master/**'
+      - '!tf_sig_build_dockerfiles/master/README.md'
+    branches:
+      - master
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [python3.6, python3.7, python3.8, python3.9]
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Build containers
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          push: false
+          context: ./tf_sig_build_dockerfiles/master
+          target: devel
+          build-args: |
+            PYTHON_VERSION=${{ matrix.python-version }}
+          tags: tensorflow/build:latest-${{ matrix.python-version }}
+          cache-from: type=registry,ref=tensorflow/build:latest-${{ matrix.python-version }}
+          cache-to: type=inline
+
