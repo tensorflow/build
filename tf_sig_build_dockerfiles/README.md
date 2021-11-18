@@ -216,13 +216,14 @@ hash. The `nightly` tag on GitHub is not related to the `tf-nightly` packages.
     docker exec tf /usertools/rename_and_verify_wheels.sh
     ```
   
-8. Take a look at the new wheel packages you built!
+8. Take a look at the new wheel packages you built! They may be owned by `root`
+   because of how Docker mounts handle permissions.
 
     ```
     ls -al /tmp/packages
     ```
 
-9. Shut down the container when you are finished.
+10. Shut down the container when you are finished.
 
     ```
     docker stop tf
