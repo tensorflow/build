@@ -235,7 +235,7 @@ Now let's build `tf-nightly`.
     ```
   
 8. Take a look at the new wheel packages you built! They may be owned by `root`
-   because of how Docker mounts handle permissions.
+   because of how Docker volume permissions work.
 
     ```
     ls -al /tmp/packages
