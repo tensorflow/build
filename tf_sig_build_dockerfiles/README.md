@@ -69,7 +69,7 @@ hash. The `nightly` tag on GitHub is not related to the `tf-nightly` packages.
 
     - A directory with the TensorFlow source code, e.g. `/tmp/tensorflow`
     - A directory for TensorFlow packages built in the container, e.g. `/tmp/packages`
-    - A directory for your local bazel cache, e.g. `/tmp/bazelcache`
+    - A directory for your local bazel cache (can be empty), e.g. `/tmp/bazelcache`
 
 2. Choose the Docker container to use from [Docker
    Hub](https://hub.docker.com/r/tensorflow/build/tags). The options for the
