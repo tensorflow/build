@@ -42,10 +42,7 @@ To rebuild the containers locally after making changes, use this command from th
 directory:
 
 ```bash
-# Tips:
-# - Don't forget the . at the end
-# - Optionally, add '--pull' or '--no-cache' if you are having rebuild issues
-DOCKER_BUILDKIT=1 docker build --pull --no-cache \
+DOCKER_BUILDKIT=1 docker build \
   --build-arg PYTHON_VERSION=python3.9 --target=devel -t my-tf-devel .
 ```
 
