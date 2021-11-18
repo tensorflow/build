@@ -84,16 +84,26 @@ hash. The `nightly` tag on GitHub is not related to the `tf-nightly` packages.
     docker pull tensorflow/build:latest-python3.9
     ```
   
-4. Start a Docker container with the three folders mounted.
+4. Start a backgrounded Docker container with the three folders mounted.
 
     - Mount the TensorFlow source code to `/tf/tensorflow`.
     - Mount the directory for built packages to `/tf/pkg`.
-    - Mount the bazel cache to `/tf/cache`.
+    - Mount the bazel cache to `/tf/cache`. You don't need `/tf/cache` if
+      you're going to use the remote cache.
+    
+    Here are the arguments we're using:
+    
+    - `--name tf`: Names the container `tf` so we can refer to it later.
+    - `-w /tf/tensorflow`: All commands run in the `/tf/tensorflow` directory,
+      where the TF source code is.
+    - `-it`: Makes the container interactive for running commands
+    - `-d`: Makes the container start in the background, so we can send
+      commands to it instead of running commands from inside.
 
-    You don't need `/tf/cache` if you're going to use the remote cache.
+    And `-v` is for mounting directories into the container.
 
     ```bash
-    docker run --name tf -w /tf/tensorflow -itd --rm \
+    docker run --name tf -w /tf/tensorflow -it -d \
       -v "/tmp/packages:/tf/pkg" \
       -v "/tmp/tensorflow:/tf/tensorflow" \
       -v "/tmp/bazelcache:/tf/cache" \
@@ -101,7 +111,7 @@ hash. The `nightly` tag on GitHub is not related to the `tf-nightly` packages.
       bash
     ```
   
-5. Apply the `update_version.py` script that changes the TensorFlow version to
+6. Apply the `update_version.py` script that changes the TensorFlow version to
    `X.Y.Z.devYYYYMMDD`. This is used for `tf-nightly` on PyPI and is technically
    optional.
 
@@ -109,7 +119,7 @@ hash. The `nightly` tag on GitHub is not related to the `tf-nightly` packages.
     docker exec tf python3 tensorflow/tools/ci_build/update_version.py --nightly
     ```
   
-6. Build TensorFlow. You can build both CPU and GPU packages without a GPU.  TF
+7. Build TensorFlow. You can build both CPU and GPU packages without a GPU.  TF
    DevInfra's remote cache is better for building TF only once, but if you
    build over and over, it will probably be better in the long run to use a
    local cache. We're not sure about which is best for most users, so let us
@@ -206,22 +216,23 @@ hash. The `nightly` tag on GitHub is not related to the `tf-nightly` packages.
     
     </details>
 
-7. Run the helper script that checks for manylinux compliance, renames the
+8. Run the helper script that checks for manylinux compliance, renames the
    wheels, and then checks the size of the packages.
 
     ```
     docker exec tf /usertools/rename_and_verify_wheels.sh
     ```
   
-8. Take a look at the new wheel packages you built! They may be owned by `root`
+9. Take a look at the new wheel packages you built! They may be owned by `root`
    because of how Docker mounts handle permissions.
 
     ```
     ls -al /tmp/packages
     ```
 
-10. Shut down the container when you are finished.
+10. Shut down and remove the container when you are finished.
 
     ```
     docker stop tf
+    docker rm tf
     ```
