@@ -71,12 +71,13 @@ hash. The `nightly` tag on GitHub is not related to the `tf-nightly` packages.
     - A directory for TensorFlow packages built in the container, e.g. `/tmp/packages`
     - A directory for your local bazel cache, e.g. `/tmp/bazelcache`
 
-2. Choose the Docker container to use from [Docker Hub](https://hub.docker.com/r/tensorflow/build/tags). The options are:
+2. Choose the Docker container to use from [Docker
+   Hub](https://hub.docker.com/r/tensorflow/build/tags). The options for the
+   `master` branch are:
 
-    - `tensorflow/build:latest-python3.6`
-    - `tensorflow/build:latest-python3.7`
-    - `tensorflow/build:latest-python3.8`
     - `tensorflow/build:latest-python3.9`
+    - `tensorflow/build:latest-python3.8`
+    - `tensorflow/build:latest-python3.7`
 
     For this example we'll use `tensorflow/build:latest-python3.9`.
 
