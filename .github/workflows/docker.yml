@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'tf_sig_build_dockerfiles/master/**'
-      - '!tf_sig_build_dockerfiles/master/README.md'
+      - 'tf_sig_build_dockerfiles/**'
+      - '!tf_sig_build_dockerfiles/README.md'
     branches:
       - master
 
@@ -32,16 +32,32 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
+        name: Checkout TensorFlow to get the current version
+        uses: actions/checkout@v2
+        with:
+          repository: tensorflow/tensorflow
+          path: tensorflow
+          fetch-depth: 1
+      -
+        name: Grab the upcoming TF version to tag this container
+        run: |
+          minor_version=$(grep "^#define TF_MINOR_VERSION" tensorflow/core/public/version.h | grep -o "[[:digit:]])"
+          major_version=$(grep "^#define TF_MAJOR_VERSION" tensorflow/core/public/version.h | grep -o "[[:digit:]])"
+          echo ::set-output name=TF_VERSION::${TF_MAJOR_VERSION}.${TF_MINOR_VERSION}
+        id: tf-version
+      -
         name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
         with:
           push: true
-          context: ./tf_sig_build_dockerfiles/master
+          context: ./tf_sig_build_dockerfiles
           target: devel
           build-args: |
             PYTHON_VERSION=${{ matrix.python-version }}
-          tags: tensorflow/build:latest-${{ matrix.python-version }}
+          tags:
+            - tensorflow/build:latest-${{ matrix.python-version }}
+            - tensorflow/build:${{ steps.tf-version.outputs.TF_VERSION }}-${{ matrix.python-version }}
           cache-from: type=registry,ref=tensorflow/build:latest-${{ matrix.python-version }}
           cache-to: type=inline
       -

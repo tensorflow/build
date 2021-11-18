@@ -7,8 +7,8 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - 'tf_sig_build_dockerfiles/master/**'
-      - '!tf_sig_build_dockerfiles/master/README.md'
+      - 'tf_sig_build_dockerfiles/**'
+      - '!tf_sig_build_dockerfiles/README.md'
     branches:
       - master
 
@@ -20,7 +20,7 @@ jobs:
         python-version: [python3.6, python3.7, python3.8, python3.9]
     steps:
       -
-        name: Checkout
+        name: Checkout this repository
         uses: actions/checkout@v2
       -
         name: Set up QEMU
@@ -34,7 +34,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: false
-          context: ./tf_sig_build_dockerfiles/master
+          context: ./tf_sig_build_dockerfiles
           target: devel
           build-args: |
             PYTHON_VERSION=${{ matrix.python-version }}
