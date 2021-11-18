@@ -111,7 +111,7 @@ hash. The `nightly` tag on GitHub is not related to the `tf-nightly` packages.
       bash
     ```
   
-6. Apply the `update_version.py` script that changes the TensorFlow version to
+5. Apply the `update_version.py` script that changes the TensorFlow version to
    `X.Y.Z.devYYYYMMDD`. This is used for `tf-nightly` on PyPI and is technically
    optional.
 
@@ -119,11 +119,14 @@ hash. The `nightly` tag on GitHub is not related to the `tf-nightly` packages.
     docker exec tf python3 tensorflow/tools/ci_build/update_version.py --nightly
     ```
   
-7. Build TensorFlow. You can build both CPU and GPU packages without a GPU.  TF
+6. Build TensorFlow. You can build both CPU and GPU packages without a GPU. TF
    DevInfra's remote cache is better for building TF only once, but if you
    build over and over, it will probably be better in the long run to use a
    local cache. We're not sure about which is best for most users, so let us
    know on [Gitter](https://gitter.im/tensorflow/sig-build).
+
+   This step will take a long time, since you're building TensorFlow. GPU takes
+   much longer to build.
 
     <details><summary>TF Nightly CPU - Remote Cache</summary>
 
@@ -141,6 +144,7 @@ hash. The `nightly` tag on GitHub is not related to the `tf-nightly` packages.
     docker exec tf \
       ./bazel-bin/tensorflow/tools/pip_package/build_pip_package \
       /tf/pkg \
+      --cpu \
       --nightly_flag
     ```
     
@@ -162,7 +166,6 @@ hash. The `nightly` tag on GitHub is not related to the `tf-nightly` packages.
     docker exec tf \
       ./bazel-bin/tensorflow/tools/pip_package/build_pip_package \
       /tf/pkg \
-      --gpu \
       --nightly_flag
     ```
     
@@ -186,6 +189,7 @@ hash. The `nightly` tag on GitHub is not related to the `tf-nightly` packages.
     docker exec tf \
       ./bazel-bin/tensorflow/tools/pip_package/build_pip_package \
       /tf/pkg \
+      --cpu \
       --nightly_flag
     ```
     
@@ -210,27 +214,26 @@ hash. The `nightly` tag on GitHub is not related to the `tf-nightly` packages.
     docker exec tf \
       ./bazel-bin/tensorflow/tools/pip_package/build_pip_package \
       /tf/pkg \
-      --gpu \
       --nightly_flag
     ```
     
     </details>
 
-8. Run the helper script that checks for manylinux compliance, renames the
+7. Run the helper script that checks for manylinux compliance, renames the
    wheels, and then checks the size of the packages.
 
     ```
     docker exec tf /usertools/rename_and_verify_wheels.sh
     ```
   
-9. Take a look at the new wheel packages you built! They may be owned by `root`
+8. Take a look at the new wheel packages you built! They may be owned by `root`
    because of how Docker mounts handle permissions.
 
     ```
     ls -al /tmp/packages
     ```
 
-10. Shut down and remove the container when you are finished.
+9. Shut down and remove the container when you are finished.
 
     ```
     docker stop tf
