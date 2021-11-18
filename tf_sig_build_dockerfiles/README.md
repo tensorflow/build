@@ -57,10 +57,16 @@ The TensorFlow team's scripts aren't visible, but use the configuration files
 which are included in the containers. Here is how to build a TensorFlow package
 with the same configuration as `tf-nightly`.
 
-Note: the Git commit of a `tf-nightly` package on pypi.org is shown in
-`tf.version.GIT_VERSION`, which will look something like
-`v1.12.1-67282-g251085598b7`. The final section, `g251085598b7`, is a short git
-hash. The `nightly` tag on GitHub is not related to the `tf-nightly` packages. 
+Here are some important notes to keep in mind:
+
+- The Git commit of a `tf-nightly` package on pypi.org is shown in
+  `tf.version.GIT_VERSION`, which will look something like
+  `v1.12.1-67282-g251085598b7`. The final section, `g251085598b7`, is a short git
+   hash. The `nightly` tag on GitHub is not related to the `tf-nightly` packages. 
+
+- If you interrupt a `docker exec` command with `ctrl-c`, you will get your
+  shell back but the command will continue to run. You cannot reattach to it.
+  If you have any suggestions for handling this, let us know.
 
 1. Set up your directories:
 
