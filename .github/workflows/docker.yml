@@ -42,8 +42,8 @@ jobs:
       -
         name: Grab the upcoming TF version to tag this container
         run: |
-          minor_version=$(grep "^#define TF_MINOR_VERSION" tensorflow/core/public/version.h | grep -o "[[:digit:]]")
-          major_version=$(grep "^#define TF_MAJOR_VERSION" tensorflow/core/public/version.h | grep -o "[[:digit:]]")
+          minor_version=$(grep "^#define TF_MINOR_VERSION" ./tensorflow/tensorflow/core/public/version.h | grep -o "[[:digit:]]")
+          major_version=$(grep "^#define TF_MAJOR_VERSION" ./tensorflow/tensorflow/core/public/version.h | grep -o "[[:digit:]]")
           echo ::set-output name=TF_VERSION::${TF_MAJOR_VERSION}.${TF_MINOR_VERSION}
         id: tf-version
       -
