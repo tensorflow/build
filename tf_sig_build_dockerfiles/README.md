@@ -6,7 +6,9 @@ Maintainer: @angerson (TensorFlow OSS DevInfra; SIG Build)
 
 * * *
 
-These Dockerfiles are supported by the TensorFlow team and are published to
+These docker containers are for building and testing TensorFlow in CI
+environments (and for users replicating those CI builds). They are openly
+developed in TF SIG Build, verified by Google developers, and published to
 tensorflow/build on [Docker Hub](https://hub.docker.com/r/tensorflow/build/).
 The TensorFlow OSS DevInfra team is evaluating these containers for building
 `tf-nightly`.
@@ -15,7 +17,7 @@ The TensorFlow OSS DevInfra team is evaluating these containers for building
 
 These Dockerfiles are built and deployed to [Docker
 Hub](https://hub.docker.com/r/tensorflow/build/) via [Github
-Actions](https://github.com/tensorflow/build/blob/master/.github/workflows/docker.yml)
+Actions](https://github.com/tensorflow/build/blob/master/.github/workflows/docker.yml).
 
 The tags are defined as such:
 
