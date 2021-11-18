@@ -25,8 +25,7 @@ The tags are defined as such:
 - The `version number` tags target the corresponding TensorFlow version. We
   continuously build the `current-tensorflow-version + 1` tag, so when a new
   TensorFlow branch is cut, that Dockerfile is frozen to support that branch.
-- We officially support the same Python versions that TensorFlow does, but
-  we currently also provide a Python 3.6 container for TF Addons.
+- We support the same Python versions that TensorFlow does.
 
 ## Updating the Containers
 
@@ -46,7 +45,6 @@ directory:
 # Tips:
 # - Don't forget the . at the end
 # - Optionally, add '--pull' or '--no-cache' if you are having rebuild issues
-# - The build must work with Python 3.6 through Python 3.9
 DOCKER_BUILDKIT=1 docker build --pull --no-cache \
   --build-arg PYTHON_VERSION=python3.9 --target=devel -t my-tf-devel .
 ```
