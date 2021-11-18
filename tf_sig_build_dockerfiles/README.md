@@ -68,6 +68,8 @@ Here are some important notes to keep in mind:
   shell back but the command will continue to run. You cannot reattach to it.
   If you have any suggestions for handling this, let us know.
 
+Now let's build `tf-nightly`.
+
 1. Set up your directories:
 
     - A directory with the TensorFlow source code, e.g. `/tmp/tensorflow`
