@@ -181,7 +181,7 @@ Now let's build `tf-nightly`.
 
     <details><summary>TF Nightly CPU - Local Cache</summary>
 
-    Make sure you have a directory mounted to the Dockerfile in /tf/cache!
+    Make sure you have a directory mounted to the container in `/tf/cache`!
 
     Build the sources with Bazel:
 
@@ -205,7 +205,7 @@ Now let's build `tf-nightly`.
 
     <details><summary>TF Nightly GPU - Local Cache</summary>
 
-    Make sure you have a directory mounted to the Dockerfile in /tf/cache!
+    Make sure you have a directory mounted to the container in `/tf/cache`!
 
     Build the sources with Bazel:
 
