@@ -1,38 +1,46 @@
-setuptools
-pip
-wheel
-absl-py ~= 0.10
+# Cloned from internal ci_build dependencies
+# See here for format definitions: https://www.python.org/dev/peps/pep-0440/#version-specifiers
+# 
+# To have reproducible builds, these dependencies should be pinned always.
+# Prefer pinning to the same version as in setup.py for now.
+# This will change in the future.
+
+absl-py ~= 0.13.0
 astunparse ~= 1.6.3
-flatbuffers ~= 1.12.0
+flatbuffers ~= 2.0
 google_pasta ~= 0.2
 h5py ~= 3.1.0
 keras_preprocessing ~= 1.1.2
-numpy ~= 1.21.2
+numpy ~= 1.19.5
 opt_einsum ~= 3.3.0
-protobuf >= 3.9.2
-six ~= 1.15.0
+protobuf >= 3.17.1
+six ~= 1.16.0
 termcolor ~= 1.1.0
-typing_extensions ~= 3.7.4
-wheel ~= 0.35
+typing_extensions ~= 3.10.0.0
+wheel ~= 0.36.2
 wrapt ~= 1.12.1
-pylint
 
-# We need to pin gast dependency exactly
+# We need to pin the gast dependency exactly
 gast == 0.4.0
 
-# Finally, install tensorboard and estimator
-# Note that here we want the latest version that matches (b/156523241)
-tb-nightly ~= 2.4.0.a
-tensorflow_estimator ~= 2.3.0
+# Finally, install tensorboard and estimator and keras
+# Note that here we want the latest version that matches TF major.minor version
+# Note that we must use nightly here as these are used in nightly jobs
+# For release jobs, we will pin these on the release branch
+keras-nightly ~= 2.8.0.dev
+tb-nightly ~= 2.8.0.a
+tf-estimator-nightly ~= 2.8.0.dev
 
 # Test dependencies
-grpcio ~= 1.34.0
-portpicker ~= 1.3.1
-scipy ~= 1.5.2
+grpcio ~= 1.38.1
+portpicker ~= 1.4.0
+scipy ~= 1.5.4
+jax ~= 0.2.18
+jaxlib ~= 0.1.70
 
-# Need to be addressed later. Unblocking 2.4 branchcut
-PyYAML ~= 5.3.1
+# Needs to be addressed. Unblocked 2.4 branchcut cl/338377048
+PyYAML ~= 5.4.1
 
-# Uploading
-auditwheel
-twine
+# For uploading
+auditwheel ~= 5.0.0
+twine ~= 3.6.0
