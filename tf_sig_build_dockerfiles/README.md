@@ -127,7 +127,8 @@ Now let's build `tf-nightly`.
     docker exec tf python3 tensorflow/tools/ci_build/update_version.py --nightly
     ```
   
-6. Build TensorFlow. You can build both CPU and GPU packages without a GPU. TF
+6. Build TensorFlow by following the instructions under one of the collapsed
+   sections below. You can build both CPU and GPU packages without a GPU. TF
    DevInfra's remote cache is better for building TF only once, but if you
    build over and over, it will probably be better in the long run to use a
    local cache. We're not sure about which is best for most users, so let us
