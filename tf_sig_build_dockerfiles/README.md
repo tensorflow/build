@@ -134,7 +134,7 @@ Now let's build `tf-nightly`.
    know on [Gitter](https://gitter.im/tensorflow/sig-build).
 
    This step will take a long time, since you're building TensorFlow. GPU takes
-   much longer to build. Choose one:
+   much longer to build. Choose one and click on the arrow to expand the commands:
 
     <details><summary>TF Nightly CPU - Remote Cache</summary>
 
