@@ -24,7 +24,6 @@ COPY --from=builder /dt7 /dt7
 # CUDA must be cleaned up in the same command to prevent Docker layer bloating
 COPY setup.sources.sh /setup.sources.sh
 COPY setup.packages.sh /setup.packages.sh
-COPY setup.cuda.sh /setup.cuda.sh
 COPY devel.packages_common.txt /devel.packages_common.txt
 RUN /setup.sources.sh
 RUN /setup.packages.sh /devel.packages_common.txt 
@@ -52,5 +51,6 @@ COPY devel.bashrc /root/.bashrc
 ################################################################################
 FROM devel as devel-cuda
 ################################################################################
+COPY setup.cuda.sh /setup.cuda.sh
 COPY devel.packages_cuda.txt /devel.packages_cuda.txt
 RUN /setup.packages.sh /devel.packages_cuda.txt && /setup.cuda.sh
