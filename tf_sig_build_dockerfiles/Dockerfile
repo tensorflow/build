@@ -28,9 +28,6 @@ COPY setup.cuda.sh /setup.cuda.sh
 COPY devel.packages_common.txt /devel.packages_common.txt
 RUN /setup.sources.sh
 RUN /setup.packages.sh /devel.packages_common.txt 
-COPY devel.packages_cuda.txt /devel.packages_cuda.txt
-RUN /setup.packages.sh /devel.packages_cuda.txt 
-RUN /setup.cuda.sh
 
 # Install various tools.
 # - bats: bash unit testing framework
@@ -52,3 +49,8 @@ RUN /setup.python.sh $PYTHON_VERSION devel.requirements.txt
 COPY devel.usertools /usertools
 COPY devel.bashrc /root/.bashrc
 
+################################################################################
+FROM devel as devel-cuda
+################################################################################
+COPY devel.packages_cuda.txt /devel.packages_cuda.txt
+RUN /setup.packages.sh /devel.packages_cuda.txt && /setup.cuda.sh

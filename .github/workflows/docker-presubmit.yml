@@ -41,4 +41,16 @@ jobs:
           tags: tensorflow/build:latest-${{ matrix.python-version }}
           cache-from: type=registry,ref=tensorflow/build:latest-${{ matrix.python-version }}
           cache-to: type=inline
-
+      -
+        name: Build containers CUDA
+        id: docker_build_cuda
+        uses: docker/build-push-action@v2
+        with:
+          push: false
+          context: ./tf_sig_build_dockerfiles
+          target: devel-cuda
+          build-args: |
+            PYTHON_VERSION=${{ matrix.python-version }}
+          tags: tensorflow/build:latest-${{ matrix.python-version }}-CUDA
+          cache-from: type=registry,ref=tensorflow/build:latest-${{ matrix.python-version }}-CUDA
+          cache-to: type=inline

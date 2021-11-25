@@ -65,4 +65,21 @@ jobs:
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
-
+      -
+        name: Build and push CUDA
+        id: docker_build_cuda
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          context: ./tf_sig_build_dockerfiles
+          target: devel-cuda
+          build-args: |
+            PYTHON_VERSION=${{ matrix.python-version }}
+          tags: |
+            tensorflow/build:latest-${{ matrix.python-version }}-cuda
+            tensorflow/build:${{ steps.tf-version.outputs.TF_VERSION }}-${{ matrix.python-version }}-cuda
+          cache-from: type=registry,ref=tensorflow/build:latest-${{ matrix.python-version }}-cuda
+          cache-to: type=inline
+      -
+        name: Image digest CUDA
+        run: echo ${{ steps.docker_build_cuda.outputs.digest }}
