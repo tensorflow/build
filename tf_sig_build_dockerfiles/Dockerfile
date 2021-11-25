@@ -27,7 +27,7 @@ COPY setup.packages.sh /setup.packages.sh
 COPY setup.cuda.sh /setup.cuda.sh
 COPY devel.packages_common.txt /devel.packages_common.txt
 RUN /setup.sources.sh
-RUN /setup.packages.sh /devel.common.txt 
+RUN /setup.packages.sh /devel.packages_common.txt 
 COPY devel.packages_cuda.txt /devel.packages_cuda.txt
 RUN /setup.packages.sh /devel.packages_cuda.txt 
 RUN /setup.cuda.sh
@@ -37,7 +37,7 @@ RUN /setup.cuda.sh
 # - bazelisk: always use the correct bazel version
 # - buildifier: clean bazel build deps
 # - buildozer: clean bazel build deps
-RUN git clone --branch v1.3.0 --depth 1 https://github.com/bats-core/bats-core.git && bats-core/install.sh /usr/local && rm -rf bats-core
+RUN git clone --depth 1 --branch v1.3.0 https://github.com/bats-core/bats-core.git && bats-core/install.sh /usr/local && rm -rf bats-core
 RUN wget https://github.com/bazelbuild/bazelisk/releases/download/v1.7.4/bazelisk-linux-amd64 -O /usr/local/bin/bazel && chmod +x /usr/local/bin/bazel
 RUN wget https://github.com/bazelbuild/buildtools/releases/download/3.5.0/buildifier -O /usr/local/bin/buildifier && chmod +x /usr/local/bin/buildifier
 RUN wget https://github.com/bazelbuild/buildtools/releases/download/3.5.0/buildozer -O /usr/local/bin/buildozer && chmod +x /usr/local/bin/buildozer
