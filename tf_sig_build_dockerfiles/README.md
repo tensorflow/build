@@ -92,7 +92,7 @@ Now let's build `tf-nightly`.
 3. Pull the container you decided to use.
 
     ```bash
-    docker pull tensorflow/build:latest-python3.9
+    docker pull tensorflow/build:latest-python3.9-cuda
     ```
   
 4. Start a backgrounded Docker container with the three folders mounted.
@@ -118,7 +118,7 @@ Now let's build `tf-nightly`.
       -v "/tmp/packages:/tf/pkg" \
       -v "/tmp/tensorflow:/tf/tensorflow" \
       -v "/tmp/bazelcache:/tf/cache" \
-      tensorflow/build:latest-python3.9 \
+      tensorflow/build:latest-python3.9-cuda \
       bash
     ```
   
