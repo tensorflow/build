@@ -21,7 +21,8 @@ Actions](https://github.com/tensorflow/build/blob/master/.github/workflows/docke
 
 The tags are defined as such:
 
-- The `latest` tags are kept up-to-date to build TensorFlow's `master` branch.
+- The `latest` tags are kept up-to-date to build TensorFlow's `master` branch CPU only.
+- The `latest-cuda` tags are kept up-to-date to build TensorFlow's `master` branch CPU and GPU/CUDA
 - The `version number` tags target the corresponding TensorFlow version. We
   continuously build the `current-tensorflow-version + 1` tag, so when a new
   TensorFlow branch is cut, that Dockerfile is frozen to support that branch.
@@ -83,8 +84,10 @@ Now let's build `tf-nightly`.
     - `tensorflow/build:latest-python3.9`
     - `tensorflow/build:latest-python3.8`
     - `tensorflow/build:latest-python3.7`
-
-    For this example we'll use `tensorflow/build:latest-python3.9`.
+    - `tensorflow/build:latest-python3.9-cuda`
+    - `tensorflow/build:latest-python3.8-cuda`
+    - `tensorflow/build:latest-python3.7-cuda`
+    For this example we'll use `tensorflow/build:latest-python3.9-cuda`.
 
 3. Pull the container you decided to use.
 
