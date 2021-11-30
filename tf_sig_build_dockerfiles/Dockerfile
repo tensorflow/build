@@ -23,6 +23,7 @@ FROM nvidia/cuda:11.2.1-base-ubuntu20.04 as devel
 ################################################################################
 
 COPY --from=builder /dt7 /dt7
+COPY --from=builder /dt8 /dt8
 
 # Install required development packages but delete unneeded CUDA bloat
 # CUDA must be cleaned up in the same command to prevent Docker layer bloating
