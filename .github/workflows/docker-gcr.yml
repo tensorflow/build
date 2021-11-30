@@ -51,6 +51,10 @@ jobs:
           username: _json_key
           password: ${{ secrets.GCP_CREDS }}
       -
+        name: try logging in manually
+        run: |
+          gcloud auth configure-docker
+      -
         name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
