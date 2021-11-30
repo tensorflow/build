@@ -42,3 +42,18 @@ jobs:
           cache-from: type=registry,ref=tensorflow/build:latest-${{ matrix.python-version }}
           cache-to: type=inline
 
+  compile:
+    needs: docker
+    runs-on: ubuntu-latest
+    container: tensorflow/build:latest-python3.9
+    steps:
+      -
+        name: Checkout tensorflow sources
+        run: |
+          git clone --depth 1 https://github.com/tensorflow/tensorflow.git /tf/tensorflow
+      -
+        name: Configure and build TF CPU with remote cache
+        run: |
+          cd /tf/tensorflow
+          bazel --bazelrc=/usertools/cpu.bazelrc build \
+          --config=sigbuild_remote_cache tensorflow/tools/pip_package:build_pip_package
