@@ -44,13 +44,13 @@ jobs:
           push: true
           context: ./tf_sig_build_dockerfiles
           target: devel
-          registry: gcr.io
-          username: _json_key
           build-args: |
             PYTHON_VERSION=${{ matrix.python-version }}
           tags: |
-            tensorflow-sigs/build:${{ github.event.number }}-${{ matrix.python-version }}
-          cache-from: type=registry,ref=tensorflow-sigs/build:${{ github.event.number }}-${{ matrix.python-version }}
+            gcr.io/tensorflow-sigs/build:${{ github.event.number }}-${{ matrix.python-version }}
+          cache-from: |
+            type=registry,ref=tensorflow/build:latest-${{ matrix.python-version }}
+            type=registry,ref=gcr.io/tensorflow-sigs/build:${{ github.event.number }}-${{ matrix.python-version }}
           cache-to: type=inline
       -
         name: Image digest
