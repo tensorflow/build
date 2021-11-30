@@ -62,6 +62,7 @@ jobs:
           push: false
           context: ./tf_sig_build_dockerfiles
           target: devel
+          load: true
           build-args: |
             PYTHON_VERSION=${{ matrix.python-version }}
           tags: |
