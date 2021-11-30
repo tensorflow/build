@@ -46,9 +46,6 @@ jobs:
     needs: docker
     runs-on: ubuntu-latest
     container: tensorflow/build:latest-python3.9
-    defaults:
-      run:
-        shell: bash
     steps:
       -
         name: Checkout tensorflow nightly sources
