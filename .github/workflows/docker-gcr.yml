@@ -25,7 +25,7 @@ jobs:
         with:
           labels: build and push to gcr.io for staging
       -
-        uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        uses: google-github-actions/setup-gcloud@master
         with:
           service_account_key: ${{ secrets.GCP_CREDS }}
           project_id: tensorflow-sigs
