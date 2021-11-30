@@ -46,14 +46,19 @@ jobs:
     needs: docker
     runs-on: ubuntu-latest
     container: tensorflow/build:latest-python3.9
+    defaults:
+      run:
+        shell: bash
     steps:
       -
-        name: Checkout tensorflow sources
+        name: Checkout tensorflow nightly sources
         run: |
-          git clone --depth 1 https://github.com/tensorflow/tensorflow.git /tf/tensorflow
+          git clone --single-branch https://github.com/tensorflow/tensorflow.git /tf/tensorflow
+          cd /tf/tensorflow
+          git reset --hard 13adf6272a4
       -
         name: Configure and build TF CPU with remote cache
+        working-directory: /tf/tensorflow
         run: |
-          cd /tf/tensorflow
           bazel --bazelrc=/usertools/cpu.bazelrc build \
           --config=sigbuild_remote_cache tensorflow/tools/pip_package:build_pip_package
