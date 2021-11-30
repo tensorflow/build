@@ -1,0 +1,26 @@
+name: Upload requested containers to gcr.io
+
+on:
+  pull_request:
+    types: [labeled]
+    paths:
+      - '.github/workflows/docker-gcr.yml'
+      - 'tf_sig_build_dockerfiles/**'
+      - '!tf_sig_build_dockerfiles/README.md'
+
+jobs:
+  docker:
+    if: ${{ github.event.label.name == 'build and push to gcr.io for staging' }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [python3.7, python3.8, python3.9]
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+      -
+        name: Clear the build-and-push label
+        uses: actions-ecosystem/action-remove-labels@v1
+        with:
+          labels: build and push to gcr.io for staging
