@@ -60,5 +60,5 @@ jobs:
         name: Configure and build TF CPU with remote cache
         working-directory: /tf/tensorflow
         run: |
-          bazel --bazelrc=/usertools/cpu.bazelrc build \
-          --config=sigbuild_remote_cache tensorflow/tools/pip_package:build_pip_package
+          bash -c "bazel --bazelrc=/usertools/cpu.bazelrc build \
+          --config=sigbuild_remote_cache tensorflow/tools/pip_package:build_pip_package"
