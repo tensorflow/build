@@ -29,3 +29,6 @@ build --copt=-mavx --host_copt=-mavx
 
 # Use the NVCC toolchain to compile for manylinux2010
 build --crosstool_top=@ubuntu18.04-gcc7_manylinux2010-cuda11.2-cudnn8.1-tensorrt7.2_config_cuda//crosstool:toolchain
+
+# Save build profile.
+build --profile=/tf/pkg/profile.json
