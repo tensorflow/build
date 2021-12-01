@@ -68,7 +68,6 @@ devtoolset-8)
   ;;
 esac
 
-
 # Put the current kernel headers from ubuntu in place.
 ln -s "/usr/include/linux" "/${TARGET}/usr/include/linux"
 ln -s "/usr/include/asm-generic" "/${TARGET}/usr/include/asm-generic"
@@ -106,7 +105,6 @@ mkdir -p "${TARGET}-src"
 cd "${TARGET}-src"
 
 # Build a devtoolset cross-compiler based on our glibc 2.12/glibc 2.17 sysroot setup.
-
 case "${VERSION}" in
 devtoolset-7)
   wget "http://vault.centos.org/centos/6/sclo/Source/rh/devtoolset-7/devtoolset-7-gcc-7.3.1-5.15.el6.src.rpm"
@@ -155,6 +153,7 @@ cd "${TARGET}-build"
     make -j 42 && \
     make install
 
+
 # Create the devtoolset libstdc++ linkerscript that links dynamically against
 # the system libstdc++ 4.4 and provides all other symbols statically.
 case "${VERSION}" in
@@ -189,4 +188,3 @@ PYTHON_VERSIONS=("python3.6m" "python3.7m" "python3.8" "python3.9" "python3.10")
 for v in "${PYTHON_VERSIONS[@]}"; do
   ln -s "/usr/local/include/${v}" "/${TARGET}/usr/include/x86_64-linux-gnu/${v}"
 done
-
