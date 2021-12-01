@@ -12,22 +12,12 @@ teardown_file() {
     rm -rf /tf/venv
 }
 
-case "$TF_WHEEL" in
-	*manylinux2010*)
-		MANYLINUX_VERSION="manylinux2010"
-		MANYLINUX_ALIAS="manylinux_2_12" # PEP 600 introduced a new naming format for wheels. As per PEP600, manylinux_2_12 is an alias for manylinux2010.
-	;;
-	*manylinux2014*)
-		MANYLINUX_VERSION="manylinux2014"
-		MANYLINUX_ALIAS="manylinux_2_17" # As per PEP600, manylinux_2_17 is an alias for manylinux2014.
-	;;
-esac
 
-
-@test "Wheel is ${MANYLINUX_VERSION} (${MANYLINUX_ALIAS}) compliant" {
+@test "Wheel is manylinux2014 (manylinux_2_17) compliant" {
     python3 -m auditwheel show "$TF_WHEEL" > audit.txt
-    grep --quiet 'This constrains the platform tag to "${MANYLINUX_ALIAS}_x86_64"' audit.txt
+    grep --quiet 'This constrains the platform tag to "manylinux_2_17_x86_64"' audit.txt
 }
+
 
 @test "Wheel conforms to upstream size limitations" {
     WHEEL_MEGABYTES=$(stat --format %s "$TF_WHEEL" | awk '{print int($1/(1024*1024))}')
