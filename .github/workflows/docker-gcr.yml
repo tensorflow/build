@@ -62,8 +62,9 @@ jobs:
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           message: |
-            Pushed these containers:
+            I pushed these containers:
             - `gcr.io/tensorflow-sigs/build:${{ github.event.number }}-python3.9`
             - `gcr.io/tensorflow-sigs/build:${{ github.event.number }}-python3.8`
             - `gcr.io/tensorflow-sigs/build:${{ github.event.number }}-python3.7`
-            (This comment will only be posted once)
+            Re-apply the `build and push to gcr.io for staging` label to
+            rebuild and push again. This comment will only be posted once.
