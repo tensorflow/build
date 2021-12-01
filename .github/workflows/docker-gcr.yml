@@ -56,19 +56,12 @@ jobs:
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
-  comment:
-    if: ${{ github.event.label.name == 'build and push to gcr.io for staging' }}
-    runs-on: ubuntu-latest
-    needs: docker
-    steps:
       -
         name: Add a comment with the pushed containers
-        uses: peter-evans/create-or-update-comment@v1
+        uses: mshick/create-or-update-comment@v1
         with:
-          issue-number: ${{ github.event.number }}
-          body: |
+          message: |
             Pushed these containers:
             - `gcr.io/tensorflow-sigs/build:${{ github.event.number }}-python3.9`
             - `gcr.io/tensorflow-sigs/build:${{ github.event.number }}-python3.8`
             - `gcr.io/tensorflow-sigs/build:${{ github.event.number }}-python3.7`
-
