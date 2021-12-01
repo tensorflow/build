@@ -60,6 +60,7 @@ jobs:
         name: Add a comment with the pushed containers
         uses: mshick/add-pr-comment@v1
         with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
           message: |
             Pushed these containers:
             - `gcr.io/tensorflow-sigs/build:${{ github.event.number }}-python3.9`
