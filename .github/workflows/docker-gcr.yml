@@ -58,7 +58,7 @@ jobs:
         run: echo ${{ steps.docker_build.outputs.digest }}
       -
         name: Add a comment with the pushed containers
-        uses: mshick/create-or-update-comment@v1
+        uses: mshick/add-pr-comment@v1
         with:
           message: |
             Pushed these containers:
