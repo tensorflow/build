@@ -9,9 +9,9 @@ absl-py ~= 0.13.0
 astunparse ~= 1.6.3
 flatbuffers ~= 2.0
 google_pasta ~= 0.2
-h5py ~= 3.1.0
+h5py ~= 3.6.0
 keras_preprocessing ~= 1.1.2
-numpy ~= 1.19.5
+numpy ~= 1.21.4
 opt_einsum ~= 3.3.0
 protobuf >= 3.17.1
 six ~= 1.16.0
@@ -34,9 +34,9 @@ tf-estimator-nightly ~= 2.8.0.dev
 # Test dependencies
 grpcio ~= 1.38.1
 portpicker ~= 1.4.0
-scipy ~= 1.5.4
-jax ~= 0.2.18
-jaxlib ~= 0.1.70
+scipy ~= 1.7.3
+# jax ~= 0.2.18
+# jaxlib~=0.1.70
 
 # Needs to be addressed. Unblocked 2.4 branchcut cl/338377048
 PyYAML ~= 5.4.1
