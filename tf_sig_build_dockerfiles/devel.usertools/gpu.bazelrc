@@ -34,7 +34,7 @@ build --profile=/tf/pkg/profile.json
 
 # Store the execution log binary in the mounted artifact directory.
 # This log is recommended to debug missing cache hit on the same machine and on different machines.
-# See more at step 2 and 4 in:
+# See more at step 2 and 3c in:
 # https://docs.bazel.build/versions/main/remote-caching-debug.html
 build --execution_log_binary_file=/tf/pkg/exec_cuda.log
 
