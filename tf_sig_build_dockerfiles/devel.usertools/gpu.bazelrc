@@ -6,11 +6,11 @@ build:sigbuild_local_cache --disk_cache=/tf/cache
 # Use the public-access TF DevInfra cache (read only)
 build:sigbuild_remote_cache --remote_cache="https://storage.googleapis.com/tensorflow-devinfra-bazel-cache" --remote_upload_local_results=false
 # Write to the TF DevInfra cache (only works for internal TF CI)
-build:sigbuild_remote_cache_push --remote_cache="https://storage.googleapis.com/tensorflow-devinfra-bazel-cache" --google_default_credentials
+build:sigbuild_remote_cache_push --remote_cache="https://storage.googleapis.com/tensorflow-devinfra-bazel-cache/manylinux2014" --google_default_credentials
 # Change the value of CACHEBUSTER when upgrading the toolchain, or when testing
 # different compilation methods. E.g. for a PR to test a new CUDA version, set
 # the CACHEBUSTER to the PR number.
-build --action_env=CACHEBUSTER=r2.9
+build --action_env=CACHEBUSTER=r2.9_pr57
 
 # Use Python 3.X as installed in container image
 build --action_env PYTHON_BIN_PATH="/usr/bin/python3"
@@ -42,9 +42,9 @@ build --repo_env TF_NEED_CUDA=1
 build --action_env=TF_CUDA_VERSION="11"
 build --action_env=TF_CUDNN_VERSION="8"
 build --action_env=CUDA_TOOLKIT_PATH="/usr/local/cuda-11.2"
-build --action_env=GCC_HOST_COMPILER_PATH="/dt7/usr/bin/gcc"
+build --action_env=GCC_HOST_COMPILER_PATH="/dt9/usr/bin/gcc"
 build --action_env=LD_LIBRARY_PATH="/usr/local/cuda:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64:/usr/local/tensorrt/lib"
-build --crosstool_top=@sigbuild-r2.9_config_cuda//crosstool:toolchain
+build --crosstool_top=@ubuntu20.04-gcc9_manylinux2014-cuda11.2-cudnn8.1-tensorrt7.2_config_cuda//crosstool:toolchain
 
 # CUDA: Enable TensorRT optimizations
 # https://developer.nvidia.com/tensorrt
