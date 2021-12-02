@@ -33,8 +33,7 @@ ln -sf /usr/bin/$VERSION /usr/bin/python
 ln -sf /usr/lib/$VERSION /usr/lib/tf_python
 
 # Install pip
-curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-python3 get-pip.py
+python3 -m ensurepip --upgrade
 
 # Disable the cache dir to save image space, and install packages
 python3 -m pip install --no-cache-dir --upgrade pip
