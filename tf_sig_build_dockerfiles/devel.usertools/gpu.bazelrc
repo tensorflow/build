@@ -32,6 +32,12 @@ build --copt=-mavx --host_copt=-mavx
 # See https://docs.bazel.build/versions/main/skylark/performance.html#performance-profiling
 build --profile=/tf/pkg/profile.json
 
+# Store the execution log binary in the mounted artifact directory.
+# This log is recommended to debug missing cache hit on the same machine and on different machines.
+# See more at step 2 and 4 in:
+# https://docs.bazel.build/versions/main/remote-caching-debug.html
+build --execution_log_binary_file=/tf/pkg/exec_cuda.log
+
 # CUDA: Set up compilation CUDA version and paths
 build --@local_config_cuda//:enable_cuda
 build --repo_env TF_NEED_CUDA=1
