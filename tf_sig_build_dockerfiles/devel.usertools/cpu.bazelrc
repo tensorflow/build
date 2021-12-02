@@ -27,8 +27,5 @@ build --distinct_host_configuration=false
 # Target the AVX instruction set
 build --copt=-mavx --host_copt=-mavx
 
-# Use the NVCC toolchain to compile for manylinux2010
-build --crosstool_top=@ubuntu18.04-gcc7_manylinux2010-cuda11.2-cudnn8.1-tensorrt7.2_config_cuda//crosstool:toolchain
-
-# Set up a manylinux2014 config option
-build:manylinux2014 --crosstool_top=@ubuntu18.04-gcc8_manylinux2014-cuda11.2-cudnn8.1-tensorrt7.2_config_cuda//crosstool:toolchain
+# Use the NVCC toolchain to compile for manylinux2014
+build --crosstool_top=@ubuntu18.04-gcc8_manylinux2014-cuda11.2-cudnn8.1-tensorrt7.2_config_cuda//crosstool:toolchain
