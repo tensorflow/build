@@ -64,7 +64,7 @@ test:nonpip -- //tensorflow/... -//tensorflow/python/integration_testing/... -//
 # because "import tensorflow" run from the root directory would instead import
 # the folder instead of the venv package.
 test:pip --action_env PYTHON_BIN_PATH="/bazel_pip/bin/python3"
-test:pip --action_env PYTHON_LIB_PATH="/bazel_pip/lib/python3.9/site-packages"
+test:pip --action_env PYTHON_LIB_PATH="/bazel_pip/lib/python3/site-packages"
 test:pip --python_path="/bazel_pip/bin/python3"
 # Yes, we don't exclude the gpu tests on pip for some reason.
 test:pip --test_tag_filters=-nopip,-no_pip,-no_oss,-oss_serial,-v1only
