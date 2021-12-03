@@ -34,3 +34,12 @@ for testsuite in result:
 
 os.makedirs(os.path.dirname(sys.argv[2]))
 result.write(sys.argv[2])
+
+# Google's JUnit parser can't handle XML files larger than 10MB, 10485760 bytes.
+# Or maybe 4MB, which would be 4194304 bytes. If the resulting XML file is too
+# big, then we'll remove everything except for the test list and pass/fail info.
+if os.path.getsize(sys.argv[2]) >= 10485760:
+  for testsuite in result:
+    for testcase in testsuite._elem.findall("testcase"):
+      testsuite._elem.remove(testcase)
+  result.write(sys.argv[2])
