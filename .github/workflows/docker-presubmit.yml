@@ -33,7 +33,7 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v2
         with:
-          push: contains(github.event.pull_request.labels.*.name, 'build and push to gcr.io for staging')
+          push: ${{ contains(github.event.pull_request.labels.*.name, 'build and push to gcr.io for staging') }}
           context: ./tf_sig_build_dockerfiles
           target: devel
           build-args: |
