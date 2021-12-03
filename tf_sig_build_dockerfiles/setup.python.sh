@@ -33,7 +33,13 @@ ln -sf /usr/bin/$VERSION /usr/bin/python
 ln -sf /usr/lib/$VERSION /usr/lib/tf_python
 
 # Install pip
-python3 -m ensurepip --upgrade
+# When using system python, Ubuntu doesn't allow ensurepip
+if [[ "$VERSION" == "python3.8" ]]; then
+  curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+  python3 get-pip.py
+else
+  python3 -m ensurepip --upgrade
+fi
 
 # Disable the cache dir to save image space, and install packages
 python3 -m pip install --no-cache-dir --upgrade pip
