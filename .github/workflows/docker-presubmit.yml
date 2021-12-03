@@ -1,4 +1,4 @@
-name: Docker presubmit & push to gcr
+name: Docker Presubmit
 
 on:
   pull_request:
@@ -23,13 +23,14 @@ jobs:
         uses: docker/setup-buildx-action@v1
       -
         name: Login to GCR
+        if: contains(github.event.pull_request.labels.*.name, 'build and push to gcr.io for staging')
         uses: docker/login-action@v1
         with:
           registry: gcr.io
           username: _json_key
           password: ${{ secrets.GCP_CREDS }}
       -
-        name: Build and push
+        name: Build containers, and push to GCR only if the 'build and push to gcr.io for staging' label is applied
         id: docker_build
         uses: docker/build-push-action@v2
         with:
@@ -59,5 +60,5 @@ jobs:
             
             Re-apply the `build and push to gcr.io for staging` label to rebuild and push again. This comment will only be posted once.
       -
-        name: Image digest
+        name: Print image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
