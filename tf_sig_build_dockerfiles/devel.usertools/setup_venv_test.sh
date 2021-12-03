@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 set -euxo pipefail
 
-# Run this from inside the tensorflow github directory
+# Run this from inside the tensorflow github directory.
+# Usage: setup_venv_test.sh venv_and_symlink_name "glob pattern for one wheel file"
+# Example: setup_venv_test.sh bazel_pip "/tf/pkg/*.whl"
+# 
+# This will create a venv with that wheel file installed in it, and a symlink
+# in ./venv_and_symlink_name/tensorflow to ./tensorflow. We use this for the
+# "pip" tests.
 
 python -m venv /$1
 mkdir -p $1
