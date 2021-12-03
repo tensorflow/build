@@ -15,7 +15,12 @@ from lxml import etree
 
 result = JUnitXml()
 for f in sorted(glob.glob(sys.argv[1], recursive=True)):
-  result += JUnitXml.fromfile(f)
+  # Sometimes test logs can be empty. I'm not sure why they are, so for now
+  # I'm just going to ignore failures and print a message about them
+  try:
+    result += JUnitXml.fromfile(f)
+  except Exception as e: 
+    print("Ignoring this XML parse failure: ", e.message)
 result.update_statistics()
 
 for testsuite in result:
