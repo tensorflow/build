@@ -21,8 +21,12 @@ EOF
 # for any Python version present
 pushd /usr/include/x86_64-linux-gnu
 for f in $(ls | grep python); do
+  # set up symlink for devtoolset-7
   rm -f /dt7/usr/include/x86_64-linux-gnu/$f
   ln -s /usr/include/x86_64-linux-gnu/$f /dt7/usr/include/x86_64-linux-gnu/$f
+  # set up symlink for devtoolset-8
+  rm -f /dt8/usr/include/x86_64-linux-gnu/$f
+  ln -s /usr/include/x86_64-linux-gnu/$f /dt8/usr/include/x86_64-linux-gnu/$f
 done
 popd
 
