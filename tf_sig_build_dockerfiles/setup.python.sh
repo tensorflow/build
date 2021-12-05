@@ -26,15 +26,15 @@ for f in $(ls | grep python); do
 done
 popd
 
-# Python 3.10 pip reference is broken (pypa/pip#10647)
-# Works well in an virtual environment
-/usr/bin/$VERSION -m venv /root/.venv/tf
-source /root/.venv/tf/bin/activate
-
 # Setup links for TensorFlow to compile.
 # Referenced in devel.usertools/*.bazelrc
-ln -sf /root/.venv/tf/bin/$VERSION /usr/bin/python3
-ln -sf /root/.venv/tf/bin/$VERSION /usr/bin/python
+ln -sf /usr/bin/$VERSION /usr/bin/python3
+ln -sf /usr/bin/$VERSION /usr/bin/python
+# Use Lib Path of Virtual Env that has dependencies
+# Python 3.10 pip reference is broken (pypa/pip#10647)
+# ln -sf /usr/lib/$VERSION /usr/lib/tf_python
+/usr/bin/$VERSION -m venv /root/.venv/tf
+source /root/.venv/tf/bin/activate
 ln -sf /root/.venv/tf/lib/$VERSION /usr/lib/tf_python
 
 # Install pip
@@ -44,3 +44,5 @@ python3 get-pip.py
 # Disable the cache dir to save image space, and install packages
 python3 -m pip install --no-cache-dir --upgrade pip
 python3 -m pip install --no-cache-dir -r $REQUIREMENTS -U
+python3 -m pip list
+echo $PATH
