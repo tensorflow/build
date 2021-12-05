@@ -32,12 +32,12 @@ popd
 # ln -sf /usr/bin/$VERSION /usr/bin/python
 # ln -sf /usr/lib/$VERSION /usr/lib/tf_python
 
-/usr/bin/$VERSION -m venv ~/.venv/tf
+/usr/bin/$VERSION -m venv /root/.venv/tf
+source /root/.venv/tf/bin/activate
+
 ln -sf /root/.venv/tf/bin/python /usr/bin/python3
 ln -sf /root/.venv/tf/bin/python /usr/bin/python
 ln -sf /root/.venv/tf/lib/python /usr/lib/tf_python
-ln -sf /root/.venv/tf/bin/pip /usr/bin/pip
-ln -sf /root/.venv/tf/bin/pip /usr/bin/pip3
 
 # Install pip
 curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
