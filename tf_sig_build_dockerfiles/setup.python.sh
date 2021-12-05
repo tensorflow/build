@@ -7,6 +7,7 @@ set -xe
 source ~/.bashrc
 VERSION=$1
 REQUIREMENTS=$2
+echo $PATH
 
 # Install Python packages for this container's version
 cat >pythons.txt <<EOF
@@ -32,18 +33,18 @@ ln -sf /usr/bin/$VERSION /usr/bin/python3
 ln -sf /usr/bin/$VERSION /usr/bin/python
 ln -sf /usr/lib/$VERSION /usr/lib/tf_python
 
-# Use Lib Path of Virtual Env that has dependencies
-# Python 3.10 pip reference is broken (pypa/pip#10647)
-# /usr/bin/$VERSION -m venv /root/.venv/tf
-# source /root/.venv/tf/bin/activate
-# ln -sf /root/.venv/tf/lib/$VERSION /usr/lib/tf_python
-
 # Install pip
-curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-python3 get-pip.py --prefix=/usr/local/
+if [[ "$VERSION" == "python3.10" ]]; then
+  # Python 3.10 pip reference is broken for pip 21.3 (pypa/pip#10647)
+  python3 -m ensurepip
+  python3 -m pip install pip~=21.2.0
+  python3 -m ensurepip --upgrade  # Only upgrades minor version (21.2.4)
+else
+  curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+  python3 get-pip.py
+fi
 
 # Disable the cache dir to save image space, and install packages
 python3 -m pip install --no-cache-dir --upgrade pip
 python3 -m pip install --no-cache-dir -r $REQUIREMENTS -U
 python3 -m pip list
-echo $PATH
