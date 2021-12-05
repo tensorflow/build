@@ -30,16 +30,17 @@ popd
 # Referenced in devel.usertools/*.bazelrc
 ln -sf /usr/bin/$VERSION /usr/bin/python3
 ln -sf /usr/bin/$VERSION /usr/bin/python
+ln -sf /usr/lib/$VERSION /usr/lib/tf_python
+
 # Use Lib Path of Virtual Env that has dependencies
 # Python 3.10 pip reference is broken (pypa/pip#10647)
-# ln -sf /usr/lib/$VERSION /usr/lib/tf_python
-/usr/bin/$VERSION -m venv /root/.venv/tf
-source /root/.venv/tf/bin/activate
-ln -sf /root/.venv/tf/lib/$VERSION /usr/lib/tf_python
+# /usr/bin/$VERSION -m venv /root/.venv/tf
+# source /root/.venv/tf/bin/activate
+# ln -sf /root/.venv/tf/lib/$VERSION /usr/lib/tf_python
 
 # Install pip
 curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-python3 get-pip.py
+python3 get-pip.py --prefix=/usr/local/
 
 # Disable the cache dir to save image space, and install packages
 python3 -m pip install --no-cache-dir --upgrade pip
