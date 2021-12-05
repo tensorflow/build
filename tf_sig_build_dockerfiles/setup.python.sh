@@ -28,18 +28,20 @@ popd
 
 # Setup links for TensorFlow to compile.
 # Referenced in devel.usertools/*.bazelrc
-ln -sf /usr/bin/$VERSION /usr/bin/python3
-ln -sf /usr/bin/$VERSION /usr/bin/python
-ln -sf /usr/lib/$VERSION /usr/lib/tf_python
+# ln -sf /usr/bin/$VERSION /usr/bin/python3
+# ln -sf /usr/bin/$VERSION /usr/bin/python
+# ln -sf /usr/lib/$VERSION /usr/lib/tf_python
+
+/usr/bin/$VERSION -m venv ~/.venv/tf
+ln -sf /root/.venv/tf/bin/python /usr/bin/python3
+ln -sf /root/.venv/tf/bin/python /usr/bin/python
+ln -sf /root/.venv/tf/lib/python /usr/lib/tf_python
+ln -sf /root/.venv/tf/bin/pip /usr/bin/pip
+ln -sf /root/.venv/tf/bin/pip /usr/bin/pip3
 
 # Install pip
-# When using system python, Ubuntu doesn't allow ensurepip
-if [[ "$VERSION" == "python3.8" ]]; then
-  curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-  python3 get-pip.py
-else
-  python3 -m ensurepip --upgrade
-fi
+curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+python3 get-pip.py
 
 # Disable the cache dir to save image space, and install packages
 python3 -m pip install --no-cache-dir --upgrade pip
