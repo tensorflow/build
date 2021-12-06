@@ -15,3 +15,4 @@ rm -f ./$1/tensorflow
 ln -s $(ls /$1/lib) /$1/lib/python3
 ln -s ../tensorflow $1/tensorflow
 bash -c "/$1/bin/pip install $2"
+/$1/bin/pip install -r /usertools/test.requirements.txt
