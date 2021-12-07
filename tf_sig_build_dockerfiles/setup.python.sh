@@ -38,7 +38,7 @@ if [[ "$VERSION" == "python3.10" ]]; then
   # Python 3.10 pip reference is broken for pip 21.3 (pypa/pip#10647)
   python3 -m ensurepip
   python3 -m pip install pip~=21.2.0
-  python3 -m ensurepip --upgrade  # Only upgrades minor version (21.2.4)
+  python3 -m ensurepip --upgrade  # Only upgrades minor version (21.2.x)
 else
   curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
   python3 get-pip.py
