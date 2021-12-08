@@ -35,10 +35,9 @@ tf-estimator-nightly ~= 2.8.0.dev
 grpcio ~= 1.38.1
 portpicker ~= 1.4.0
 scipy ~= 1.7.3
-# JAX doesn't yet support python 3.10
 # Required for TFLite import from JAX tests
-# jax ~= 0.2.18
-# jaxlib~=0.1.70
+jax ~= 0.2.26
+jaxlib ~= 0.1.75
 
 # Needs to be addressed. Unblocked 2.4 branchcut cl/338377048
 PyYAML ~= 5.4.1

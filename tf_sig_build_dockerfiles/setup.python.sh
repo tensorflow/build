@@ -36,6 +36,7 @@ ln -sf /usr/lib/$VERSION /usr/lib/tf_python
 # Install pip
 if [[ "$VERSION" == "python3.10" ]]; then
   # Python 3.10 pip reference is broken for pip 21.3 (pypa/pip#10647)
+  # TODO(rameshsampath): Remove once Python 3.10 works with latest pip
   python3 -m ensurepip
   python3 -m pip install pip~=21.2.0
   python3 -m ensurepip --upgrade  # Only upgrades minor version (21.2.x)
