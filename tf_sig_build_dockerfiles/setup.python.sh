@@ -33,8 +33,17 @@ ln -sf /usr/bin/$VERSION /usr/bin/python
 ln -sf /usr/lib/$VERSION /usr/lib/tf_python
 
 # Install pip
-python3 -m ensurepip
-python3 -m pip install --no-cache-dir --upgrade pip
+if [[ "$VERSION" == "python3.10" ]]; then
+  # Python 3.10 pip reference is broken for pip 21.3 (https://github.com/pypa/pip/issues/10647)
+  # TODO(rameshsampath): Remove once Python 3.10 works with latest pip
+  python3 -m ensurepip
+  python3 -m pip install pip~=21.2.0
+  python3 -m ensurepip --upgrade  # Only upgrades minor version (21.2.x)
+else
+  curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+  python3 get-pip.py
+  python3 -m pip install --no-cache-dir --upgrade pip
+fi
 
 # Disable the cache dir to save image space, and install packages
 python3 -m pip install --no-cache-dir -r $REQUIREMENTS -U
