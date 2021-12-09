@@ -1,6 +1,5 @@
 # All required CUDA packages
 nvidia-profiler
-cuda-11-2
 cuda-command-line-tools-11-2
 cuda-cudart-dev-11-2
 cuda-cupti-11-2

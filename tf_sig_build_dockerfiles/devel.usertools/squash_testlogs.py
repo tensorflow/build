@@ -23,37 +23,49 @@ for f in sorted(glob.glob(sys.argv[1], recursive=True)):
     print("Ignoring this XML parse failure: ", str(e))
 result.update_statistics()
 
-def short_tail(elem):
-  return "\n".join([x[-LEN:] for x in elem.text.rstrip().splitlines()[-TAIL:]])
+LEN = 100
+TAIL = 5
+def get_short_tail(elem):
+  def truncate(x):
+    if len(x) > LEN*2:
+      return "..." + x[-LEN:] + " (line truncated)"
+    return x
+  return "\n".join([truncate(x) for x in elem.text.rstrip().splitlines()[-TAIL:]])
 
 # For test cases, only show the ones that failed that have text (a log)
-# And cut that log down to the last 5 lines, max length 80 characters
-LEN = 80
-TAIL = 5
+# And cut that log down to the last 5 lines, max line length 80 characters
+seen = set()
 for testsuite in result:
   # Use findall() to avoid removing any elements during traversal
-  keep = False
   for elem in testsuite._elem.findall("testcase"):
     if not len(elem):
       testsuite._elem.remove(elem)
+
+  keep = False
   for elem in testsuite._elem.findall("testcase/error"):
     if elem.text:
       keep = True
-      elem.text = short_tail(elem)
+      elem.text = get_short_tail(elem)
     else:
       testsuite._elem.remove(elem.getparent())
   for elem in testsuite._elem.findall("testcase/failure"):
     if elem.text:
       keep = True
-      elem.text = short_tail(elem)
+      elem.text = get_short_tail(elem)
     else:
       testsuite._elem.remove(elem.getparent())
   for elem in testsuite._elem.findall("system-out"):
     if elem.text:
       keep = True
-      elem.text = short_tail(elem)
+      elem.text = get_short_tail(elem)
+  if testsuite.failures == 0 and testsuite.errors == 0:
+    keep = False
+  if testsuite.name in seen:
+    keep = False
   if not keep:
     result._elem.remove(testsuite._elem)
+  else:
+    seen.add(testsuite.name)
 
 os.makedirs(os.path.dirname(sys.argv[2]), exist_ok=True)
 result.write(sys.argv[2])
