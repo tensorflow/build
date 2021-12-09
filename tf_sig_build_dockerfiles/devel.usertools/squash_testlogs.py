@@ -23,15 +23,6 @@ for f in sorted(glob.glob(sys.argv[1], recursive=True)):
     print("Ignoring this XML parse failure: ", str(e))
 result.update_statistics()
 
-LEN = 100
-TAIL = 5
-def get_short_tail(elem):
-  def truncate(x):
-    if len(x) > LEN*2:
-      return "..." + x[-LEN:] + " (line truncated)"
-    return x
-  return "\n".join([truncate(x) for x in elem.text.rstrip().splitlines()[-TAIL:]])
-
 # For test cases, only show the ones that failed that have text (a log)
 # And cut that log down to the last 5 lines, max line length 80 characters
 seen = set()
@@ -68,4 +59,35 @@ for testsuite in result:
     seen.add(testsuite.name)
 
 os.makedirs(os.path.dirname(sys.argv[2]), exist_ok=True)
+result.write(sys.argv[2])
+
+# If the resulting log file is beyond the internal limit for Google's Sponge
+# log system (either 10MB or 4MB, not clear), then also cut down all text
+# sections to the final few lines, truncated to a reasonable length (some
+# logs will dump out log lines that are thousands of characters long).
+FOUR_MB = 4194304
+TEN_MB = 10485760
+if os.path.getsize(sys.argv[2]) <= TEN_MB:
+  exit(0)
+
+LEN = 400
+TAIL = 5
+def get_short_tail(elem):
+  def truncate(x):
+    if len(x) > LEN:
+      return "..." + x[-LEN:] + " (line truncated)"
+    return x
+  return "\n".join([truncate(x) for x in elem.text.rstrip().splitlines()[-TAIL:]])
+
+for testsuite in result:
+  for elem in testsuite._elem.findall("testcase/error"):
+    if elem.text:
+      elem.text = get_short_tail(elem)
+  for elem in testsuite._elem.findall("testcase/failure"):
+    if elem.text:
+      elem.text = get_short_tail(elem)
+  for elem in testsuite._elem.findall("system-out"):
+    if elem.text:
+      elem.text = get_short_tail(elem)
+
 result.write(sys.argv[2])
