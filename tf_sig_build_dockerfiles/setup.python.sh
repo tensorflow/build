@@ -33,9 +33,22 @@ ln -sf /usr/bin/$VERSION /usr/bin/python
 ln -sf /usr/lib/$VERSION /usr/lib/tf_python
 
 # Install pip
-curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-python3 get-pip.py
+if [[ "$VERSION" == "python3.10" ]]; then
+  # Python 3.10 pip reference is broken for pip 21.3 (https://github.com/pypa/pip/issues/10647)
+  # TODO(rameshsampath): Remove once Python 3.10 works with latest pip
+  # Don't update the pip after installed with ensurepip.
+  # ensurepip only installs pip3 command.  Alias pip to pip3
+  python3 -m ensurepip
+  PIP=/usr/local/bin/pip
+  if [[ -f "$PIP" ]]; then
+      rm $PIP
+  fi
+  ln -s $(which pip3) $PIP
+else
+  curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+  python3 get-pip.py
+  python3 -m pip install --no-cache-dir --upgrade pip
+fi
 
 # Disable the cache dir to save image space, and install packages
-python3 -m pip install --no-cache-dir --upgrade pip
 python3 -m pip install --no-cache-dir -r $REQUIREMENTS -U
