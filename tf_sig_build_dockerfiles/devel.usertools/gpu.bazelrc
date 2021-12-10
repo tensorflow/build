@@ -56,7 +56,7 @@ build --repo_env=TF_CUDA_COMPUTE_CAPABILITIES="sm_35,sm_50,sm_60,sm_70,sm_75,com
 # The following test-related settings are experimental.
 
 test --build_tests_only --keep_going --test_output=errors --verbose_failures=true
-test --flaky_test_attempts=4 --test_size_filters=small,medium
+test --flaky_test_attempts=3 --test_size_filters=small,medium
 test --test_env=LD_LIBRARY_PATH
 test --test_lang_filters=py 
 # Local test jobs has to be 4 because parallel_gpu_execute is fragile, I think
@@ -80,7 +80,7 @@ test:pip --action_env PYTHON_BIN_PATH="/bazel_pip/bin/python3"
 test:pip --action_env PYTHON_LIB_PATH="/bazel_pip/lib/python3/site-packages"
 test:pip --python_path="/bazel_pip/bin/python3"
 # Yes, we don't exclude the gpu tests on pip for some reason.
-test:pip --test_tag_filters=gpu,requires-gpu,-no_gpu,-no_oss,-oss_serial,-no_cuda11
-test:pip --build_tag_filters=gpu,requires-gpu,-no_gpu,-no_oss,-oss_serial,-no_cuda11
+test:pip --test_tag_filters=gpu,requires-gpu,-no_gpu,-no_oss,-oss_serial,-no_cuda11,-no_pip,-nopip
+test:pip --build_tag_filters=gpu,requires-gpu,-no_gpu,-no_oss,-oss_serial,-no_cuda11,-no_pip,-nopip
 test:pip --define=no_tensorflow_py_deps=true
 test:pip -- //bazel_pip/tensorflow/... -//bazel_pip/tensorflow/python/integration_testing/... -//bazel_pip/tensorflow/compiler/tf2tensorrt/... -//bazel_pip/tensorflow/compiler/xrt/... -//bazel_pip/tensorflow/core/tpu/... -//bazel_pip/tensorflow/lite/...
