@@ -20,7 +20,7 @@ for f in sorted(glob.glob(sys.argv[1], recursive=True)):
   try:
     result += JUnitXml.fromfile(f)
   except Exception as e: 
-    print("Ignoring this XML parse failure: ", str(e))
+    print("Ignoring this XML parse failure in {}: ".format(f), str(e))
 result.update_statistics()
 
 # For test cases, only show the ones that failed that have text (a log)
@@ -36,19 +36,16 @@ for testsuite in result:
   for elem in testsuite._elem.findall("testcase/error"):
     if elem.text:
       keep = True
-      elem.text = get_short_tail(elem)
     else:
       testsuite._elem.remove(elem.getparent())
   for elem in testsuite._elem.findall("testcase/failure"):
     if elem.text:
       keep = True
-      elem.text = get_short_tail(elem)
     else:
       testsuite._elem.remove(elem.getparent())
   for elem in testsuite._elem.findall("system-out"):
     if elem.text:
       keep = True
-      elem.text = get_short_tail(elem)
   if testsuite.failures == 0 and testsuite.errors == 0:
     keep = False
   if testsuite.name in seen:
