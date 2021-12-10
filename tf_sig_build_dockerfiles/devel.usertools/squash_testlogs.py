@@ -1,20 +1,26 @@
 #!/usr/bin/env python3
 #
-# Usage: squash_testlogs.py "GLOBPATTERN" OUTPUT_FILE
+# Usage: squash_testlogs.py START_DIRECTORY OUTPUT_FILE
 #
-# Example: squash_testlogs.py "/tf/pkg/testlogs/**/*.xml" /tf/pkg/merged.xml
+# Example: squash_testlogs.py /tf/pkg/testlogs /tf/pkg/merged.xml
 #
-# Squash a glob pattern of junit XML files into one minified XML file.
-# The merged XML includes the timing and count for all tests, but only includes
-# <testcase>s that have a sub-element (which gives us errors and failures).
+# Recursively find all the JUnit XML files in one directory, and merge any of
+# them that contain failures into one file. Then compress it to avoid repeats.
 import glob
 import os
 import sys
 from junitparser import JUnitXml
 from lxml import etree
+import subprocess
 
 result = JUnitXml()
-for f in sorted(glob.glob(sys.argv[1], recursive=True)):
+files = subprocess.check_output(["grep -rlE '(failures|errors)=\"[1-9]", sys.argv[1]])
+
+if not files.strip().splitlines():
+  print("No failures found to log!")
+  exit(0)
+
+for f in files.strip().splitlines():
   # Sometimes test logs can be empty. I'm not sure why they are, so for now
   # I'm just going to ignore failures and print a message about them
   try:
