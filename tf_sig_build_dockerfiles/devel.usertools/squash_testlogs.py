@@ -14,9 +14,9 @@ from lxml import etree
 import subprocess
 
 result = JUnitXml()
-files = subprocess.check_output(["grep", "-rlE", '(failures|errors)="[1-9]', sys.argv[1]])
-
-if not files.strip().splitlines():
+try:
+  files = subprocess.check_output(["grep", "-rlE", '(failures|errors)="[1-9]', sys.argv[1]])
+except subprocess.CalledProcessError as e:
   print("No failures found to log!")
   exit(0)
 
