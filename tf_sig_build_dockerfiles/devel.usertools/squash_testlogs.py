@@ -24,7 +24,11 @@ for f in files.strip().splitlines():
   # Sometimes test logs can be empty. I'm not sure why they are, so for now
   # I'm just going to ignore failures and print a message about them
   try:
-    result += JUnitXml.fromfile(f)
+    r = JUnitXml.fromfile(f)
+    short_name = f.partition("tensorflow")[2]
+    for testsuite in r:
+      testsuite.name = short_name + " -- " + testsuite.name
+    result += r
   except Exception as e: 
     print("Ignoring this XML parse failure in {}: ".format(f), str(e))
 result.update_statistics()
