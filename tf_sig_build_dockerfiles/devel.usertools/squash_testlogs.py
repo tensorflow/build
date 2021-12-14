@@ -25,7 +25,7 @@ for f in files.strip().splitlines():
   # I'm just going to ignore failures and print a message about them
   try:
     r = JUnitXml.fromfile(f)
-    short_name = f.partition("tensorflow")[2]
+    short_name = f.partition("/tensorflow/")[2]
     for testsuite in r:
       testsuite.name = short_name + " -- " + testsuite.name
     result += r
