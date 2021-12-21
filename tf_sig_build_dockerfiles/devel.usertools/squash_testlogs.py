@@ -15,6 +15,7 @@ import subprocess
 
 result = JUnitXml()
 try:
+  # Something about this doesn't work.
   files = subprocess.check_output(["grep", "-rlE", '(failures|errors)="[1-9]', sys.argv[1]])
 except subprocess.CalledProcessError as e:
   print("No failures found to log!")
