@@ -30,8 +30,7 @@ for f in files.strip().splitlines():
     r = JUnitXml.fromfile(f)
     short_name = re.search(r'/(bazel_pip|tensorflow)/.*', f).group(0)
     for testsuite in r:
-      for testcase in testsuite:
-        testsuite.name = "/" + short_name + "___" + testsuite.name
+      testsuite.name = "/" + short_name + "___" + testsuite.name
     result += r
   except Exception as e: 
     print("Ignoring this XML parse failure in {}: ".format(f), str(e))
