@@ -35,7 +35,6 @@ for f in files.strip().splitlines():
     result += r
   except Exception as e: 
     print("Ignoring this XML parse failure in {}: ".format(f), str(e))
-result.update_statistics()
 
 # For test cases, only show the ones that failed that have text (a log)
 seen = set()
@@ -47,14 +46,14 @@ for testsuite in result:
 
   keep = False
   for elem in testsuite._elem.findall("testcase/error"):
-    if elem.text and elem.text not in seen:
+    if elem.text and elem.getparent().get("name") + elem.text not in seen:
+      seen.add(elem.getparent().get("name") + elem.text)
       keep = True
-      seen.add(elem.text)
     else:
       testsuite._elem.remove(elem.getparent())
   for elem in testsuite._elem.findall("testcase/failure"):
-    if elem.text and elem.text not in seen:
-      seen.add(elem.text)
+    if elem.text and elem.getparent().get("name") + elem.text not in seen:
+      seen.add(elem.getparent().get("name") + elem.text)
       keep = True
     else:
       testsuite._elem.remove(elem.getparent())
@@ -70,6 +69,7 @@ for testsuite in result:
     seen.add(testsuite.name)
 
 os.makedirs(os.path.dirname(sys.argv[2]), exist_ok=True)
+result.update_statistics()
 result.write(sys.argv[2])
 
 # If the resulting log file is beyond the internal limit for Google's Sponge
