@@ -12,6 +12,7 @@ import sys
 from junitparser import JUnitXml
 from lxml import etree
 import subprocess
+import re
 
 result = JUnitXml()
 try:
@@ -25,8 +26,9 @@ for f in files.strip().splitlines():
   # Sometimes test logs can be empty. I'm not sure why they are, so for now
   # I'm just going to ignore failures and print a message about them
   try:
+    f = f.decode("utf-8")
     r = JUnitXml.fromfile(f)
-    short_name = f.partition("/tensorflow/")[2]
+    short_name = re.search(r'/(bazel_pip|tensorflow)/.*', f).group(0)
     for testsuite in r:
       testsuite.name = short_name + " -- " + testsuite.name
     result += r
@@ -35,7 +37,6 @@ for f in files.strip().splitlines():
 result.update_statistics()
 
 # For test cases, only show the ones that failed that have text (a log)
-# And cut that log down to the last 5 lines, max line length 80 characters
 seen = set()
 for testsuite in result:
   # Use findall() to avoid removing any elements during traversal
