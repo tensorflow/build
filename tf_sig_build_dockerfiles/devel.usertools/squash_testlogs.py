@@ -30,7 +30,8 @@ for f in files.strip().splitlines():
     r = JUnitXml.fromfile(f)
     short_name = re.search(r'/(bazel_pip|tensorflow)/.*', f).group(0)
     for testsuite in r:
-      testsuite.name = short_name + " -- " + testsuite.name
+      for testcase in testsuite:
+        testsuite.name = "/" + short_name + "___" + testsuite.name
     result += r
   except Exception as e: 
     print("Ignoring this XML parse failure in {}: ".format(f), str(e))
@@ -46,21 +47,22 @@ for testsuite in result:
 
   keep = False
   for elem in testsuite._elem.findall("testcase/error"):
-    if elem.text:
+    if elem.text and elem.text not in seen:
       keep = True
+      seen.add(elem.text)
     else:
       testsuite._elem.remove(elem.getparent())
   for elem in testsuite._elem.findall("testcase/failure"):
-    if elem.text:
+    if elem.text and elem.text not in seen:
+      seen.add(elem.text)
       keep = True
     else:
       testsuite._elem.remove(elem.getparent())
   for elem in testsuite._elem.findall("system-out"):
-    if elem.text:
+    if elem.text and elem.text not in seen:
       keep = True
+      seen.add(elem.text)
   if testsuite.failures == 0 and testsuite.errors == 0:
-    keep = False
-  if testsuite.name in seen:
     keep = False
   if not keep:
     result._elem.remove(testsuite._elem)
