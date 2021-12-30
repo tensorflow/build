@@ -14,5 +14,7 @@ mkdir -p $1
 rm -f ./$1/tensorflow
 ln -s $(ls /$1/lib) /$1/lib/python3
 ln -s ../tensorflow $1/tensorflow
-bash -c "/$1/bin/pip install $2"
+# extglob is necessary for @(a|b) pattern matching
+# see "extglob" in the bash manual page ($ man bash)
+bash -O extglob -c "/$1/bin/pip install $2"
 /$1/bin/pip install -r /usertools/test.requirements.txt
