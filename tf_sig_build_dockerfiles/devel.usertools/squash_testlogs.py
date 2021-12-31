@@ -23,17 +23,25 @@ except subprocess.CalledProcessError as e:
   exit(0)
 
 for f in files.strip().splitlines():
-  # Sometimes test logs can be empty. I'm not sure why they are, so for now
-  # I'm just going to ignore failures and print a message about them
+  # Just ignore any failures, they're probably not important
   try:
     f = f.decode("utf-8")
     r = JUnitXml.fromfile(f)
     short_name = re.search(r'/(bazel_pip|tensorflow)/.*', f).group(0)
     for testsuite in r:
-      testsuite.name = "/" + short_name + "___" + testsuite.name
+      for elem in testsuite._elem.xpath('.//text()'):
+        if elem.strip() != "":
+          extra = ""
+          if "bazel_pip" in short_name:
+            extra = "\n//bazel_pip means this was a pip test."
+          elem.getparent().text = elem + "\nNote: from /" + short_name + extra
     result += r
   except Exception as e: 
     print("Ignoring this XML parse failure in {}: ".format(f), str(e))
+
+
+def content_hash(elem):
+  return elem.getparent().get("name", "") + "\n".join(elem.text.splitlines()[:-2])
 
 # For test cases, only show the ones that failed that have text (a log)
 seen = set()
@@ -45,21 +53,21 @@ for testsuite in result:
 
   keep = False
   for elem in testsuite._elem.findall("testcase/error"):
-    if elem.text and elem.getparent().get("name") + elem.text not in seen:
-      seen.add(elem.getparent().get("name") + elem.text)
+    if elem.text and content_hash(elem) not in seen:
+      seen.add(content_hash(elem))
       keep = True
     else:
       testsuite._elem.remove(elem.getparent())
   for elem in testsuite._elem.findall("testcase/failure"):
-    if elem.text and elem.getparent().get("name") + elem.text not in seen:
-      seen.add(elem.getparent().get("name") + elem.text)
+    if elem.text and content_hash(elem) not in seen:
+      seen.add(content_hash(elem))
       keep = True
     else:
       testsuite._elem.remove(elem.getparent())
   for elem in testsuite._elem.findall("system-out"):
-    if elem.text and elem.text not in seen:
+    if elem.text and content_hash(elem) not in seen:
       keep = True
-      seen.add(elem.text)
+      seen.add(content_hash(elem))
   if testsuite.failures == 0 and testsuite.errors == 0:
     keep = False
   if not keep:
