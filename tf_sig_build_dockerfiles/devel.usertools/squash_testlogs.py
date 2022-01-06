@@ -4,8 +4,11 @@
 #
 # Example: squash_testlogs.py /tf/pkg/testlogs /tf/pkg/merged.xml
 #
-# Recursively find all the JUnit XML files in one directory, and merge any of
-# them that contain failures into one file. Then compress it to avoid repeats.
+# Recursively find all the JUnit test.xml files in one directory, and merge any
+# of them that contain failures into one file. The TensorFlow DevInfra team
+# uses this to generate a simple overview of an entire pip and nonpip test
+# invocation, since the normal logs that Bazel creates are too large for the
+# internal invocation viewer.
 import glob
 import os
 import sys
