@@ -16,7 +16,6 @@ import re
 
 result = JUnitXml()
 try:
-  # Something about this doesn't work.
   files = subprocess.check_output(["grep", "-rlE", '(failures|errors)="[1-9]', sys.argv[1]])
 except subprocess.CalledProcessError as e:
   print("No failures found to log!")
@@ -26,34 +25,36 @@ except subprocess.CalledProcessError as e:
 seen = set()
 
 for f in files.strip().splitlines():
+  # Include only "test.xml" files, as "attempt_x" files repeat the same thing.
+  if not f.endswith(b"test.xml"):
+    continue
   # Just ignore any failures, they're probably not important
   try:
     r = JUnitXml.fromfile(f)
   except Exception as e: 
     print("Ignoring this XML parse failure in {}: ".format(f), str(e))
 
-  short_name = re.search(r'/(bazel_pip|tensorflow)/.*', f.decode("utf-8")).group(0)
   for testsuite in r:
+    # Remove empty testcases
     for p in testsuite._elem.xpath('.//testcase'):
       if not len(p):
         testsuite._elem.remove(p)
-    for p in testsuite._elem.xpath('.//error | .//failure | .//system-out'):
-      if p.text and p.text.strip() != "" and p.text not in seen:
-        seen.add(p.text)
-        extra = ""
-        if "bazel_pip" in short_name:
-          extra = " This was a pip test. Take off //bazel_pip to find the real target."
-        p.text = p.text + "\nNote: from /" + short_name + extra
-      else:
-        if p.tag in ["error", "failure"]:
-          testsuite._elem.remove(p.getparent())
-        else:
-          r._elem.remove(p.getparent())
+    # Convert "testsuite > testcase,system-out" to "testsuite > testcase"
+    for p in testsuite._elem.xpath('.//system-out'):
+      for c in p.getparent().xpath('.//error | .//failure'):
+        c.text = p.text
+      p.getparent().remove(p)
+    # Include a note about 
+    for p in testsuite._elem.xpath('.//error | .//failure'):
+      short_name = re.search(r'/(bazel_pip|tensorflow)/.*', f.decode("utf-8")).group(0)
+      p.text += f"\nNOTE: From /{short_name}"
+      if "bazel_pip" in short_name:
+        p.text += "\nNOTE: This was a pip test. Remove 'bazel_pip' to find the real target."
+    # Remove this testsuite if it doesn't have anything in it any more
     if len(testsuite) == 0:
       r._elem.remove(testsuite._elem)
   if len(r) > 0:
     result += r
-
 
 os.makedirs(os.path.dirname(sys.argv[2]), exist_ok=True)
 result.update_statistics()
