@@ -22,90 +22,39 @@ except subprocess.CalledProcessError as e:
   print("No failures found to log!")
   exit(0)
 
+# For test cases, only show the ones that failed that have text (a log)
+seen = set()
+
 for f in files.strip().splitlines():
   # Just ignore any failures, they're probably not important
   try:
-    f = f.decode("utf-8")
     r = JUnitXml.fromfile(f)
-    short_name = re.search(r'/(bazel_pip|tensorflow)/.*', f).group(0)
-    for testsuite in r:
-      for elem in testsuite._elem.xpath('.//text()'):
-        if elem.strip() != "":
-          extra = ""
-          if "bazel_pip" in short_name:
-            extra = "\n//bazel_pip means this was a pip test."
-          elem.getparent().text = elem + "\nNote: from /" + short_name + extra
-    result += r
   except Exception as e: 
     print("Ignoring this XML parse failure in {}: ".format(f), str(e))
 
+  short_name = re.search(r'/(bazel_pip|tensorflow)/.*', f.decode("utf-8")).group(0)
+  for testsuite in r:
+    for p in testsuite._elem.xpath('.//testcase'):
+      if not len(p):
+        testsuite._elem.remove(p)
+    for p in testsuite._elem.xpath('.//error | .//failure | .//system-out'):
+      if p.text and p.text.strip() != "" and p.text not in seen:
+        seen.add(p.text)
+        extra = ""
+        if "bazel_pip" in short_name:
+          extra = " This was a pip test. Take off //bazel_pip to find the real target."
+        p.text = p.text + "\nNote: from /" + short_name + extra
+      else:
+        if p.tag in ["error", "failure"]:
+          testsuite._elem.remove(p.getparent())
+        else:
+          r._elem.remove(p.getparent())
+    if len(testsuite) == 0:
+      r._elem.remove(testsuite._elem)
+  if len(r) > 0:
+    result += r
 
-def content_hash(elem):
-  return elem.getparent().get("name", "") + "\n".join(elem.text.splitlines()[:-2])
-
-# For test cases, only show the ones that failed that have text (a log)
-seen = set()
-for testsuite in result:
-  # Use findall() to avoid removing any elements during traversal
-  for elem in testsuite._elem.findall("testcase"):
-    if not len(elem):
-      testsuite._elem.remove(elem)
-
-  keep = False
-  for elem in testsuite._elem.findall("testcase/error"):
-    if elem.text and content_hash(elem) not in seen:
-      seen.add(content_hash(elem))
-      keep = True
-    else:
-      testsuite._elem.remove(elem.getparent())
-  for elem in testsuite._elem.findall("testcase/failure"):
-    if elem.text and content_hash(elem) not in seen:
-      seen.add(content_hash(elem))
-      keep = True
-    else:
-      testsuite._elem.remove(elem.getparent())
-  for elem in testsuite._elem.findall("system-out"):
-    if elem.text and content_hash(elem) not in seen:
-      keep = True
-      seen.add(content_hash(elem))
-  if testsuite.failures == 0 and testsuite.errors == 0:
-    keep = False
-  if not keep:
-    result._elem.remove(testsuite._elem)
-  else:
-    seen.add(testsuite.name)
 
 os.makedirs(os.path.dirname(sys.argv[2]), exist_ok=True)
 result.update_statistics()
-result.write(sys.argv[2])
-
-# If the resulting log file is beyond the internal limit for Google's Sponge
-# log system (either 10MB or 4MB, not clear), then also cut down all text
-# sections to the final few lines, truncated to a reasonable length (some
-# logs will dump out log lines that are thousands of characters long).
-FOUR_MB = 4194304
-TEN_MB = 10485760
-if os.path.getsize(sys.argv[2]) <= TEN_MB:
-  exit(0)
-
-LEN = 400
-TAIL = 5
-def get_short_tail(elem):
-  def truncate(x):
-    if len(x) > LEN:
-      return "..." + x[-LEN:] + " (line truncated)"
-    return x
-  return "\n".join([truncate(x) for x in elem.text.rstrip().splitlines()[-TAIL:]])
-
-for testsuite in result:
-  for elem in testsuite._elem.findall("testcase/error"):
-    if elem.text:
-      elem.text = get_short_tail(elem)
-  for elem in testsuite._elem.findall("testcase/failure"):
-    if elem.text:
-      elem.text = get_short_tail(elem)
-  for elem in testsuite._elem.findall("system-out"):
-    if elem.text:
-      elem.text = get_short_tail(elem)
-
 result.write(sys.argv[2])
