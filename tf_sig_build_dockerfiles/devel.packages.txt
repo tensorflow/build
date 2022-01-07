@@ -30,6 +30,7 @@ clang-8
 clang-format
 curl
 ffmpeg
+gdb
 git
 libcurl3-dev
 libcurl4-openssl-dev
