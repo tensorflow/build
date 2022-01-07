@@ -32,11 +32,36 @@ build --copt=-mavx --host_copt=-mavx
 # See https://docs.bazel.build/versions/main/skylark/performance.html#performance-profiling
 build --profile=/tf/pkg/profile.json
 
-# Store the execution log binary in the mounted artifact directory.
-# This log is recommended to debug missing cache hit on the same machine and on different machines.
-# See more at step 2 and 3c in:
-# https://docs.bazel.build/versions/main/remote-caching-debug.html
-build --execution_log_binary_file=/tf/pkg/exec_cpu.log
-
 # Use the NVCC toolchain to compile for manylinux2014
 build --crosstool_top=@ubuntu18.04-gcc8_manylinux2014-cuda11.2-cudnn8.1-tensorrt7.2_config_cuda//crosstool:toolchain
+
+# The following test-related settings are experimental.
+
+test --build_tests_only --keep_going --test_output=errors --verbose_failures=true
+test --local_test_jobs=HOST_CPUS
+test --flaky_test_attempts=3 --test_size_filters=small,medium
+test --test_env=LD_LIBRARY_PATH
+test --test_lang_filters=py 
+
+# "nonpip" tests are regular py_test tests.
+test:nonpip --test_tag_filters=-no_oss,-oss_serial,-gpu,-tpu,-benchmark-test,-v1only
+test:nonpip --build_tag_filters=-no_oss,-oss_serial,-gpu,-tpu,-benchmark-test,-v1only
+test:nonpip -- //tensorflow/... -//tensorflow/python/integration_testing/... -//tensorflow/compiler/tf2tensorrt/... -//tensorflow/compiler/xrt/... -//tensorflow/core/tpu/... -//tensorflow/lite/...
+
+# "pip tests" run a similar suite of tests the "nonpip" tests, but do something
+# odd to attempt to validate the quality of the pip package. The wheel is
+# installed into a virtual environment, and then that venv is used to run all
+# bazel tests with a special flag "--define=no_tensorflow_py_deps=true", which
+# drops all the bazel dependencies for each py_test; this makes all the tests
+# use the wheel's TensorFlow installation instead of the one made available
+# through bazel. This must be done in a different root directory, //bazel_pip/...,
+# because "import tensorflow" run from the root directory would instead import
+# the folder instead of the venv package.
+test:pip --action_env PYTHON_BIN_PATH="/bazel_pip/bin/python3"
+test:pip --action_env PYTHON_LIB_PATH="/bazel_pip/lib/python3/site-packages"
+test:pip --python_path="/bazel_pip/bin/python3"
+# Yes, we don't exclude the gpu tests on pip for some reason.
+test:pip --test_tag_filters=-nopip,-no_pip,-no_oss,-oss_serial,-v1only
+test:pip --build_tag_filters=-nopip,-no_pip,-no_oss,-oss_serial,-v1only
+test:pip --define=no_tensorflow_py_deps=true
+test:pip -- //bazel_pip/tensorflow/... -//bazel_pip/tensorflow/python/integration_testing/... -//bazel_pip/tensorflow/compiler/tf2tensorrt/... -//bazel_pip/tensorflow/compiler/xrt/... -//bazel_pip/tensorflow/core/tpu/... -//bazel_pip/tensorflow/lite/...
