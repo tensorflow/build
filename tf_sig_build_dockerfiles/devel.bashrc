@@ -22,5 +22,3 @@ export PS1="\[\e[31m\]tf-docker\[\e[m\] \[\e[33m\]\w\[\e[m\] > "
 export TERM=xterm-256color
 alias grep="grep --color=auto"
 alias ls="ls --color=auto"
-# Fix nvidia-docker
-ldconfig 

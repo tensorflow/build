@@ -45,7 +45,3 @@ PyYAML ~= 5.4.1
 # For uploading
 auditwheel ~= 5.0.0
 twine ~= 3.6.0
-
-# For user tool scripts
-junitparser ~= 2.2.0
-lxml ~= 4.6.4

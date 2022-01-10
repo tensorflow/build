@@ -1,11 +1,10 @@
 # All required CUDA packages
 nvidia-profiler
+cuda-11-2
 cuda-command-line-tools-11-2
 cuda-cudart-dev-11-2
 cuda-cupti-11-2
 cuda-nvprune-11-2
-cuda-libraries-11-2
-cuda-libraries-dev-11-2
 libcufft-11-2
 libcurand-11-2
 libcusolver-dev-11-2
