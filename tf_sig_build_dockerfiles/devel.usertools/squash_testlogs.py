@@ -28,9 +28,6 @@ except subprocess.CalledProcessError as e:
 seen = set()
 
 for f in files.strip().splitlines():
-  # Include only "test.xml" files, as "attempt_x" files repeat the same thing.
-  if not f.endswith(b"test.xml"):
-    continue
   # Just ignore any failures, they're probably not important
   try:
     r = JUnitXml.fromfile(f)
@@ -53,6 +50,8 @@ for f in files.strip().splitlines():
       p.text += f"\nNOTE: From /{short_name}"
       if "bazel_pip" in short_name:
         p.text += "\nNOTE: This was a pip test. Remove 'bazel_pip' to find the real target."
+      p.text += f"\nNOTE: The list of failures from the XML includes flakes and attempts as well."
+      p.text += f"\n      The error(s) that caused the invocation to fail may not include this case."
     # Remove this testsuite if it doesn't have anything in it any more
     if len(testsuite) == 0:
       r._elem.remove(testsuite._elem)
