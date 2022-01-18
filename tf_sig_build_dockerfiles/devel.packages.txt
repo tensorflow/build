@@ -1,5 +1,7 @@
 # All required CUDA packages
 nvidia-profiler
+# Locked to 460 since that's what Google's using internally
+libnvidia-compute-460-server
 cuda-command-line-tools-11-2
 cuda-cudart-dev-11-2
 cuda-cupti-11-2
