@@ -42,6 +42,8 @@ test --local_test_jobs=HOST_CPUS
 test --flaky_test_attempts=3 --test_size_filters=small,medium
 test --test_env=LD_LIBRARY_PATH
 test --test_lang_filters=py 
+# Give only the list of failed tests at the end of the log
+test --test_summary=terse
 
 # "nonpip" tests are regular py_test tests.
 test:nonpip --test_tag_filters=-no_oss,-oss_serial,-gpu,-tpu,-benchmark-test,-v1only
