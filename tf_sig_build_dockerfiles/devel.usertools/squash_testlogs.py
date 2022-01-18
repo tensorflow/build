@@ -39,19 +39,26 @@ for f in files.strip().splitlines():
     for p in testsuite._elem.xpath('.//testcase'):
       if not len(p):
         testsuite._elem.remove(p)
-    # Convert "testsuite > testcase,system-out" to "testsuite > testcase"
+    # Convert "testsuite > testcase,system-out" to "testsuite > testcase > error"
     for p in testsuite._elem.xpath('.//system-out'):
       for c in p.getparent().xpath('.//error | .//failure'):
         c.text = p.text
       p.getparent().remove(p)
-    # Include a note about 
+    # Remove duplicate results of the same exact test (e.g. due to retry attempts)
+    for p in testsuite._elem.xpath('.//error | .//failure'):
+      key = p.getparent().get("name", "") + p.text
+      if key in seen:
+        testsuite._elem.remove(p.getparent())
+      else:
+        seen.add(key)
+    # Include helpful notes
     for p in testsuite._elem.xpath('.//error | .//failure'):
       short_name = re.search(r'/(bazel_pip|tensorflow)/.*', f.decode("utf-8")).group(0)
       p.text += f"\nNOTE: From /{short_name}"
       if "bazel_pip" in short_name:
         p.text += "\nNOTE: This was a pip test. Remove 'bazel_pip' to find the real target."
       p.text += f"\nNOTE: The list of failures from the XML includes flakes and attempts as well."
-      p.text += f"\n      The error(s) that caused the invocation to fail may not include this case."
+      p.text += f"\n      The error(s) that caused the invocation to fail may not include this testcase."
     # Remove this testsuite if it doesn't have anything in it any more
     if len(testsuite) == 0:
       r._elem.remove(testsuite._elem)
