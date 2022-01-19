@@ -25,7 +25,7 @@ function cp_normalized_srcjar() {
   src_jar="$1"
   dest_jar="$2"
   tmp_dir=$(mktemp -d)
-  cp "${SRC}" "${tmp_dir}/orig.jar"
+  cp "${src_jar}" "${tmp_dir}/orig.jar"
   pushd "${tmp_dir}"
   # Extract any src/ files
   jar -xf "${tmp_dir}/orig.jar" src/
@@ -45,4 +45,4 @@ cp bazel-bin/tensorflow/tools/lib_package/libtensorflow_jni.tar.gz "${DIR}/libte
 cp bazel-bin/tensorflow/java/libtensorflow.jar "${DIR}"
 cp_normalized_srcjar bazel-bin/tensorflow/java/libtensorflow-src.jar "${DIR}/libtensorflow-src.jar"
 cp bazel-bin/tensorflow/tools/lib_package/libtensorflow_proto.zip "${DIR}"
-chmod -x "${DIR}/*"
+chmod -R -x "${DIR}"
