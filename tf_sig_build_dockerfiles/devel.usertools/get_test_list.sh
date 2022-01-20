@@ -5,4 +5,4 @@
 # Hides all extra output and always exits with success for now.
 OUTPUT=$1
 shift
-"$@" --check_tests_up_to_date 2>/dev/null | sort -u | awk '{print $1}' | grep "^//" | tee $OUTPUT
+"$@" --test_summary=short --check_tests_up_to_date 2>/dev/null | sort -u | awk '{print $1}' | grep "^//" | tee $OUTPUT

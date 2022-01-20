@@ -33,6 +33,7 @@ clang-format
 curl
 ffmpeg
 git
+jq
 libcurl3-dev
 libcurl4-openssl-dev
 libfreetype6-dev
