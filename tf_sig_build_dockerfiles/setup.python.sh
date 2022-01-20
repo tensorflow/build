@@ -31,6 +31,7 @@ popd
 ln -sf /usr/bin/$VERSION /usr/bin/python3
 ln -sf /usr/bin/$VERSION /usr/bin/python
 ln -sf /usr/lib/$VERSION /usr/lib/tf_python
+ln -sf /usr/include/$VERSION /usr/local/include/$VERSION
 
 # Install pip
 curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
