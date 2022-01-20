@@ -33,23 +33,9 @@ ln -sf /usr/bin/$VERSION /usr/bin/python
 ln -sf /usr/lib/$VERSION /usr/lib/tf_python
 
 # Install pip
-if [[ "$VERSION" == "python3.10" ]]; then
-  # In Python 3.10 with pip 21.3.x, get-pip.py does not install pip correctly.
-  # Therefore, we use "ensurepip" but do not upgrade pip afterwards. The version
-  # of pip included with ensurepip should work properly.
-  # See https://github.com/pypa/pip/issues/10647#issuecomment-967144347
-  # TODO(rameshsampath): Remove this version-specific workaround, either when
-  #   pip is fixed or when we find a method that works for all versions.
-  #   ensurepip does not work for the system python version (python 3.8 for 
-  #   Ubuntu 20.04); it wants "python3-pip" instead.
-  python3 -m ensurepip
-  # Create a symlink so that "pip" works as expected
-  ln --symbolic --force pip3 /usr/bin/pip
-else
-  curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-  python3 get-pip.py
-  python3 -m pip install --no-cache-dir --upgrade pip
-fi
+curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+python3 get-pip.py
+python3 -m pip install --no-cache-dir --upgrade pip
 
 # Disable the cache dir to save image space, and install packages
 python3 -m pip install --no-cache-dir -r $REQUIREMENTS -U
