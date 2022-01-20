@@ -35,7 +35,7 @@ ln -sf /usr/lib/$VERSION /usr/lib/tf_python
 # Python 3.10 include headers fix:
 # sysconfig.get_path('include') incorrectly points to /usr/local/include/python
 # map /usr/include/python3.10 to /usr/local/include/python3.10
-if [[ -f "/usr/local/include/$VERSION" ]]; then
+if [[ ! -f "/usr/local/include/$VERSION" ]]; then
   ln -sf /usr/include/$VERSION /usr/local/include/$VERSION
 fi
 
