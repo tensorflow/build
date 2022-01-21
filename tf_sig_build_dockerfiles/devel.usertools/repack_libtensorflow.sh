@@ -45,4 +45,3 @@ cp bazel-bin/tensorflow/tools/lib_package/libtensorflow_jni.tar.gz "${DIR}/libte
 cp bazel-bin/tensorflow/java/libtensorflow.jar "${DIR}"
 cp_normalized_srcjar bazel-bin/tensorflow/java/libtensorflow-src.jar "${DIR}/libtensorflow-src.jar"
 cp bazel-bin/tensorflow/tools/lib_package/libtensorflow_proto.zip "${DIR}"
-chmod -R -x "${DIR}"

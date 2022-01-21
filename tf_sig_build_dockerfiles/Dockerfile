@@ -37,6 +37,8 @@ RUN git clone --branch v1.5.0 https://github.com/bats-core/bats-core.git && bats
 RUN wget https://github.com/bazelbuild/bazelisk/releases/download/v1.7.4/bazelisk-linux-amd64 -O /usr/local/bin/bazel && chmod +x /usr/local/bin/bazel
 RUN wget https://github.com/bazelbuild/buildtools/releases/download/3.5.0/buildifier -O /usr/local/bin/buildifier && chmod +x /usr/local/bin/buildifier
 RUN wget https://github.com/bazelbuild/buildtools/releases/download/3.5.0/buildozer -O /usr/local/bin/buildozer && chmod +x /usr/local/bin/buildozer
+# RUN wget https://github.com/llvm/llvm-project/releases/download/llvmorg-13.0.0/clang+llvm-13.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz -O /clang.tar.xz && tar xf /clang.tar.xz clang+llvm-13.0.0-x86_64-linux-gnu-ubuntu-20.04/bin/clang-format && mv ./clang+llvm-13.0.0-x86_64-linux-gnu-ubuntu-20.04/bin/clang-format /usr/local/bin/clang-format && rm -rf ./clang+llvm-13.0.0-x86_64-linux-gnu-ubuntu.tar.xz ./clang+llvm-13.0.0-x86_64-linux-gnu-ubuntu
+
 
 # Setup Python environment. PYTHON_VERSION is e.g. "python3.8"
 ARG PYTHON_VERSION
