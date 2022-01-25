@@ -56,9 +56,7 @@ build --repo_env=TF_CUDA_COMPUTE_CAPABILITIES="sm_35,sm_50,sm_60,sm_70,sm_75,com
 # The following test-related settings are experimental.
 
 test --build_tests_only --keep_going --test_output=errors --verbose_failures=true
-test --flaky_test_attempts=3 --test_size_filters=small,medium
 test --test_env=LD_LIBRARY_PATH
-test --test_lang_filters=py 
 # Local test jobs has to be 4 because parallel_gpu_execute is fragile, I think
 test --test_timeout=300,450,1200,3600 --local_test_jobs=4 --run_under=//tensorflow/tools/ci_build/gpu_build:parallel_gpu_execute
 # Give only the list of failed tests at the end of the log
