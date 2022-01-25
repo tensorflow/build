@@ -79,8 +79,10 @@ Here are some important notes to keep in mind:
    hash. The `nightly` tag on GitHub is not related to the `tf-nightly` packages.
 
 - If you interrupt a `docker exec` command with `ctrl-c`, you will get your
-  shell back but the command will continue to run. You cannot reattach to it.
-  If you have any suggestions for handling this, let us know.
+  shell back but the command will continue to run. You cannot reattach to it,
+  but you can kill it with `docker kill tf` (or `docker kill the-container-name`).
+  This will destroy your container but will not harm your work since it's mounted.
+  If you have any suggestions for handling this better, let us know.
 
 Now let's build `tf-nightly`.
 
