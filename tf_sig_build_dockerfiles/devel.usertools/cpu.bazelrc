@@ -39,15 +39,14 @@ build --crosstool_top=@ubuntu18.04-gcc7_manylinux2010-cuda11.2-cudnn8.1-tensorrt
 
 test --build_tests_only --keep_going --test_output=errors --verbose_failures=true
 test --local_test_jobs=HOST_CPUS
-test --flaky_test_attempts=3 --test_size_filters=small,medium
 test --test_env=LD_LIBRARY_PATH
-test --test_lang_filters=py 
 # Give only the list of failed tests at the end of the log
 test --test_summary=terse
 
 # "nonpip" tests are regular py_test tests.
 test:nonpip --test_tag_filters=-no_oss,-oss_serial,-gpu,-tpu,-benchmark-test,-v1only
 test:nonpip --build_tag_filters=-no_oss,-oss_serial,-gpu,-tpu,-benchmark-test,-v1only
+test:nonpip --test_lang_filters=py --flaky_test_attempts=3 --test_size_filters=small,medium
 test:nonpip -- //tensorflow/... -//tensorflow/python/integration_testing/... -//tensorflow/compiler/tf2tensorrt/... -//tensorflow/compiler/xrt/... -//tensorflow/core/tpu/... -//tensorflow/lite/...
 
 # "pip tests" run a similar suite of tests the "nonpip" tests, but do something
@@ -65,9 +64,10 @@ test:pip --python_path="/bazel_pip/bin/python3"
 # Yes, we don't exclude the gpu tests on pip for some reason.
 test:pip --test_tag_filters=-nopip,-no_pip,-no_oss,-oss_serial,-v1only
 test:pip --build_tag_filters=-nopip,-no_pip,-no_oss,-oss_serial,-v1only
+test:pip --test_lang_filters=py --flaky_test_attempts=3 --test_size_filters=small,medium
 test:pip --define=no_tensorflow_py_deps=true
 test:pip -- //bazel_pip/tensorflow/... -//bazel_pip/tensorflow/python/integration_testing/... -//bazel_pip/tensorflow/compiler/tf2tensorrt/... -//bazel_pip/tensorflow/compiler/xrt/... -//bazel_pip/tensorflow/core/tpu/... -//bazel_pip/tensorflow/lite/...
 
 # For building libtensorflow archives
-test:libtensorflow -- //tensorflow/tools/lib_package:libtensorflow_test //tensorflow/tools/lib_package:libtensorflow_java_test
-build:libtensorflow -- //tensorflow/tools/lib_package:libtensorflow.tar.gz //tensorflow/tools/lib_package:libtensorflow_jni.tar.gz //tensorflow/java:libtensorflow.jar //tensorflow/java:libtensorflow-src.jar //tensorflow/tools/lib_package:libtensorflow_proto.zip
+test:libtensorflow_test -- //tensorflow/tools/lib_package:libtensorflow_test //tensorflow/tools/lib_package:libtensorflow_java_test
+build:libtensorflow_build -- //tensorflow/tools/lib_package:libtensorflow.tar.gz //tensorflow/tools/lib_package:libtensorflow_jni.tar.gz //tensorflow/java:libtensorflow.jar //tensorflow/java:libtensorflow-src.jar //tensorflow/tools/lib_package:libtensorflow_proto.zip
