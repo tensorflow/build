@@ -281,7 +281,6 @@ TF Release tests.
     ```
     docker exec tf bazel --bazelrc=/usertools/cpu.bazelrc \
     test --config=sigbuild_remote_cache \
-    tensorflow/tools/pip_package:build_pip_package
     --config=pip
     ```
 
@@ -340,7 +339,6 @@ TF Release tests.
     ```
     docker exec tf bazel --bazelrc=/usertools/cpu.bazelrc \
     test --config=sigbuild_remote_cache \
-    tensorflow/tools/pip_package:build_pip_package
     --config=nonpip
     ```
 
