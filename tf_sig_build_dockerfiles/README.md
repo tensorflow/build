@@ -268,7 +268,7 @@ TF Release tests.
    testing packages:
 
     ```
-    docker exec tf /usertools/setup_venv_test.sh bazel_pip "/tf/pkg/tf_nightly-*.whl"
+    docker exec tf /usertools/setup_venv_test.sh bazel_pip "/tf/pkg/tf_nightly*.whl"
     ```
 
 6. And now run the tests depending on your target platform: `--config=pip`
