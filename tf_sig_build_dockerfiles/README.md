@@ -275,6 +275,9 @@ TF Release tests.
 
 6. And now run the tests depending on your target platform: `--config=pip`
    includes the same test suite that is run by the DevInfra team every night.
+   If you want to run a specific test instead of the whole suite, pass
+   `--config=pip_venv` instead, and then set the target on the command like
+   normal.
 
     <details><summary>TF Nightly CPU - Remote Cache</summary>
 
@@ -332,7 +335,9 @@ TF Release tests.
 ### Run Nonpip Tests
 
 1. Run the tests depending on your target platform. `--config=nonpip` includes
-   the same test suite that is run by the DevInfra team every night.
+   the same test suite that is run by the DevInfra team every night. If you
+   want to run a specific test instead of the whole suite, you do not need
+   `--config=nonpip` at all; just set the target on the command line like usual.
 
     <details><summary>TF Nightly CPU - Remote Cache</summary>
 
