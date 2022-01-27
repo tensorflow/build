@@ -240,6 +240,14 @@ EOF
     [[ ! -s $BATS_FILE_TMPDIR/repeats ]]
 }
 
+# It's unclear why, but running this on //tensorflow/... is faster than running
+# only on affected targets, usually. There are targets in //tensorflow/lite that
+# don't pass --nobuild, so they're on their own.
+@test "bazel nobuild passes on all of TF except TF Lite" {
+    bazel build --experimental_cc_shared_library --nobuild  -- //tensorflow/... -//tensorflow/lite/...
+}
+
+
 teardown_file() {
     bazel shutdown
 }
