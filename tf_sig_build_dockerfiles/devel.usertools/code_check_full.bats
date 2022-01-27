@@ -78,22 +78,22 @@ EOF
 
   # Fail if either of the two "extras" or "missing" lists are present. If so,
   # then the user will see the above error messages.
-  [[ -s $BATS_TEST_TMPDIR/actual_extra_licenses ]] && [[ -s $BATS_TEST_TMPDIR/actual_missing_licenses ]]
+  [[ ! -s $BATS_TEST_TMPDIR/actual_extra_licenses ]] && [[ ! -s $BATS_TEST_TMPDIR/actual_missing_licenses ]]
 }
 
-@test "Pip package licenses check" {
+@test "Pip package generated license includes all dependencies' licenses" {
   do_external_licenses_check \
     "//tensorflow/tools/pip_package:build_pip_package" \
     "//tensorflow/tools/pip_package:licenses"
 }
 
-@test "Lib package licenses check" {
+@test "Libtensorflow generated license includes all dependencies' licenses" {
   do_external_licenses_check \
     "//tensorflow:libtensorflow.so" \
     "//tensorflow/tools/lib_package:clicenses_generate"
 }
 
-@test "Java package licenses check" {
+@test "Java library generated license includes all dependencies' licenses" {
   do_external_licenses_check \
     "//tensorflow/java:libtensorflow_jni.so" \
     "//tensorflow/tools/lib_package:jnilicenses_generate"
@@ -103,7 +103,7 @@ EOF
 # their dependencies. It's a rewritten version of an older Python script that
 # was very difficult to understand. See
 # https://github.com/tensorflow/tensorflow/blob/master/tensorflow/tools/pip_package/pip_smoke_test.py
-@test "Pip package dependency test" {
+@test "Pip package includes all required //tensorflow dependencies" {
   # grep patterns for packages whose dependencies can be ignored
   cat > $BATS_TEST_TMPDIR/ignore_deps_for_these_packages <<EOF
 //tensorflow/lite
