@@ -212,6 +212,28 @@ EOF
   fi
 }
 
+# It's unclear how this could possibly be different.
+@test "Pip package doesn't depend on CUDA on Windows" {
+  run bazel cquery \
+    --experimental_cc_shared_library \
+    --@local_config_cuda//:enable_cuda \
+    --define framework_shared_object=false \
+    "somepath(//tensorflow/tools/pip_package:build_pip_package, " \
+    "@local_config_cuda//cuda:cudart + "\
+    "@local_config_cuda//cuda:cudart + "\
+    "@local_config_cuda//cuda:cuda_driver + "\
+    "@local_config_cuda//cuda:cudnn + "\
+    "@local_config_cuda//cuda:curand + "\
+    "@local_config_cuda//cuda:cusolver + "\
+    "@local_config_tensorrt//:tensorrt)" --keep_going
+
+  if [[ -e "$output" ]]; then
+    echo "There was a path found connecting //tensorflow/tools/pip_package:build_pip_package to a banned CUDA dependency when '--define framework_shared_object' is on:"
+    echo "$output"
+    return 1
+  fi
+}
+
 @test "All tensorflow.org/code links point to real files" {
     for i in $(grep -onI 'https://www.tensorflow.org/code/[a-zA-Z0-9/._-]\+' -r tensorflow); do
         target=$(echo $i | sed 's!.*https://www.tensorflow.org/code/!!g')
@@ -242,7 +264,8 @@ EOF
 
 # It's unclear why, but running this on //tensorflow/... is faster than running
 # only on affected targets, usually. There are targets in //tensorflow/lite that
-# don't pass --nobuild, so they're on their own.
+# don't pass --nobuild, so they're on their own. It's unclear what value this
+# test really provides, since buildifier should be checking for invalid files.
 @test "bazel nobuild passes on all of TF except TF Lite" {
     bazel build --experimental_cc_shared_library --nobuild  -- //tensorflow/... -//tensorflow/lite/...
 }
