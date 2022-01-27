@@ -12,20 +12,19 @@ setup_file() {
 }
 
 # Note: this is excluded on the full code base, since any submitted code must
-# have passsed Google's internal style guidelines.
+# have passed Google's internal style guidelines.
 @test "Run bazel nobuild on affected targets" {
-    skip
     xargs -a $BATS_FILE_TMPDIR/changed_targets bazel build --experimental_cc_shared_library --jobs=auto --nobuild --deleted_packages="" --
 }
 
 # Note: this is excluded on the full code base, since any submitted code must
-# have passsed Google's internal style guidelines.
+# have passed Google's internal style guidelines.
 @test "Check buildifier formatting on BUILD files" {
     grep -e 'BUILD' $BATS_FILE_TMPDIR/changed_files | xargs buildifier -v -mode=diff -diff_command=diff
 }
 
 # Note: this is excluded on the full code base, since any submitted code must
-# have passsed Google's internal style guidelines.
+# have passed Google's internal style guidelines.
 @test "Check formatting for C++ files" {
     echo "clang-format is recommended. Here are the files with suggested changes:"
     grep -e '\.h$' -e '\.cc$' $BATS_FILE_TMPDIR/changed_files | xargs -I'{}' -n1 -P $(nproc --all) bash -c 'clang-format-12 --style=Google {} | diff - {} >/dev/null || echo {}' | tee $BATS_TEST_TMPDIR/needs_help.txt
@@ -34,7 +33,7 @@ setup_file() {
 }
 
 # Note: this is excluded on the full code base, since any submitted code must
-# have passsed Google's internal style guidelines.
+# have passed Google's internal style guidelines.
 @test "Check pylint for Python files" {
     grep -e "\.py$" $BATS_FILE_TMPDIR/changed_files | xargs python -m pylint --rcfile=tensorflow/tools/ci_build/pylintrc
 }
