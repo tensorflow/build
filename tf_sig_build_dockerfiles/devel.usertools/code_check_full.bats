@@ -70,11 +70,15 @@ EOF
   # Select lines unique to expected_licenses, i.e. missing licenses
   comm -2 -3 $BATS_TEST_TMPDIR/expected_licenses $BATS_TEST_TMPDIR/actual_licenses | grep -v -f $BATS_TEST_TMPDIR/allowed_to_be_missing > $BATS_TEST_TMPDIR/actual_missing_licenses || true
 
-  echo "Please remove the following extra licenses, if any, from $LICENSES_TARGET:"
-  cat $BATS_TEST_TMPDIR/actual_extra_licenses
+  if [[ -s $BATS_TEST_TMPDIR/actual_extra_licenses ]]; then
+    echo "Please remove the following extra licenses from $LICENSES_TARGET:"
+    cat $BATS_TEST_TMPDIR/actual_extra_licenses
+  fi
 
-  echo "Please include the missing licenses, if any, for the following packages in $LICENSES_TARGET:"
-  cat $BATS_TEST_TMPDIR/actual_missing_licenses
+  if [[ -s $BATS_TEST_TMPDIR/actual_missing_licenses ]]; then
+    echo "Please include the missing licenses for the following packages in $LICENSES_TARGET:"
+    cat $BATS_TEST_TMPDIR/actual_missing_licenses
+  fi
 
   # Fail if either of the two "extras" or "missing" lists are present. If so,
   # then the user will see the above error messages.
@@ -180,7 +184,9 @@ EOF
 One or more test dependencies are not in the pip package.
 If these test dependencies need to be in the TensorFlow pip package, please
 add them to //tensorflow/tools/pip_package/BUILD. Otherwise, add the no_pip tag
-to the test. Here are the affected tests:
+to the test, or change code_check_full.bats in the SIG Build repository. That's
+https://github.com/tensorflow/build/blob/master/tf_sig_build_dockerfiles/devel.usertools/code_check_full.bats
+Here are the affected tests:
 EOF
     while read dep; do
       echo "For dependency $dep:"
@@ -195,7 +201,9 @@ EOF
 
 # The Python package is not allowed to depend on any CUDA packages.
 @test "Pip package doesn't depend on CUDA" {
-  run bazel cquery --experimental_cc_shared_library --@local_config_cuda//:enable_cuda \
+  bazel cquery \
+    --experimental_cc_shared_library \
+    --@local_config_cuda//:enable_cuda \
     "somepath(//tensorflow/tools/pip_package:build_pip_package, " \
     "@local_config_cuda//cuda:cudart + "\
     "@local_config_cuda//cuda:cudart + "\
@@ -203,18 +211,18 @@ EOF
     "@local_config_cuda//cuda:cudnn + "\
     "@local_config_cuda//cuda:curand + "\
     "@local_config_cuda//cuda:cusolver + "\
-    "@local_config_tensorrt//:tensorrt)" --keep_going
+    "@local_config_tensorrt//:tensorrt)" --keep_going 2>/dev/null > $BATS_TEST_TMPDIR/out
 
-  if [[ -e "$output" ]]; then
-    echo "There was a path found connecting //tensorflow/tools/pip_package:build_pip_package to a banned CUDA dependency:"
-    echo "$output"
-    return 1
-  fi
+  cat <<EOF
+There was a path found connecting //tensorflow/tools/pip_package:build_pip_package
+to a banned CUDA dependency. Here's the output from bazel query:
+EOF
+  cat $BATS_TEST_TMPDIR/out
+  [[ ! -s $BATS_TEST_TMPDIR/out ]]
 }
 
-# It's unclear how this could possibly be different.
-@test "Pip package doesn't depend on CUDA on Windows" {
-  run bazel cquery \
+@test "Pip package doesn't depend on CUDA for static builds (i.e. Windows)" {
+  bazel cquery \
     --experimental_cc_shared_library \
     --@local_config_cuda//:enable_cuda \
     --define framework_shared_object=false \
@@ -225,13 +233,17 @@ EOF
     "@local_config_cuda//cuda:cudnn + "\
     "@local_config_cuda//cuda:curand + "\
     "@local_config_cuda//cuda:cusolver + "\
-    "@local_config_tensorrt//:tensorrt)" --keep_going
+    "@local_config_tensorrt//:tensorrt)" --keep_going 2>/dev/null > $BATS_TEST_TMPDIR/out
 
-  if [[ -e "$output" ]]; then
-    echo "There was a path found connecting //tensorflow/tools/pip_package:build_pip_package to a banned CUDA dependency when '--define framework_shared_object' is on:"
-    echo "$output"
-    return 1
-  fi
+  cat <<EOF
+There was a path found connecting //tensorflow/tools/pip_package:build_pip_package
+to a banned CUDA dependency when '--define framework_shared_object=false' is set.
+This means that a CUDA target was probably included via an is_static condition,
+used when targeting platforms like Windows where we build statically instead
+of dynamically. Here's the output from bazel query:
+EOF
+  cat $BATS_TEST_TMPDIR/out
+  [[ ! -s $BATS_TEST_TMPDIR/out ]]
 }
 
 @test "All tensorflow.org/code links point to real files" {
@@ -252,11 +264,10 @@ EOF
 
 @test "No duplicate files on Windows" {
     cat <<EOF
-There are repeats of these filename(s) with different casing.
-Please rename files so there are no repeats.
-Rationale: for example, README.md and Readme.md would be the same file
-           on Windows. In this test, you would get a warning for
-           "readme.md" because it makes everything lowercase.
+Please rename files so there are no repeats. For example, README.md and
+Readme.md would be the same file on Windows. In this test, you would get a
+warning for "readme.md" because it makes everything lowercase. There are
+repeats of these filename(s) with different casing:
 EOF
     find . | tr '[A-Z]' '[a-z]' | sort | uniq -d | tee $BATS_FILE_TMPDIR/repeats
     [[ ! -s $BATS_FILE_TMPDIR/repeats ]]
