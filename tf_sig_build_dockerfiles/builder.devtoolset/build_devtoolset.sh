@@ -112,9 +112,9 @@ devtoolset-7)
   tar -xvjf "gcc-7.3.1-20180303.tar.bz2" --strip 1
   ;;
 devtoolset-8)
-  wget "http://vault.centos.org/centos/6/sclo/Source/rh/devtoolset-8/devtoolset-8-gcc-8.2.1-3.el6.src.rpm"
-  rpm2cpio "devtoolset-8-gcc-8.2.1-3.el6.src.rpm" |cpio -idmv
-  tar -xvf "gcc-8.2.1-20180905.tar.xz" --strip 1
+  wget "https://vault.centos.org/centos/7/sclo/Source/rh/devtoolset-8-gcc-8.3.1-3.el7.src.rpm"
+  rpm2cpio "devtoolset-8-gcc-8.3.1-3.el7.src.rpm" |cpio -idmv
+  tar -xvf "gcc-8.3.1-20190311.tar.xz" --strip 1
   ;;
 esac
 
