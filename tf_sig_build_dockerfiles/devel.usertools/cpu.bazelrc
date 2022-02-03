@@ -51,10 +51,10 @@ test --test_summary=terse
 # bazel test invocation as normal.
 test:nonpip --test_tag_filters=-no_oss,-oss_serial,-gpu,-tpu,-benchmark-test,-v1only
 test:nonpip --build_tag_filters=-no_oss,-oss_serial,-gpu,-tpu,-benchmark-test,-v1only
-#test:nonpip -- //tensorflow/... -//tensorflow/python/integration_testing/... -//tensorflow/compiler/tf2tensorrt/... -//tensorflow/compiler/xrt/... -//tensorflow/core/tpu/... -//tensorflow/lite/...
+test:nonpip -- //tensorflow/... -//tensorflow/python/integration_testing/... -//tensorflow/compiler/tf2tensorrt/... -//tensorflow/compiler/xrt/... -//tensorflow/core/tpu/... -//tensorflow/lite/...
 
 # Test a specific test that should be failing
-test:nonpip -- //tensorflow/python:histogram_ops_test_cpu
+# test:nonpip -- //tensorflow/python:histogram_ops_test_cpu
 
 # "pip tests" run a similar suite of tests the "nonpip" tests, but do something
 # odd to attempt to validate the quality of the pip package. The wheel is
@@ -79,6 +79,5 @@ test:pip --test_tag_filters=-nopip,-no_pip,-no_oss,-oss_serial,-v1only
 test:pip --build_tag_filters=-nopip,-no_pip,-no_oss,-oss_serial,-v1only
 test:pip --define=no_tensorflow_py_deps=true
 # Test a specific test that should be failing
-test:pip -- /bazel_pip/tensorflow/python:histogram_ops_test_cpu
-
-#test:pip -- //bazel_pip/tensorflow/... -//bazel_pip/tensorflow/python/integration_testing/... -//bazel_pip/tensorflow/compiler/tf2tensorrt/... -//bazel_pip/tensorflow/compiler/xrt/... -//bazel_pip/tensorflow/core/tpu/... -//bazel_pip/tensorflow/lite/...
+#test:pip -- /bazel_pip/tensorflow/python:histogram_ops_test_cpu
+test:pip -- //bazel_pip/tensorflow/... -//bazel_pip/tensorflow/python/integration_testing/... -//bazel_pip/tensorflow/compiler/tf2tensorrt/... -//bazel_pip/tensorflow/compiler/xrt/... -//bazel_pip/tensorflow/core/tpu/... -//bazel_pip/tensorflow/lite/...
