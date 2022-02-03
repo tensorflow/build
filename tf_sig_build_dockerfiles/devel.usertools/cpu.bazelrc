@@ -38,15 +38,17 @@ build --crosstool_top=@ubuntu18.04-gcc8_manylinux2014-cuda11.2-cudnn8.1-tensorrt
 # set cachebust to manylinux2014
 # build --action_env=CACHEBUST=manylinux2014
 
-# The following test-related settings are experimental.
-
+# Test-related settings below this point.
 test --build_tests_only --keep_going --test_output=errors --verbose_failures=true
 test --local_test_jobs=HOST_CPUS
-test --flaky_test_attempts=3 --test_size_filters=small,medium
 test --test_env=LD_LIBRARY_PATH
-test --test_lang_filters=py 
+# Give only the list of failed tests at the end of the log
+test --test_summary=terse
 
 # "nonpip" tests are regular py_test tests.
+# Pass --config=nonpip to run the same suite of tests. If you want to run just
+# one test for investigation, you don't need --config=nonpip; just run the
+# bazel test invocation as normal.
 test:nonpip --test_tag_filters=-no_oss,-oss_serial,-gpu,-tpu,-benchmark-test,-v1only
 test:nonpip --build_tag_filters=-no_oss,-oss_serial,-gpu,-tpu,-benchmark-test,-v1only
 #test:nonpip -- //tensorflow/... -//tensorflow/python/integration_testing/... -//tensorflow/compiler/tf2tensorrt/... -//tensorflow/compiler/xrt/... -//tensorflow/core/tpu/... -//tensorflow/lite/...
@@ -63,9 +65,15 @@ test:nonpip -- //tensorflow/python:histogram_ops_test_cpu
 # through bazel. This must be done in a different root directory, //bazel_pip/...,
 # because "import tensorflow" run from the root directory would instead import
 # the folder instead of the venv package.
-test:pip --action_env PYTHON_BIN_PATH="/bazel_pip/bin/python3"
-test:pip --action_env PYTHON_LIB_PATH="/bazel_pip/lib/python3/site-packages"
-test:pip --python_path="/bazel_pip/bin/python3"
+# 
+# Pass --config=pip to run the same suite of tests. If you want to run just one
+# test for investigation, you'll need --config=pip_venv instead, and then you
+# can specify whichever target you want.
+test:pip_venv --action_env PYTHON_BIN_PATH="/bazel_pip/bin/python3"
+test:pip_venv --action_env PYTHON_LIB_PATH="/bazel_pip/lib/python3/site-packages"
+test:pip_venv --python_path="/bazel_pip/bin/python3"
+test:pip_venv --define=no_tensorflow_py_deps=true
+test:pip --config=pip_venv
 # Yes, we don't exclude the gpu tests on pip for some reason.
 test:pip --test_tag_filters=-nopip,-no_pip,-no_oss,-oss_serial,-v1only
 test:pip --build_tag_filters=-nopip,-no_pip,-no_oss,-oss_serial,-v1only

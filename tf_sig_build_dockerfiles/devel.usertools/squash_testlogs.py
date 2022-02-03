@@ -26,11 +26,9 @@ except subprocess.CalledProcessError as e:
 
 # For test cases, only show the ones that failed that have text (a log)
 seen = set()
+runfiles_matcher = re.compile(r"(/.*\.runfiles/)")
 
 for f in files.strip().splitlines():
-  # Include only "test.xml" files, as "attempt_x" files repeat the same thing.
-  if not f.endswith(b"test.xml"):
-    continue
   # Just ignore any failures, they're probably not important
   try:
     r = JUnitXml.fromfile(f)
@@ -42,17 +40,27 @@ for f in files.strip().splitlines():
     for p in testsuite._elem.xpath('.//testcase'):
       if not len(p):
         testsuite._elem.remove(p)
-    # Convert "testsuite > testcase,system-out" to "testsuite > testcase"
+    # Convert "testsuite > testcase,system-out" to "testsuite > testcase > error"
     for p in testsuite._elem.xpath('.//system-out'):
       for c in p.getparent().xpath('.//error | .//failure'):
         c.text = p.text
       p.getparent().remove(p)
-    # Include a note about 
+    # Remove duplicate results of the same exact test (e.g. due to retry attempts)
+    for p in testsuite._elem.xpath('.//error | .//failure'):
+      key = p.getparent().get("name", "") + p.text
+      if key in seen:
+        testsuite._elem.remove(p.getparent())
+      else:
+        seen.add(key)
+    # Include helpful notes
     for p in testsuite._elem.xpath('.//error | .//failure'):
       short_name = re.search(r'/(bazel_pip|tensorflow)/.*', f.decode("utf-8")).group(0)
       p.text += f"\nNOTE: From /{short_name}"
+      p.text = runfiles_matcher.sub("[testroot]/", p.text)
       if "bazel_pip" in short_name:
-        p.text += "\nNOTE: This was a pip test. Remove 'bazel_pip' to find the real target."
+        p.text += "\nNOTE: This is a --config=pip test. Remove 'bazel_pip' to find the file."
+      p.text += f"\nNOTE: The list of failures from the XML includes flakes and attempts as well."
+      p.text += f"\n      The error(s) that caused the invocation to fail may not include this testcase."
     # Remove this testsuite if it doesn't have anything in it any more
     if len(testsuite) == 0:
       r._elem.remove(testsuite._elem)

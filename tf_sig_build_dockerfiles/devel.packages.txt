@@ -1,5 +1,4 @@
 # All required CUDA packages
-nvidia-profiler
 cuda-command-line-tools-11-2
 cuda-cudart-dev-11-2
 cuda-cupti-11-2
@@ -27,11 +26,14 @@ automake
 build-essential
 ca-certificates
 clang-8
-clang-format
+clang-format-12
+colordiff
 curl
 ffmpeg
 gdb
 git
+jq
+less
 libcurl3-dev
 libcurl4-openssl-dev
 libfreetype6-dev

@@ -51,22 +51,38 @@ it's done, you can use the commands below to test your changes. Just replace
 `tensorflow/build:latest-python3.9` with `my-tf-devel` to use your image
 instead.
 
-## Building `tf-nightly` packages
+### Automatic GCR.io Builds for Presubmits
 
-The TensorFlow team's scripts aren't visible, but use the configuration files
-which are included in the containers. Here is how to build a TensorFlow package
-with the same configuration as `tf-nightly`.
+TensorFlow team members (i.e. Google employees) can apply a `Build and deploy
+to gcr.io for staging` tag to their PRs to the Dockerfiles, as long as the PR
+is being developed on a branch of this repository, not a fork. Unfortunately
+this is not available for non-Googler contributors for security reasons.
+
+## Run the TensorFlow Team's Nightly Test Suites with Docker
+
+The TensorFlow DevInfra team runs a daily test suite that builds `tf-nightly`
+and runs a `bazel test` suite on both the Pip package (the "pip" tests) and
+on the source code itself (the "nonpip" tests). These test scripts are often
+referred to as "The Nightly Tests" and can be a common reason for a TF PR to be
+reverted. The build scripts aren't visible to external users, but they use
+the configuration files which are included in these containers. Our test suites,
+which include the build of `tf-nightly`, are easy to replicate with these
+containers, and here is how you can do it.
+
+Presubmits are not using these containers... yet.
 
 Here are some important notes to keep in mind:
 
 - The Git commit of a `tf-nightly` package on pypi.org is shown in
   `tf.version.GIT_VERSION`, which will look something like
   `v1.12.1-67282-g251085598b7`. The final section, `g251085598b7`, is a short git
-   hash. The `nightly` tag on GitHub is not related to the `tf-nightly` packages. 
+   hash. The `nightly` tag on GitHub is not related to the `tf-nightly` packages.
 
 - If you interrupt a `docker exec` command with `ctrl-c`, you will get your
-  shell back but the command will continue to run. You cannot reattach to it.
-  If you have any suggestions for handling this, let us know.
+  shell back but the command will continue to run. You cannot reattach to it,
+  but you can kill it with `docker kill tf` (or `docker kill the-container-name`).
+  This will destroy your container but will not harm your work since it's mounted.
+  If you have any suggestions for handling this better, let us know.
 
 Now let's build `tf-nightly`.
 
@@ -92,16 +108,16 @@ Now let's build `tf-nightly`.
     ```bash
     docker pull tensorflow/build:latest-python3.9
     ```
-  
+
 4. Start a backgrounded Docker container with the three folders mounted.
 
     - Mount the TensorFlow source code to `/tf/tensorflow`.
     - Mount the directory for built packages to `/tf/pkg`.
     - Mount the bazel cache to `/tf/cache`. You don't need `/tf/cache` if
       you're going to use the remote cache.
-    
+
     Here are the arguments we're using:
-    
+
     - `--name tf`: Names the container `tf` so we can refer to it later.
     - `-w /tf/tensorflow`: All commands run in the `/tf/tensorflow` directory,
       where the TF source code is.
@@ -119,16 +135,23 @@ Now let's build `tf-nightly`.
       tensorflow/build:latest-python3.9 \
       bash
     ```
-  
-5. Apply the `update_version.py` script that changes the TensorFlow version to
+
+Now you can continue on to either build `tf-nightly` and then (optionally)
+run a test suite on the pip package, or run a test suite on the TF code
+directly. The TensorFlow DevInfra team does all of these for Nightly and
+TF Release tests.
+
+### Build `tf-nightly` and run Pip tests
+
+1. Apply the `update_version.py` script that changes the TensorFlow version to
    `X.Y.Z.devYYYYMMDD`. This is used for `tf-nightly` on PyPI and is technically
    optional.
 
     ```bash
     docker exec tf python3 tensorflow/tools/ci_build/update_version.py --nightly
     ```
-  
-6. Build TensorFlow by following the instructions under one of the collapsed
+
+2. Build TensorFlow by following the instructions under one of the collapsed
    sections below. You can build both CPU and GPU packages without a GPU. TF
    DevInfra's remote cache is better for building TF only once, but if you
    build over and over, it will probably be better in the long run to use a
@@ -157,7 +180,7 @@ Now let's build `tf-nightly`.
       --cpu \
       --nightly_flag
     ```
-    
+
     </details>
 
     <details><summary>TF Nightly GPU - Remote Cache</summary>
@@ -169,7 +192,7 @@ Now let's build `tf-nightly`.
     build --config=sigbuild_remote_cache \
     tensorflow/tools/pip_package:build_pip_package
     ```
-    
+
     And then construct the pip package:
 
     ```
@@ -178,7 +201,7 @@ Now let's build `tf-nightly`.
       /tf/pkg \
       --nightly_flag
     ```
-    
+
     </details>
 
     <details><summary>TF Nightly CPU - Local Cache</summary>
@@ -202,7 +225,7 @@ Now let's build `tf-nightly`.
       --cpu \
       --nightly_flag
     ```
-    
+
     </details>
 
     <details><summary>TF Nightly GPU - Local Cache</summary>
@@ -217,7 +240,7 @@ Now let's build `tf-nightly`.
     build --config=sigbuild_local_cache \
     tensorflow/tools/pip_package:build_pip_package
     ```
-    
+
     And then construct the pip package:
 
     ```
@@ -226,24 +249,152 @@ Now let's build `tf-nightly`.
       /tf/pkg \
       --nightly_flag
     ```
-    
+
     </details>
 
-7. Run the helper script that checks for manylinux compliance, renames the
+3. Run the helper script that checks for manylinux compliance, renames the
    wheels, and then checks the size of the packages.
 
     ```
     docker exec tf /usertools/rename_and_verify_wheels.sh
     ```
-  
-8. Take a look at the new wheel packages you built! They may be owned by `root`
+
+4. Take a look at the new wheel packages you built! They may be owned by `root`
    because of how Docker volume permissions work.
 
     ```
     ls -al /tmp/packages
     ```
 
-9. Shut down and remove the container when you are finished.
+5. To continue on to running the Pip tests, create a venv and install the
+   testing packages:
+
+    ```
+    docker exec tf /usertools/setup_venv_test.sh bazel_pip "/tf/pkg/tf_nightly*.whl"
+    ```
+
+6. And now run the tests depending on your target platform: `--config=pip`
+   includes the same test suite that is run by the DevInfra team every night.
+   If you want to run a specific test instead of the whole suite, pass
+   `--config=pip_venv` instead, and then set the target on the command like
+   normal.
+
+    <details><summary>TF Nightly CPU - Remote Cache</summary>
+
+    Build the sources with Bazel:
+
+    ```
+    docker exec tf bazel --bazelrc=/usertools/cpu.bazelrc \
+    test --config=sigbuild_remote_cache \
+    --config=pip
+    ```
+
+    </details>
+
+    <details><summary>TF Nightly GPU - Remote Cache</summary>
+
+    Build the sources with Bazel:
+
+    ```
+    docker exec tf bazel --bazelrc=/usertools/gpu.bazelrc \
+    test --config=sigbuild_remote_cache \
+    --config=pip
+    ```
+
+    </details>
+
+    <details><summary>TF Nightly CPU - Local Cache</summary>
+
+    Make sure you have a directory mounted to the container in `/tf/cache`!
+
+    Build the sources with Bazel:
+
+    ```
+    docker exec tf bazel --bazelrc=/usertools/cpu.bazelrc \
+    test --config=sigbuild_local_cache \
+    --config=pip
+    ```
+
+    </details>
+
+    <details><summary>TF Nightly GPU - Local Cache</summary>
+
+    Make sure you have a directory mounted to the container in `/tf/cache`!
+
+    Build the sources with Bazel:
+
+    ```
+    docker exec tf \
+    bazel --bazelrc=/usertools/gpu.bazelrc \
+    test --config=sigbuild_local_cache \
+    --config=pip
+    ```
+
+    </details>
+
+### Run Nonpip Tests
+
+1. Run the tests depending on your target platform. `--config=nonpip` includes
+   the same test suite that is run by the DevInfra team every night. If you
+   want to run a specific test instead of the whole suite, you do not need
+   `--config=nonpip` at all; just set the target on the command line like usual.
+
+    <details><summary>TF Nightly CPU - Remote Cache</summary>
+
+    Build the sources with Bazel:
+
+    ```
+    docker exec tf bazel --bazelrc=/usertools/cpu.bazelrc \
+    test --config=sigbuild_remote_cache \
+    --config=nonpip
+    ```
+
+    </details>
+
+    <details><summary>TF Nightly GPU - Remote Cache</summary>
+
+    Build the sources with Bazel:
+
+    ```
+    docker exec tf bazel --bazelrc=/usertools/gpu.bazelrc \
+    test --config=sigbuild_remote_cache \
+    --config=nonpip
+    ```
+
+    </details>
+
+    <details><summary>TF Nightly CPU - Local Cache</summary>
+
+    Make sure you have a directory mounted to the container in `/tf/cache`!
+
+    Build the sources with Bazel:
+
+    ```
+    docker exec tf bazel --bazelrc=/usertools/cpu.bazelrc \
+    test --config=sigbuild_local_cache \
+    --config=nonpip
+    ```
+
+    </details>
+
+    <details><summary>TF Nightly GPU - Local Cache</summary>
+
+    Make sure you have a directory mounted to the container in `/tf/cache`!
+
+    Build the sources with Bazel:
+
+    ```
+    docker exec tf \
+    bazel --bazelrc=/usertools/gpu.bazelrc \
+    test --config=sigbuild_local_cache \
+    --config=nonpip
+    ```
+
+    </details>
+
+### Clean Up
+
+1. Shut down and remove the container when you are finished.
 
     ```
     docker stop tf
