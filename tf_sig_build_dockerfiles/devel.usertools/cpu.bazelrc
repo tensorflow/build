@@ -36,7 +36,7 @@ build --profile=/tf/pkg/profile.json
 build --crosstool_top=@ubuntu18.04-gcc8_manylinux2014-cuda11.2-cudnn8.1-tensorrt7.2_config_cuda//crosstool:toolchain
 
 # set cachebust to manylinux2014
-# build --action_env=CACHEBUST=manylinux2014
+build --action_env=CACHEBUST=manylinux2014
 
 # Test-related settings below this point.
 test --build_tests_only --keep_going --test_output=errors --verbose_failures=true
