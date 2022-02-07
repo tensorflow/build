@@ -136,6 +136,12 @@ Now let's build `tf-nightly`.
       bash
     ```
 
+    Note: if you wish to use your own Google Cloud Platform credentials for
+    e.g. RBE, you may also wish to set `-v
+    $HOME/.config/gcloud:/root/.config/gcloud` to make your credentials
+    available to bazel. You don't need to do this unless you know what you're
+    doing.
+
 Now you can continue on to any of:
 
 - Build `tf-nightly` and then (optionally) run a test suite on the pip package
@@ -143,8 +149,6 @@ Now you can continue on to any of:
 - Run a test suite on the TF code directly (the "nonpip" suite)
 - Build the libtensorflow packages (the "libtensorflow" suite)
 - Run a code-correctness check (the "code_check" suite)
-
-The TensorFlow DevInfra team does all of these for Nightly and TF Release tests.
 
 ### Build `tf-nightly` and run Pip tests
 
