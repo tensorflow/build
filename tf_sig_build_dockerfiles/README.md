@@ -136,10 +136,15 @@ Now let's build `tf-nightly`.
       bash
     ```
 
-Now you can continue on to either build `tf-nightly` and then (optionally)
-run a test suite on the pip package, or run a test suite on the TF code
-directly. The TensorFlow DevInfra team does all of these for Nightly and
-TF Release tests.
+Now you can continue on to any of:
+
+- Build `tf-nightly` and then (optionally) run a test suite on the pip package
+  (the "pip" suite)
+- Run a test suite on the TF code directly (the "nonpip" suite)
+- Build the libtensorflow packages (the "libtensorflow" suite)
+- Run a code-correctness check (the "code_check" suite)
+
+The TensorFlow DevInfra team does all of these for Nightly and TF Release tests.
 
 ### Build `tf-nightly` and run Pip tests
 
@@ -391,6 +396,150 @@ TF Release tests.
     ```
 
     </details>
+
+### Build and test libtensorflow
+
+1. Run the tests depending on your target platform.
+   `--config=libtensorflow_test` includes the same test suite that is run by
+   the DevInfra team every night. If you want to run a specific test instead of
+   the whole suite, just set the target on the command line like usual.
+
+    <details><summary>TF Nightly CPU - Remote Cache</summary>
+
+    Build the sources with Bazel:
+
+    ```
+    docker exec tf bazel --bazelrc=/usertools/cpu.bazelrc \
+    test --config=sigbuild_remote_cache \
+    --config=libtensorflow_test
+    ```
+
+    </details>
+
+    <details><summary>TF Nightly GPU - Remote Cache</summary>
+
+    Build the sources with Bazel:
+
+    ```
+    docker exec tf bazel --bazelrc=/usertools/gpu.bazelrc \
+    test --config=sigbuild_remote_cache \
+    --config=libtensorflow_test
+    ```
+
+    </details>
+
+    <details><summary>TF Nightly CPU - Local Cache</summary>
+
+    Make sure you have a directory mounted to the container in `/tf/cache`!
+
+    Build the sources with Bazel:
+
+    ```
+    docker exec tf bazel --bazelrc=/usertools/cpu.bazelrc \
+    test --config=sigbuild_local_cache \
+    --config=libtensorflow_test
+    ```
+
+    </details>
+
+    <details><summary>TF Nightly GPU - Local Cache</summary>
+
+    Make sure you have a directory mounted to the container in `/tf/cache`!
+
+    Build the sources with Bazel:
+
+    ```
+    docker exec tf \
+    bazel --bazelrc=/usertools/gpu.bazelrc \
+    test --config=sigbuild_local_cache \
+    --config=libtensorflow_test
+    ```
+
+    </details>
+
+1. Build the libtensorflow packages.
+
+    <details><summary>TF Nightly CPU - Remote Cache</summary>
+
+    Build the sources with Bazel:
+
+    ```
+    docker exec tf bazel --bazelrc=/usertools/cpu.bazelrc \
+    test --config=sigbuild_remote_cache \
+    --config=libtensorflow_build
+    ```
+
+    </details>
+
+    <details><summary>TF Nightly GPU - Remote Cache</summary>
+
+    Build the sources with Bazel:
+
+    ```
+    docker exec tf bazel --bazelrc=/usertools/gpu.bazelrc \
+    test --config=sigbuild_remote_cache \
+    --config=libtensorflow_build
+    ```
+
+    </details>
+
+    <details><summary>TF Nightly CPU - Local Cache</summary>
+
+    Make sure you have a directory mounted to the container in `/tf/cache`!
+
+    Build the sources with Bazel:
+
+    ```
+    docker exec tf bazel --bazelrc=/usertools/cpu.bazelrc \
+    test --config=sigbuild_local_cache \
+    --config=libtensorflow_build
+    ```
+
+    </details>
+
+    <details><summary>TF Nightly GPU - Local Cache</summary>
+
+    Make sure you have a directory mounted to the container in `/tf/cache`!
+
+    Build the sources with Bazel:
+
+    ```
+    docker exec tf \
+    bazel --bazelrc=/usertools/gpu.bazelrc \
+    test --config=sigbuild_local_cache \
+    --config=libtensorflow_build
+    ```
+
+    </details>
+
+1. Run the `repack_libtensorflow.sh` utility to repack and rename the archives.
+
+    <details><summary>CPU</summary>
+
+    ```
+    docker exec tf /usertools/repack_libtensorflow.sh /tf/pkg "-cpu-linux-x86_64"
+    ```
+
+    </details>
+
+    <details><summary>GPU</summary>
+
+    ```
+    docker exec tf /usertools/repack_libtensorflow.sh /tf/pkg "-gpu-linux-x86_64"
+    ```
+
+    </details>
+
+### Run a code check
+
+1. Every night the TensorFlow team runs `code_check_full`, which contains a
+   suite of checks that were gradually introduced over TensorFlow's lifetime
+   to prevent certain unsable code states. This check has supplanted the old
+   "sanity" or "ci_sanity" checks.
+
+    ```
+    docker exec tf bats /usertools/code_check_full.bats --timing --formatter junit
+    ```
 
 ### Clean Up
 
