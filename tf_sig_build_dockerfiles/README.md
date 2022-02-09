@@ -73,10 +73,11 @@ Presubmits are not using these containers... yet.
 
 Here are some important notes to keep in mind:
 
-- The Git commit of a `tf-nightly` package on pypi.org is shown in
-  `tf.version.GIT_VERSION`, which will look something like
-  `v1.12.1-67282-g251085598b7`. The final section, `g251085598b7`, is a short git
-   hash. The `nightly` tag on GitHub is not related to the `tf-nightly` packages.
+- The Ubuntu CI jobs that build the `tf-nightly` package build at the GitHub
+  `nightly` tag. You can see the specific commit of a `tf-nightly` package on
+  pypi.org in `tf.version.GIT_VERSION`, which will look something like
+  `v1.12.1-67282-g251085598b7`. The final section, `g251085598b7`, is a short
+  git hash.
 
 - If you interrupt a `docker exec` command with `ctrl-c`, you will get your
   shell back but the command will continue to run. You cannot reattach to it,
