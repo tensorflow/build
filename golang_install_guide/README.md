@@ -36,7 +36,7 @@ library is required for use of the TensorFlow Go package at runtime. For example
 on Linux (64-bit, x86):
 
   ```sh
-  $ curl -L https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-cpu-linux-x86_64-2.7.0.tar.gz | tar xz --directory /usr/local
+  $ curl -L https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-cpu-linux-x86_64-2.8.0.tar.gz | tar xz --directory /usr/local
   $ ldconfig
   ```
 
@@ -74,7 +74,7 @@ Instead, follow these instructions.***
   workspace for `/go` in the command below.
 
   ```sh
-  $ git clone --branch v2.7.0 https://github.com/tensorflow/tensorflow.git /go/src/github.com/tensorflow/tensorflow
+  $ git clone --branch v2.8.0 https://github.com/tensorflow/tensorflow.git /go/src/github.com/tensorflow/tensorflow
   ```
 
 - Change the working directory to the base of the cloned TensorFlow repository,
@@ -85,10 +85,10 @@ Instead, follow these instructions.***
    $ cd /go/src/github.com/tensorflow/tensorflow
    ```
 
-- Apply a set of required patches to the TensorFlow source code.
+- Apply a required patch to the TensorFlow source code.
 
    ```sh
-   $ git cherry-pick --strategy-option=no-renames --no-commit 41bfbe8 74bf9d1 a33fba8 aa700a8 b451698 f6a59d6
+   $ git cherry-pick --strategy-option=no-renames --no-commit 65a5434
    ```
 
 - Initialize a new go.mod file.
@@ -127,7 +127,7 @@ workspace for `/go` in the command below:
 
 ```sh
 $ go mod init hello-world
-$ go mod edit -require github.com/tensorflow/tensorflow@v2.7.0+incompatible
+$ go mod edit -require github.com/tensorflow/tensorflow@v2.8.0+incompatible
 $ go mod edit -replace github.com/tensorflow/tensorflow=/go/src/github.com/tensorflow/tensorflow
 $ go mod tidy
 ```
@@ -173,7 +173,7 @@ func main() {
 
 ```sh
 $ go mod init app
-$ go mod edit -require github.com/tensorflow/tensorflow@v2.7.0+incompatible
+$ go mod edit -require github.com/tensorflow/tensorflow@v2.8.0+incompatible
 $ go mod edit -replace github.com/tensorflow/tensorflow=/go/src/github.com/tensorflow/tensorflow
 $ go mod tidy
 ```
