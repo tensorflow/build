@@ -404,6 +404,61 @@ Now you can continue on to any of:
 
 ### Build and test libtensorflow
 
+1. Build the libtensorflow packages.
+
+    <details><summary>TF Nightly CPU - Remote Cache</summary>
+
+    Build the sources with Bazel:
+
+    ```
+    docker exec tf bazel --bazelrc=/usertools/cpu.bazelrc \
+    build --config=sigbuild_remote_cache \
+    --config=libtensorflow_build
+    ```
+
+    </details>
+
+    <details><summary>TF Nightly GPU - Remote Cache</summary>
+
+    Build the sources with Bazel:
+
+    ```
+    docker exec tf bazel --bazelrc=/usertools/gpu.bazelrc \
+    build --config=sigbuild_remote_cache \
+    --config=libtensorflow_build
+    ```
+
+    </details>
+
+    <details><summary>TF Nightly CPU - Local Cache</summary>
+
+    Make sure you have a directory mounted to the container in `/tf/cache`!
+
+    Build the sources with Bazel:
+
+    ```
+    docker exec tf bazel --bazelrc=/usertools/cpu.bazelrc \
+    build --config=sigbuild_local_cache \
+    --config=libtensorflow_build
+    ```
+
+    </details>
+
+    <details><summary>TF Nightly GPU - Local Cache</summary>
+
+    Make sure you have a directory mounted to the container in `/tf/cache`!
+
+    Build the sources with Bazel:
+
+    ```
+    docker exec tf \
+    bazel --bazelrc=/usertools/gpu.bazelrc \
+    build --config=sigbuild_local_cache \
+    --config=libtensorflow_build
+    ```
+
+    </details>
+
 1. Run the tests depending on your target platform.
    `--config=libtensorflow_test` includes the same test suite that is run by
    the DevInfra team every night. If you want to run a specific test instead of
@@ -458,61 +513,6 @@ Now you can continue on to any of:
     bazel --bazelrc=/usertools/gpu.bazelrc \
     test --config=sigbuild_local_cache \
     --config=libtensorflow_test
-    ```
-
-    </details>
-
-1. Build the libtensorflow packages.
-
-    <details><summary>TF Nightly CPU - Remote Cache</summary>
-
-    Build the sources with Bazel:
-
-    ```
-    docker exec tf bazel --bazelrc=/usertools/cpu.bazelrc \
-    test --config=sigbuild_remote_cache \
-    --config=libtensorflow_build
-    ```
-
-    </details>
-
-    <details><summary>TF Nightly GPU - Remote Cache</summary>
-
-    Build the sources with Bazel:
-
-    ```
-    docker exec tf bazel --bazelrc=/usertools/gpu.bazelrc \
-    test --config=sigbuild_remote_cache \
-    --config=libtensorflow_build
-    ```
-
-    </details>
-
-    <details><summary>TF Nightly CPU - Local Cache</summary>
-
-    Make sure you have a directory mounted to the container in `/tf/cache`!
-
-    Build the sources with Bazel:
-
-    ```
-    docker exec tf bazel --bazelrc=/usertools/cpu.bazelrc \
-    test --config=sigbuild_local_cache \
-    --config=libtensorflow_build
-    ```
-
-    </details>
-
-    <details><summary>TF Nightly GPU - Local Cache</summary>
-
-    Make sure you have a directory mounted to the container in `/tf/cache`!
-
-    Build the sources with Bazel:
-
-    ```
-    docker exec tf \
-    bazel --bazelrc=/usertools/gpu.bazelrc \
-    test --config=sigbuild_local_cache \
-    --config=libtensorflow_build
     ```
 
     </details>
