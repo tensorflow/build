@@ -402,7 +402,7 @@ Now you can continue on to any of:
 
     </details>
 
-### Build and test libtensorflow
+### Test, build and package libtensorflow
 
 1. Run the tests depending on your target platform.
    `--config=libtensorflow_test` includes the same test suite that is run by
@@ -410,8 +410,6 @@ Now you can continue on to any of:
    the whole suite, just set the target on the command line like usual.
 
     <details><summary>TF Nightly CPU - Remote Cache</summary>
-
-    Build the sources with Bazel:
 
     ```
     docker exec tf bazel --bazelrc=/usertools/cpu.bazelrc \
@@ -422,8 +420,6 @@ Now you can continue on to any of:
     </details>
 
     <details><summary>TF Nightly GPU - Remote Cache</summary>
-
-    Build the sources with Bazel:
 
     ```
     docker exec tf bazel --bazelrc=/usertools/gpu.bazelrc \
@@ -437,8 +433,6 @@ Now you can continue on to any of:
 
     Make sure you have a directory mounted to the container in `/tf/cache`!
 
-    Build the sources with Bazel:
-
     ```
     docker exec tf bazel --bazelrc=/usertools/cpu.bazelrc \
     test --config=sigbuild_local_cache \
@@ -450,8 +444,6 @@ Now you can continue on to any of:
     <details><summary>TF Nightly GPU - Local Cache</summary>
 
     Make sure you have a directory mounted to the container in `/tf/cache`!
-
-    Build the sources with Bazel:
 
     ```
     docker exec tf \
@@ -466,11 +458,9 @@ Now you can continue on to any of:
 
     <details><summary>TF Nightly CPU - Remote Cache</summary>
 
-    Build the sources with Bazel:
-
     ```
     docker exec tf bazel --bazelrc=/usertools/cpu.bazelrc \
-    test --config=sigbuild_remote_cache \
+    build --config=sigbuild_remote_cache \
     --config=libtensorflow_build
     ```
 
@@ -478,11 +468,9 @@ Now you can continue on to any of:
 
     <details><summary>TF Nightly GPU - Remote Cache</summary>
 
-    Build the sources with Bazel:
-
     ```
     docker exec tf bazel --bazelrc=/usertools/gpu.bazelrc \
-    test --config=sigbuild_remote_cache \
+    build --config=sigbuild_remote_cache \
     --config=libtensorflow_build
     ```
 
@@ -492,11 +480,9 @@ Now you can continue on to any of:
 
     Make sure you have a directory mounted to the container in `/tf/cache`!
 
-    Build the sources with Bazel:
-
     ```
     docker exec tf bazel --bazelrc=/usertools/cpu.bazelrc \
-    test --config=sigbuild_local_cache \
+    build --config=sigbuild_local_cache \
     --config=libtensorflow_build
     ```
 
@@ -506,12 +492,10 @@ Now you can continue on to any of:
 
     Make sure you have a directory mounted to the container in `/tf/cache`!
 
-    Build the sources with Bazel:
-
     ```
     docker exec tf \
     bazel --bazelrc=/usertools/gpu.bazelrc \
-    test --config=sigbuild_local_cache \
+    build --config=sigbuild_local_cache \
     --config=libtensorflow_build
     ```
 
