@@ -104,8 +104,8 @@ EOF
 }
 
 # This test ensures that all the targets built into the Python package include
-# their dependencies. It's a rewritten version of an older Python script that
-# was very difficult to understand. See
+# their dependencies. It's a rewritten version of the "smoke test", an older
+# Python script that was very difficult to understand. See
 # https://github.com/tensorflow/tensorflow/blob/master/tensorflow/tools/pip_package/pip_smoke_test.py
 @test "Pip package includes all required //tensorflow dependencies" {
   # grep patterns for packages whose dependencies can be ignored
@@ -275,10 +275,18 @@ EOF
 
 # It's unclear why, but running this on //tensorflow/... is faster than running
 # only on affected targets, usually. There are targets in //tensorflow/lite that
-# don't pass --nobuild, so they're on their own. It's unclear what value this
-# test really provides, since buildifier should be checking for invalid files.
-@test "bazel nobuild passes on all of TF except TF Lite" {
-    bazel build --experimental_cc_shared_library --nobuild  -- //tensorflow/... -//tensorflow/lite/...
+# don't pass --nobuild, so they're on their own.
+#
+# Although buildifier checks for formatting as well, "bazel build nobuild"
+# checks for cross-file issues like bad includes or missing BUILD definitions.
+#
+# We can't test on the windows toolchains because they're using a legacy
+# toolchain format (or something) that specifies the toolchain directly instead
+# of as a "repository". They can't be valid on Linux because Linux can't do
+# anything with a Windows-only toolchain, and bazel errors if trying to build
+# that directory.
+@test "bazel nobuild passes on all of TF except TF Lite and win toolchains" {
+    bazel build --experimental_cc_shared_library --nobuild --keep_going -- //tensorflow/... -//tensorflow/lite/... -//tensorflow/tools/toolchains/win/... -//tensorflow/tools/toolchains/win_1803/...
 }
 
 
