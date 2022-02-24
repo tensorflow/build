@@ -37,7 +37,7 @@ Want to add your own project to this list? It's easy: check out
 
 ### Docker
 
-* [**Manylinux 2014 Docker Images**](https://github.com/tensorflow/build/tree/master/manylinux2014_docker_images):
+* [**Manylinux 2014 Docker Images**](manylinux2014_docker_images):
   `manylinux2014` build environment for TensorFlow packages.
 * [**Distroless Dockerfiles**](https://github.com/uvarc/rivanna-docker):
   Distroless ([info](https://github.com/GoogleContainerTools)) TensorFlow
