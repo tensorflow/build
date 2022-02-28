@@ -5,11 +5,11 @@
 setup_file() {
     cd /tf/tensorflow
     bazel version  # Start the bazel server
-    # Only shows Added, Changed, Modified, Renamed, and Type-changed files
     # Note that you could generate a list of all the affected targets with e.g.:
     # bazel query $(paste -sd "+" $BATS_FILE_TMPDIR/changed_files) --keep_going
     # This assumes that origin/master will always be the correct base branch
     # comparison... maybe this could be optionally passed in from GitHub Actions
+    # Only shows Added, Changed, Modified, Renamed, and Type-changed files
     git diff --diff-filter ACMRT --name-only origin/master > $BATS_FILE_TMPDIR/changed_files
 }
 
