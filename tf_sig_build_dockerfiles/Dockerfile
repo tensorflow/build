@@ -41,6 +41,12 @@ RUN curl -sSL https://sdk.cloud.google.com > /tmp/gcl && bash /tmp/gcl --install
 # RUN wget https://github.com/llvm/llvm-project/releases/download/llvmorg-13.0.0/clang+llvm-13.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz -O /clang.tar.xz && tar xf /clang.tar.xz clang+llvm-13.0.0-x86_64-linux-gnu-ubuntu-20.04/bin/clang-format && mv ./clang+llvm-13.0.0-x86_64-linux-gnu-ubuntu-20.04/bin/clang-format /usr/local/bin/clang-format && rm -rf ./clang+llvm-13.0.0-x86_64-linux-gnu-ubuntu.tar.xz ./clang+llvm-13.0.0-x86_64-linux-gnu-ubuntu
 
 
+# All lines past this point are reset when $CACHEBUSTER is set. We need this
+# for Python specifically because we install some nightly packages which are
+# likely to change daily.
+ARG CACHEBUSTER=0
+RUN echo $CACHEBUSTER
+
 # Setup Python environment. PYTHON_VERSION is e.g. "python3.8"
 ARG PYTHON_VERSION
 COPY setup.python.sh /setup.python.sh
