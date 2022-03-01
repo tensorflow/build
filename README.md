@@ -37,6 +37,8 @@ Want to add your own project to this list? It's easy: check out
 
 ### Docker
 
+* [**TF SIG Build Dockerfiles**](tf_sig_build_dockerfiles):
+  Standard Dockerfiles for TensorFlow builds, used internally at Google
 * [**Manylinux 2014 Docker Images**](manylinux2014_docker_images):
   `manylinux2014` build environment for TensorFlow packages.
 * [**Distroless Dockerfiles**](https://github.com/uvarc/rivanna-docker):
@@ -59,8 +61,6 @@ Want to add your own project to this list? It's easy: check out
 
 ### WIP / Other
 
-* [**TF SIG Build Dockerfiles**](tf_sig_build_dockerfiles):
-  Standard Dockerfiles for TensorFlow builds
 * [**Directory Template**](directory_template): Example short description.
 * [**Tekton CI**](tekton): perfinion's experimental directory for using Tekton 
   CI with TensorFlow
