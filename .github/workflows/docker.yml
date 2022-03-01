@@ -2,6 +2,9 @@ name: Upload docker containers
 
 on:
   workflow_dispatch:
+  schedule:
+      # Run once a week on Sunday at midnight. See http://crontab.guru
+      - cron: '0 0 * * 0'
   push:
     paths:
       - '.github/workflows/docker.yml'
