@@ -53,3 +53,4 @@ twine ~= 3.6.0
 junitparser ~= 2.2.0
 lxml ~= 4.6.4
 pylint
+pip-tools
