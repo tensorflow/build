@@ -11,8 +11,8 @@ libcusolver-dev-11-6
 libcusparse-dev-11-6
 libcublas-dev-11-6
 # CuDNN: https://docs.nvidia.com/deeplearning/sdk/cudnn-install/index.html#ubuntu-network-installation
-libcudnn8-dev=8.3.2.44-1+cuda11.6
-libcudnn8=8.3.2.44-1+cuda11.6
+libcudnn8-dev=8.3.2.44-1+cuda11.5
+libcudnn8=8.3.2.44-1+cuda11.5
 # TensorRT: See https://docs.nvidia.com/deeplearning/sdk/tensorrt-install-guide/index.html#maclearn-net-repo-install-rpm
 libnvinfer-plugin8=8.2.3-1+cuda11.4
 libnvinfer8=8.2.3-1+cuda11.4
