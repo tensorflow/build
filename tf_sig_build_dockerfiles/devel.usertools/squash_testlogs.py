@@ -48,7 +48,13 @@ for f in files.strip().splitlines():
       p.getparent().remove(p)
     # Remove duplicate results of the same exact test (e.g. due to retry attempts)
     for p in testsuite._elem.xpath('.//error | .//failure'):
-      key = p.getparent().get("name", "") + p.text
+      # Sharded tests have target names like this:
+      # WindowOpsTest.test_tflite_convert0 (<function hann_window at 0x7fc61728dd40>, 10, False, tf.float32)
+      # Where 0x... is a thread ID (or something) that is not important for
+      # debugging, but breaks this "number of failures" counter because it's
+      # different for repetitions of the same test. We use re.sub("0x\w+")
+      # to remove it.
+      key = re.sub("0x\w+", "", p.getparent().get("name", "")) + p.text
       if key in seen:
         testsuite._elem.remove(p.getparent())
       seen[key] += 1
@@ -59,9 +65,10 @@ for f in files.strip().splitlines():
     result += r
 
 # Insert the number of failures for each test to help identify flaikes
+# need to clarify for shard
 for p in result._elem.xpath('.//error | .//failure'):
   short_name = re.search(r'/(bazel_pip|tensorflow)/.*', f.decode("utf-8")).group(0)
-  key = p.getparent().get("name", "") + p.text
+  key = re.sub("0x\w+", "", p.getparent().get("name", "")) + p.text
   p.text += f"\nNOTE: From /{short_name}"
   p.text = runfiles_matcher.sub("[testroot]/", p.text)
   if "bazel_pip" in short_name:
