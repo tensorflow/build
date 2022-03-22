@@ -51,6 +51,7 @@ apt-get install -y --no-install-recommends \
     mlocate \
     openjdk-8-jdk \
     openjdk-8-jre-headless \
+    openssh-client \
     patchelf \
     pkg-config \
     python3-dev \
