@@ -62,7 +62,7 @@ $PYTHON_CMD -m pip install --upgrade six>=1.12.0
 $PYTHON_CMD -m pip install --upgrade future>=0.17.1
 
 # Install absl-py.
-$PYTHON_CMD -m pip install --upgrade absl-py
+$PYTHON_CMD -m pip install --upgrade absl-py==1.0.0
 
 # Install werkzeug.
 $PYTHON_CMD -m pip install --upgrade werkzeug==0.11.10
