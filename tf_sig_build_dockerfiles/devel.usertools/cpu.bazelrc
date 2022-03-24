@@ -6,11 +6,11 @@ build:sigbuild_local_cache --disk_cache=/tf/cache
 # Use the public-access TF DevInfra cache (read only)
 build:sigbuild_remote_cache --remote_cache="https://storage.googleapis.com/tensorflow-devinfra-bazel-cache" --remote_upload_local_results=false
 # Write to the TF DevInfra cache (only works for internal TF CI)
-build:sigbuild_remote_cache_push --remote_cache="https://storage.googleapis.com/tensorflow-devinfra-bazel-cache" --google_default_credentials
+build:sigbuild_remote_cache_push --remote_cache="https://storage.googleapis.com/tensorflow-devinfra-bazel-cache/manylinux2014" --google_default_credentials
 # Change the value of CACHEBUSTER when upgrading the toolchain, or when testing
 # different compilation methods. E.g. for a PR to test a new CUDA version, set
 # the CACHEBUSTER to the PR number.
-build --action_env=CACHEBUSTER=r2.9
+build --action_env=CACHEBUSTER=r2.9_pr57
 
 # Use Python 3.X as installed in container image
 build --action_env PYTHON_BIN_PATH="/usr/bin/python3"
@@ -36,8 +36,13 @@ build --copt=-mavx --host_copt=-mavx
 # See https://docs.bazel.build/versions/main/skylark/performance.html#performance-profiling
 build --profile=/tf/pkg/profile.json
 
-# Use the NVCC toolchain to compile for manylinux2010
-build --crosstool_top=@sigbuild-r2.9_config_cuda//crosstool:toolchain
+# Store BEP logs for generating and storing test status and flakiness data
+build --build_event_json_file=/tf/pkg/bep.json
+build --build_event_text_file=/tf/pkg/bep.txt
+build --build_event_binary_file=/tf/pkg/bep.pb
+
+# Use the NVCC toolchain to compile for manylinux2014
+build --crosstool_top=@ubuntu20.04-gcc9_manylinux2014-cuda11.2-cudnn8.1-tensorrt7.2_config_cuda//crosstool:toolchain
 
 # Test-related settings below this point.
 test --build_tests_only --keep_going --test_output=errors --verbose_failures=true
@@ -53,7 +58,7 @@ test --test_summary=terse
 test:nonpip --test_tag_filters=-no_oss,-oss_serial,-gpu,-tpu,-benchmark-test,-v1only
 test:nonpip --build_tag_filters=-no_oss,-oss_serial,-gpu,-tpu,-benchmark-test,-v1only
 test:nonpip --test_lang_filters=py --flaky_test_attempts=3 --test_size_filters=small,medium
-test:nonpip -- //tensorflow/... -//tensorflow/python/integration_testing/... -//tensorflow/compiler/tf2tensorrt/... -//tensorflow/compiler/xrt/... -//tensorflow/core/tpu/... -//tensorflow/lite/...
+test:nonpip -- //tensorflow/... -//tensorflow/python/integration_testing/... -//tensorflow/compiler/tf2tensorrt/... -//tensorflow/compiler/xrt/... -//tensorflow/core/tpu/... -//tensorflow/lite/... -//tensorflow/tools/toolchains/...
 
 # "pip tests" run a similar suite of tests the "nonpip" tests, but do something
 # odd to attempt to validate the quality of the pip package. The wheel is
@@ -77,7 +82,7 @@ test:pip --config=pip_venv
 test:pip --test_tag_filters=-nopip,-no_pip,-no_oss,-oss_serial,-v1only
 test:pip --build_tag_filters=-nopip,-no_pip,-no_oss,-oss_serial,-v1only
 test:pip --test_lang_filters=py --flaky_test_attempts=3 --test_size_filters=small,medium
-test:pip -- //bazel_pip/tensorflow/... -//bazel_pip/tensorflow/python/integration_testing/... -//bazel_pip/tensorflow/compiler/tf2tensorrt/... -//bazel_pip/tensorflow/compiler/xrt/... -//bazel_pip/tensorflow/core/tpu/... -//bazel_pip/tensorflow/lite/...
+test:pip -- //bazel_pip/tensorflow/... -//bazel_pip/tensorflow/python/integration_testing/... -//bazel_pip/tensorflow/compiler/tf2tensorrt/... -//bazel_pip/tensorflow/compiler/xrt/... -//bazel_pip/tensorflow/core/tpu/... -//bazel_pip/tensorflow/lite/... -//tensorflow/tools/toolchains/...
 
 # For building libtensorflow archives
 test:libtensorflow_test -- //tensorflow/tools/lib_package:libtensorflow_test //tensorflow/tools/lib_package:libtensorflow_java_test
@@ -108,3 +113,9 @@ build:rbe --platforms="@sigbuild-r2.9_config_platform//:platform"
 build:rbe --repo_env=TF_PYTHON_CONFIG_REPO="@sigbuild-r2.9_config_python"
 build:rbe --remote_instance_name=projects/tensorflow-testing/instances/default_instance
 build:rbe --project_id="tensorflow-testing"
+
+# For continuous builds
+test:pycpp --test_tag_filters=-no_oss,-oss_serial,-gpu,-tpu,-benchmark-test,-v1only
+test:pycpp --build_tag_filters=-no_oss,-oss_serial,-gpu,-tpu,-benchmark-test,-v1only
+test:pycpp --test_lang_filters=cc,py --flaky_test_attempts=3 --test_size_filters=small,medium
+test:pycpp -- //tensorflow/... -//tensorflow/python/integration_testing/... -//tensorflow/compiler/tf2tensorrt/... -//tensorflow/compiler/xrt/... -//tensorflow/core/tpu/... -//tensorflow/lite/... -//tensorflow/tools/toolchains/...

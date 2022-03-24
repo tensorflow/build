@@ -6,11 +6,11 @@ build:sigbuild_local_cache --disk_cache=/tf/cache
 # Use the public-access TF DevInfra cache (read only)
 build:sigbuild_remote_cache --remote_cache="https://storage.googleapis.com/tensorflow-devinfra-bazel-cache" --remote_upload_local_results=false
 # Write to the TF DevInfra cache (only works for internal TF CI)
-build:sigbuild_remote_cache_push --remote_cache="https://storage.googleapis.com/tensorflow-devinfra-bazel-cache" --google_default_credentials
+build:sigbuild_remote_cache_push --remote_cache="https://storage.googleapis.com/tensorflow-devinfra-bazel-cache/manylinux2014" --google_default_credentials
 # Change the value of CACHEBUSTER when upgrading the toolchain, or when testing
 # different compilation methods. E.g. for a PR to test a new CUDA version, set
 # the CACHEBUSTER to the PR number.
-build --action_env=CACHEBUSTER=r2.9
+build --action_env=CACHEBUSTER=r2.9_pr57
 
 # Use Python 3.X as installed in container image
 build --action_env PYTHON_BIN_PATH="/usr/bin/python3"
@@ -36,15 +36,20 @@ build --copt=-mavx --host_copt=-mavx
 # See https://docs.bazel.build/versions/main/skylark/performance.html#performance-profiling
 build --profile=/tf/pkg/profile.json
 
+# Store BEP logs for generating and storing test status and flakiness data
+build --build_event_json_file=/tf/pkg/bep.json
+build --build_event_text_file=/tf/pkg/bep.txt
+build --build_event_binary_file=/tf/pkg/bep.pb
+
 # CUDA: Set up compilation CUDA version and paths
 build --@local_config_cuda//:enable_cuda
 build --repo_env TF_NEED_CUDA=1
 build --action_env=TF_CUDA_VERSION="11"
 build --action_env=TF_CUDNN_VERSION="8"
 build --action_env=CUDA_TOOLKIT_PATH="/usr/local/cuda-11.2"
-build --action_env=GCC_HOST_COMPILER_PATH="/dt7/usr/bin/gcc"
+build --action_env=GCC_HOST_COMPILER_PATH="/dt9/usr/bin/gcc"
 build --action_env=LD_LIBRARY_PATH="/usr/local/cuda:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64:/usr/local/tensorrt/lib"
-build --crosstool_top=@sigbuild-r2.9_config_cuda//crosstool:toolchain
+build --crosstool_top=@ubuntu20.04-gcc9_manylinux2014-cuda11.2-cudnn8.1-tensorrt7.2_config_cuda//crosstool:toolchain
 
 # CUDA: Enable TensorRT optimizations
 # https://developer.nvidia.com/tensorrt
@@ -72,7 +77,7 @@ test --test_summary=terse
 test:nonpip --test_tag_filters=gpu,requires-gpu,-no_gpu,-no_oss,-oss_serial,-no_cuda11
 test:nonpip --build_tag_filters=gpu,requires-gpu,-no_gpu,-no_oss,-oss_serial,-no_cuda11
 test:nonpip --test_lang_filters=py --flaky_test_attempts=3 --test_size_filters=small,medium
-test:nonpip -- //tensorflow/... -//tensorflow/python/integration_testing/... -//tensorflow/compiler/tf2tensorrt/... -//tensorflow/compiler/xrt/... -//tensorflow/core/tpu/... -//tensorflow/lite/...
+test:nonpip -- //tensorflow/... -//tensorflow/python/integration_testing/... -//tensorflow/compiler/tf2tensorrt/... -//tensorflow/compiler/xrt/... -//tensorflow/core/tpu/... -//tensorflow/lite/... -//tensorflow/tools/toolchains/...
 
 # "pip tests" run a similar suite of tests the "nonpip" tests, but do something
 # odd to attempt to validate the quality of the pip package. The wheel is
@@ -96,7 +101,7 @@ test:pip --config=pip_venv
 test:pip --test_tag_filters=gpu,requires-gpu,-no_gpu,-no_oss,-oss_serial,-no_cuda11,-no_pip,-nopip
 test:pip --build_tag_filters=gpu,requires-gpu,-no_gpu,-no_oss,-oss_serial,-no_cuda11,-no_pip,-nopip
 test:pip --test_lang_filters=py --flaky_test_attempts=3 --test_size_filters=small,medium
-test:pip -- //bazel_pip/tensorflow/... -//bazel_pip/tensorflow/python/integration_testing/... -//bazel_pip/tensorflow/compiler/tf2tensorrt/... -//bazel_pip/tensorflow/compiler/xrt/... -//bazel_pip/tensorflow/core/tpu/... -//bazel_pip/tensorflow/lite/...
+test:pip -- //bazel_pip/tensorflow/... -//bazel_pip/tensorflow/python/integration_testing/... -//bazel_pip/tensorflow/compiler/tf2tensorrt/... -//bazel_pip/tensorflow/compiler/xrt/... -//bazel_pip/tensorflow/core/tpu/... -//bazel_pip/tensorflow/lite/... -//tensorflow/tools/toolchains/...
 
 # For building libtensorflow archives
 test:libtensorflow_test -- //tensorflow/tools/lib_package:libtensorflow_test //tensorflow/tools/lib_package:libtensorflow_java_test
@@ -138,3 +143,9 @@ build:rbe --repo_env=TF_CUDA_CONFIG_REPO="@sigbuild-r2.9_config_cuda"
 build:rbe --repo_env=TF_TENSORRT_CONFIG_REPO="@sigbuild-r2.9_config_tensorrt"
 build:rbe --repo_env=TF_NCCL_CONFIG_REPO="@sigbuild-r2.9_config_nccl"
 build:rbe --repo_env=TF_PYTHON_CONFIG_REPO="@sigbuild-r2.9_config_python"
+
+# For continuous builds
+test:pycpp --test_tag_filters=-no_oss,-oss_serial,-benchmark-test,-v1only,gpu,-no_gpu,-no_gpu_presubmit,-no_cuda11
+test:pycpp --build_tag_filters=-no_oss,-oss_serial,-benchmark-test,-v1only,gpu,-no_gpu,-no_gpu_presubmit,-no_cuda11
+test:pycpp --test_lang_filters=cc,py --flaky_test_attempts=3 --test_size_filters=small,medium
+test:pycpp -- //tensorflow/... -//tensorflow/python/integration_testing/... -//tensorflow/compiler/tf2tensorrt/... -//tensorflow/compiler/xrt/... -//tensorflow/core/tpu/... -//tensorflow/lite/... -//tensorflow/tools/toolchains/...

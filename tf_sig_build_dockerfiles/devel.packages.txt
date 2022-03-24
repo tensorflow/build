@@ -30,6 +30,7 @@ clang-format-12
 colordiff
 curl
 ffmpeg
+gdb
 git
 jq
 less

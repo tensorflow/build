@@ -37,7 +37,9 @@ Want to add your own project to this list? It's easy: check out
 
 ### Docker
 
-* [**Manylinux 2014 Docker Images**](manylinux_2014_docker_images):
+* [**TF SIG Build Dockerfiles**](tf_sig_build_dockerfiles):
+  Standard Dockerfiles for TensorFlow builds, used internally at Google
+* [**Manylinux 2014 Docker Images**](manylinux2014_docker_images):
   `manylinux2014` build environment for TensorFlow packages.
 * [**Distroless Dockerfiles**](https://github.com/uvarc/rivanna-docker):
   Distroless ([info](https://github.com/GoogleContainerTools)) TensorFlow
@@ -59,8 +61,6 @@ Want to add your own project to this list? It's easy: check out
 
 ### WIP / Other
 
-* [**TF SIG Build Dockerfiles**](tf_sig_build_dockerfiles):
-  Standard Dockerfiles for TensorFlow builds
 * [**Directory Template**](directory_template): Example short description.
 * [**Tekton CI**](tekton): perfinion's experimental directory for using Tekton 
   CI with TensorFlow
@@ -78,8 +78,8 @@ Want to add your own community builds to this list? It's easy: check out
 
 Owner | Build Type | Status | Artifacts
 ---: | --- | :---: | :---
-AMD | **Linux AMD ROCm GPU** Nightly         | [![Build Status](http://ml-ci.amd.com:21096/job/tensorflow/job/nightly-upstream-master/job/rocm-4.2.0-python3x-whls/badge/icon)](http://ml-ci.amd.com:21096/job/tensorflow/job/nightly-upstream-master/job/rocm-4.2.0-python3x-whls)                        | [Nightly](http://ml-ci.amd.com:21096/job/tensorflow/job/nightly-upstream-master/job/rocm-4.2.0-python3x-whls/lastSuccessfulBuild/)
-AMD | **Linux AMD ROCm GPU** Stable : TF 2.x | [![Build Status](http://ml-ci.amd.com:21096/job/tensorflow/job/release-rocmfork-r25-rocm-enhanced/job/rocm-4.2.0-python3x-whls/badge/icon)](http://ml-ci.amd.com:21096/job/tensorflow/job/release-rocmfork-r25-rocm-enhanced/job/rocm-4.2.0-python3x-whls/) | [Release 2.5](http://ml-ci.amd.com:21096/job/tensorflow/job/release-rocmfork-r25-rocm-enhanced/job/rocm-4.2.0-python3x-whls/lastSuccessfulBuild/)
+AMD | **Linux AMD ROCm GPU** Nightly         | [![Build Status](http://ml-ci.amd.com:21096/job/tensorflow/job/release-rocmfork-develop-upstream/job/rocm-5.0.0-python3x-whls/badge/icon)](http://ml-ci.amd.com:21096/job/tensorflow/job/release-rocmfork-develop-upstream/job/rocm-5.0.0-python3x-whls/)   | [Nightly](http://ml-ci.amd.com:21096/job/tensorflow/job/release-rocmfork-develop-upstream/job/rocm-5.0.0-python3x-whls/lastSuccessfulBuild/)
+AMD | **Linux AMD ROCm GPU** Stable : TF 2.x | [![Build Status](http://ml-ci.amd.com:21096/job/tensorflow/job/release-rocmfork-r28-rocm-enhanced/job/rocm-5.0.0-python3x-whls/badge/icon)](http://ml-ci.amd.com:21096/job/tensorflow/job/release-rocmfork-r28-rocm-enhanced/job/rocm-5.0.0-python3x-whls/) | [Release 2.8](http://ml-ci.amd.com:21096/job/tensorflow/job/release-rocmfork-r28-rocm-enhanced/job/rocm-5.0.0-python3x-whls/lastSuccessfulBuild/)
 AMD | **Linux AMD ROCm GPU** Stable : TF 1.x | [![Build Status](http://ml-ci.amd.com:21096/job/tf-develop-upstream-releases/job/tensorflow-upstream-rel1.15-enhanced-nightly/badge/icon)](http://ml-ci.amd.com:21096/job/tf-develop-upstream-releases/job/tensorflow-upstream-rel1.15-enhanced-nightly/)   | [Release 1.15](http://ml-ci.amd.com:21096/job/tf-develop-upstream-releases/job/tensorflow-upstream-rel1.15-enhanced-nightly/lastSuccessfulBuild/)
 IBM | **Linux ppc64le CPU** Nightly | [![Build Status](https://powerci.osuosl.org/job/TensorFlow_PPC64LE_CPU_Build/badge/icon)](https://powerci.osuosl.org/job/TensorFlow_PPC64LE_CPU_Build/) | [Nightly](https://powerci.osuosl.org/job/TensorFlow_PPC64LE_CPU_Nightly_Artifact/)
 IBM | **Linux ppc64le CPU** Stable: TF 1.x | [![Build Status](https://powerci.osuosl.org/job/TensorFlow_PPC64LE_CPU_Release_Build/badge/icon)](https://powerci.osuosl.org/job/TensorFlow_PPC64LE_CPU_Release_Build/) | Release [1.15](https://powerci.osuosl.org/job/TensorFlow_PPC64LE_CPU_Release_Build/)

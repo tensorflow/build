@@ -9,6 +9,7 @@
 # uses this to generate a simple overview of an entire pip and nonpip test
 # invocation, since the normal logs that Bazel creates are too large for the
 # internal invocation viewer.
+import collections
 import glob
 import os
 import sys
@@ -25,7 +26,7 @@ except subprocess.CalledProcessError as e:
   exit(0)
 
 # For test cases, only show the ones that failed that have text (a log)
-seen = set()
+seen = collections.Counter()
 runfiles_matcher = re.compile(r"(/.*\.runfiles/)")
 
 for f in files.strip().splitlines():
@@ -47,25 +48,41 @@ for f in files.strip().splitlines():
       p.getparent().remove(p)
     # Remove duplicate results of the same exact test (e.g. due to retry attempts)
     for p in testsuite._elem.xpath('.//error | .//failure'):
-      key = p.getparent().get("name", "") + p.text
+      # Sharded tests have target names like this:
+      # WindowOpsTest.test_tflite_convert0 (<function hann_window at 0x7fc61728dd40>, 10, False, tf.float32)
+      # Where 0x... is a thread ID (or something) that is not important for
+      # debugging, but breaks this "number of failures" counter because it's
+      # different for repetitions of the same test. We use re.sub("0x\w+")
+      # to remove it.
+      key = re.sub("0x\w+", "", p.getparent().get("name", "")) + p.text
       if key in seen:
         testsuite._elem.remove(p.getparent())
-      else:
-        seen.add(key)
-    # Include helpful notes
-    for p in testsuite._elem.xpath('.//error | .//failure'):
-      short_name = re.search(r'/(bazel_pip|tensorflow)/.*', f.decode("utf-8")).group(0)
-      p.text += f"\nNOTE: From /{short_name}"
-      p.text = runfiles_matcher.sub("[testroot]/", p.text)
-      if "bazel_pip" in short_name:
-        p.text += "\nNOTE: This is a --config=pip test. Remove 'bazel_pip' to find the file."
-      p.text += f"\nNOTE: The list of failures from the XML includes flakes and attempts as well."
-      p.text += f"\n      The error(s) that caused the invocation to fail may not include this testcase."
+      seen[key] += 1
     # Remove this testsuite if it doesn't have anything in it any more
     if len(testsuite) == 0:
       r._elem.remove(testsuite._elem)
   if len(r) > 0:
     result += r
+
+# Insert the number of failures for each test to help identify flaikes
+# need to clarify for shard
+for p in result._elem.xpath('.//error | .//failure'):
+  short_name = re.search(r'/(bazel_pip|tensorflow)/.*', f.decode("utf-8")).group(0)
+  key = re.sub("0x\w+", "", p.getparent().get("name", "")) + p.text
+  p.text += f"\nNOTE: From /{short_name}"
+  p.text = runfiles_matcher.sub("[testroot]/", p.text)
+  if "bazel_pip" in short_name:
+    p.text += "\nNOTE: This is a --config=pip test. Remove 'bazel_pip' to find the file."
+  n_failures = seen[key]
+  p.text += f"\nNOTE: Number of failures for this test: {seen[key]}."
+  p.text += f"\n      Most TF jobs run tests three times to root out flakes."
+  if seen[key] == 3:
+    p.text += f"\n      Since there were three failures, this is not flaky, and it"
+    p.text += f"\n      probably caused the Kokoro invocation to fail."
+  else:
+    p.text += f"\n      Since there were not three failures, this is probably a flake."
+    p.text += f"\n      Flakes make this pkg/pip_and_nonpip_tests target show as failing,"
+    p.text += f"\n      but do not make the Kokoro invocation fail."
 
 os.makedirs(os.path.dirname(sys.argv[2]), exist_ok=True)
 result.update_statistics()

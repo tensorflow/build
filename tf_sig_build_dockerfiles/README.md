@@ -1,6 +1,6 @@
 # TF SIG Build Dockerfiles
 
-Standard Dockerfiles for TensorFlow builds.
+Standard Dockerfiles for TensorFlow builds, used internally at Google.
 
 Maintainer: @angerson (TensorFlow OSS DevInfra; SIG Build)
 

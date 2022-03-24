@@ -5,9 +5,11 @@
 setup_file() {
     cd /tf/tensorflow
     bazel version  # Start the bazel server
-    # Only shows Added, Changed, Modified, Renamed, and Type-changed files
     # Note that you could generate a list of all the affected targets with e.g.:
     # bazel query $(paste -sd "+" $BATS_FILE_TMPDIR/changed_files) --keep_going
+    # This assumes that origin/master will always be the correct base branch
+    # comparison... maybe this could be optionally passed in from GitHub Actions
+    # Only shows Added, Changed, Modified, Renamed, and Type-changed files
     git diff --diff-filter ACMRT --name-only origin/master > $BATS_FILE_TMPDIR/changed_files
 }
 
@@ -25,8 +27,9 @@ setup_file() {
 @test "Check formatting for C++ files" {
     echo "clang-format is recommended. Here are the suggested changes:"
     echo "============================="
-    grep -e '\.h$' -e '\.cc$' $BATS_FILE_TMPDIR/changed_files \
-        | xargs -i -n1 -P $(nproc --all) \
+    grep -e '\.h$' -e '\.cc$' $BATS_FILE_TMPDIR/changed_files > $BATS_TEST_TMPDIR/files || true
+    if [[ ! -s $BATS_TEST_TMPDIR/files ]]; then return 0; fi
+    xargs -a $BATS_TEST_TMPDIR/files -i -n1 -P $(nproc --all) \
         bash -c 'clang-format-12 --style=Google {} | git diff --no-index {} -' \
         | tee $BATS_TEST_TMPDIR/needs_help.txt
     echo "You can use clang-format --style=Google -i <file> to apply changes to a file."
@@ -38,8 +41,9 @@ setup_file() {
 @test "Check pylint for Python files" {
     echo "Python formatting is recommended. Here are the pylint errors:"
     echo "============================="
-    grep -e "\.py$" $BATS_FILE_TMPDIR/changed_files \
-        | xargs -n1 -P $(nproc --all) \
+    grep -e "\.py$" $BATS_FILE_TMPDIR/changed_files > $BATS_TEST_TMPDIR/files || true
+    if [[ ! -s $BATS_TEST_TMPDIR/files ]]; then return 0; fi
+    xargs -a $BATS_TEST_TMPDIR/files -n1 -P $(nproc --all) \
         python -m pylint --rcfile=tensorflow/tools/ci_build/pylintrc --score false \
         | grep -v "**** Module" \
         | tee $BATS_TEST_TMPDIR/needs_help.txt
