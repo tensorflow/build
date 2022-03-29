@@ -149,3 +149,24 @@ test:pycpp --test_tag_filters=-no_oss,-oss_serial,-benchmark-test,-v1only,gpu,-n
 test:pycpp --build_tag_filters=-no_oss,-oss_serial,-benchmark-test,-v1only,gpu,-no_gpu,-no_gpu_presubmit,-no_cuda11
 test:pycpp --test_lang_filters=cc,py --flaky_test_attempts=3 --test_size_filters=small,medium
 test:pycpp -- //tensorflow/... -//tensorflow/python/integration_testing/... -//tensorflow/compiler/tf2tensorrt/... -//tensorflow/compiler/xrt/... -//tensorflow/core/tpu/... -//tensorflow/lite/... -//tensorflow/tools/toolchains/...
+
+# Store BEP logs for generating and storing test status and flakiness data
+# TODO(angerson) Once we figure out how we want to use these, deduplicate
+build --build_event_binary_file=/tf/pkg/build.bep.pb
+build --build_event_json_file=/tf/pkg/build.bep.json
+build --build_event_text_file=/tf/pkg/build.bep.txt
+test:libtensorflow_build --build_event_binary_file=/tf/pkg/libtensorflow_test.bep.pb
+test:libtensorflow_build --build_event_json_file=/tf/pkg/libtensorflow_test.bep.json
+test:libtensorflow_build --build_event_text_file=/tf/pkg/libtensorflow_test.bep.txt
+test:libtensorflow_test --build_event_binary_file=/tf/pkg/libtensorflow_test.bep.pb
+test:libtensorflow_test --build_event_json_file=/tf/pkg/libtensorflow_test.bep.json
+test:libtensorflow_test --build_event_text_file=/tf/pkg/libtensorflow_test.bep.txt
+test:nonpip --build_event_binary_file=/tf/pkg/nonpip.bep.pb
+test:nonpip --build_event_json_file=/tf/pkg/nonpip.bep.json
+test:nonpip --build_event_text_file=/tf/pkg/nonpip.bep.txt
+test:pip --build_event_binary_file=/tf/pkg/pip.bep.pb
+test:pip --build_event_json_file=/tf/pkg/pip.bep.json
+test:pip --build_event_text_file=/tf/pkg/pip.bep.txt
+test:pycpp --build_event_binary_file=/tf/pkg/pycpp.bep.pb
+test:pycpp --build_event_json_file=/tf/pkg/pycpp.bep.json
+test:pycpp --build_event_text_file=/tf/pkg/pycpp.bep.txt
