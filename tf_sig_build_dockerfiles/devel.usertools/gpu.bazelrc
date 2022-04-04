@@ -36,11 +36,6 @@ build --copt=-mavx --host_copt=-mavx
 # See https://docs.bazel.build/versions/main/skylark/performance.html#performance-profiling
 build --profile=/tf/pkg/profile.json
 
-# Store BEP logs for generating and storing test status and flakiness data
-build --build_event_json_file=/tf/pkg/bep.json
-build --build_event_text_file=/tf/pkg/bep.txt
-build --build_event_binary_file=/tf/pkg/bep.pb
-
 # CUDA: Set up compilation CUDA version and paths
 build --@local_config_cuda//:enable_cuda
 build --repo_env TF_NEED_CUDA=1
