@@ -53,7 +53,6 @@ test --test_summary=terse
 test:nonpip --test_tag_filters=-no_oss,-oss_serial,-gpu,-tpu,-benchmark-test,-v1only
 test:nonpip --build_tag_filters=-no_oss,-oss_serial,-gpu,-tpu,-benchmark-test,-v1only
 test:nonpip --test_lang_filters=py --flaky_test_attempts=3 --test_size_filters=small,medium
-test:nonpip --build_event_json_file=/tf/pkg/nonpip.bep.json
 test:nonpip -- //tensorflow/... -//tensorflow/python/integration_testing/... -//tensorflow/compiler/tf2tensorrt/... -//tensorflow/compiler/xrt/... -//tensorflow/core/tpu/... -//tensorflow/lite/... -//tensorflow/tools/toolchains/...
 
 # "pip tests" run a similar suite of tests the "nonpip" tests, but do something
@@ -78,11 +77,9 @@ test:pip --config=pip_venv
 test:pip --test_tag_filters=-nopip,-no_pip,-no_oss,-oss_serial,-v1only
 test:pip --build_tag_filters=-nopip,-no_pip,-no_oss,-oss_serial,-v1only
 test:pip --test_lang_filters=py --flaky_test_attempts=3 --test_size_filters=small,medium
-test:pip --build_event_json_file=/tf/pkg/pip.bep.json
 test:pip -- //bazel_pip/tensorflow/... -//bazel_pip/tensorflow/python/integration_testing/... -//bazel_pip/tensorflow/compiler/tf2tensorrt/... -//bazel_pip/tensorflow/compiler/xrt/... -//bazel_pip/tensorflow/core/tpu/... -//bazel_pip/tensorflow/lite/... -//tensorflow/tools/toolchains/...
 
 # For building libtensorflow archives
-test:libtensorflow_test --build_event_json_file=/tf/pkg/libtensorflow_test.bep.json
 test:libtensorflow_test -- //tensorflow/tools/lib_package:libtensorflow_test //tensorflow/tools/lib_package:libtensorflow_java_test
 build:libtensorflow_build -- //tensorflow/tools/lib_package:libtensorflow.tar.gz //tensorflow/tools/lib_package:libtensorflow_jni.tar.gz //tensorflow/java:libtensorflow.jar //tensorflow/java:libtensorflow-src.jar //tensorflow/tools/lib_package:libtensorflow_proto.zip
 
@@ -116,5 +113,4 @@ build:rbe --project_id="tensorflow-testing"
 test:pycpp --test_tag_filters=-no_oss,-oss_serial,-gpu,-tpu,-benchmark-test,-v1only
 test:pycpp --build_tag_filters=-no_oss,-oss_serial,-gpu,-tpu,-benchmark-test,-v1only
 test:pycpp --test_lang_filters=cc,py --flaky_test_attempts=3 --test_size_filters=small,medium
-test:pycpp --build_event_json_file=/tf/pkg/pycpp.bep.json
 test:pycpp -- //tensorflow/... -//tensorflow/python/integration_testing/... -//tensorflow/compiler/tf2tensorrt/... -//tensorflow/compiler/xrt/... -//tensorflow/core/tpu/... -//tensorflow/lite/... -//tensorflow/tools/toolchains/...
