@@ -16,7 +16,7 @@ build:xla --define with_xla_support=true
 build --config=xla
 build --action_env CUDA_TOOLKIT_PATH="/usr/local/cuda"
 build --action_env TF_CUDA_COMPUTE_CAPABILITIES="3.5,7.0"
-build --action_env LD_LIBRARY_PATH="/usr/local/nvidia/lib:/usr/local/nvidia/lib64"
+build --action_env LD_LIBRARY_PATH="/usr/local/cuda/lib:/usr/local/cuda/lib64"
 build --action_env GCC_HOST_COMPILER_PATH="/opt/rh/devtoolset-8/root/usr/bin/gcc"
 build --config=cuda
 build:opt --copt=-mcpu=power8
