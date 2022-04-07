@@ -45,6 +45,7 @@ mlocate
 moreutils
 openjdk-11-jdk
 openjdk-11-jre-headless
+openssh-client
 patchelf
 pkg-config
 python3-dev
