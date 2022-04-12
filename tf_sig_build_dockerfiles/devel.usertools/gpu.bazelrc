@@ -36,11 +36,6 @@ build --copt=-mavx --host_copt=-mavx
 # See https://docs.bazel.build/versions/main/skylark/performance.html#performance-profiling
 build --profile=/tf/pkg/profile.json
 
-# Store BEP logs for generating and storing test status and flakiness data
-build --build_event_json_file=/tf/pkg/bep.json
-build --build_event_text_file=/tf/pkg/bep.txt
-build --build_event_binary_file=/tf/pkg/bep.pb
-
 # CUDA: Set up compilation CUDA version and paths
 build --@local_config_cuda//:enable_cuda
 build --repo_env TF_NEED_CUDA=1
@@ -77,7 +72,6 @@ test --test_summary=terse
 test:nonpip --test_tag_filters=gpu,requires-gpu,-no_gpu,-no_oss,-oss_serial,-no_cuda11
 test:nonpip --build_tag_filters=gpu,requires-gpu,-no_gpu,-no_oss,-oss_serial,-no_cuda11
 test:nonpip --test_lang_filters=py --flaky_test_attempts=3 --test_size_filters=small,medium
-test:nonpip --build_event_json_file=/tf/pkg/nonpip.bep.json
 test:nonpip -- //tensorflow/... -//tensorflow/python/integration_testing/... -//tensorflow/compiler/tf2tensorrt/... -//tensorflow/compiler/xrt/... -//tensorflow/core/tpu/... -//tensorflow/lite/... -//tensorflow/tools/toolchains/...
 
 # "pip tests" run a similar suite of tests the "nonpip" tests, but do something
@@ -102,11 +96,9 @@ test:pip --config=pip_venv
 test:pip --test_tag_filters=gpu,requires-gpu,-no_gpu,-no_oss,-oss_serial,-no_cuda11,-no_pip,-nopip
 test:pip --build_tag_filters=gpu,requires-gpu,-no_gpu,-no_oss,-oss_serial,-no_cuda11,-no_pip,-nopip
 test:pip --test_lang_filters=py --flaky_test_attempts=3 --test_size_filters=small,medium
-test:pip --build_event_json_file=/tf/pkg/pip.bep.json
 test:pip -- //bazel_pip/tensorflow/... -//bazel_pip/tensorflow/python/integration_testing/... -//bazel_pip/tensorflow/compiler/tf2tensorrt/... -//bazel_pip/tensorflow/compiler/xrt/... -//bazel_pip/tensorflow/core/tpu/... -//bazel_pip/tensorflow/lite/... -//tensorflow/tools/toolchains/...
 
 # For building libtensorflow archives
-test:libtensorflow_test --build_event_json_file=/tf/pkg/libtensorflow_test.bep.json
 test:libtensorflow_test -- //tensorflow/tools/lib_package:libtensorflow_test //tensorflow/tools/lib_package:libtensorflow_java_test
 build:libtensorflow_build -- //tensorflow/tools/lib_package:libtensorflow.tar.gz //tensorflow/tools/lib_package:libtensorflow_jni.tar.gz //tensorflow/java:libtensorflow.jar //tensorflow/java:libtensorflow-src.jar //tensorflow/tools/lib_package:libtensorflow_proto.zip
 
@@ -151,5 +143,4 @@ build:rbe --repo_env=TF_PYTHON_CONFIG_REPO="@sigbuild-r2.9_config_python"
 test:pycpp --test_tag_filters=-no_oss,-oss_serial,-benchmark-test,-v1only,gpu,-no_gpu,-no_gpu_presubmit,-no_cuda11
 test:pycpp --build_tag_filters=-no_oss,-oss_serial,-benchmark-test,-v1only,gpu,-no_gpu,-no_gpu_presubmit,-no_cuda11
 test:pycpp --test_lang_filters=cc,py --flaky_test_attempts=3 --test_size_filters=small,medium
-test:pycpp --build_event_json_file=/tf/pkg/pycpp.bep.json
 test:pycpp -- //tensorflow/... -//tensorflow/python/integration_testing/... -//tensorflow/compiler/tf2tensorrt/... -//tensorflow/compiler/xrt/... -//tensorflow/core/tpu/... -//tensorflow/lite/... -//tensorflow/tools/toolchains/...
