@@ -23,7 +23,7 @@ for line in data:
     classname = target.split(":")[0]
     cs = TestCase(target, classname, time)
     if result in ["ERROR", "FAILED", "FLAKY"]:
-      cs.result=[JUnitXml.Error()]
+      cs.result=[Error()]
   elif line.startswith("Stats over"):
     d = line.replace("s", "").replace(",", "").split()
     # Stats over 50 runs: max = 74.2s, min = 4.3s, avg = 6.8s, dev = 9.7s
