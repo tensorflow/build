@@ -63,7 +63,7 @@ test --test_env=LD_LIBRARY_PATH
 # Local test jobs has to be 4 because parallel_gpu_execute is fragile, I think
 test --test_timeout=300,450,1200,3600 --local_test_jobs=4 --run_under=//tensorflow/tools/ci_build/gpu_build:parallel_gpu_execute
 # Give only the list of failed tests at the end of the log
-test --test_summary=detailed
+test --test_summary=short
 
 # "nonpip" tests are regular py_test tests.
 # Pass --config=nonpip to run the same suite of tests. If you want to run just

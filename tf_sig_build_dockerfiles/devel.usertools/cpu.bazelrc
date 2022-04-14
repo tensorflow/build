@@ -44,7 +44,7 @@ test --build_tests_only --keep_going --test_output=errors --verbose_failures=tru
 test --local_test_jobs=HOST_CPUS
 test --test_env=LD_LIBRARY_PATH
 # Give only the list of failed tests at the end of the log
-test --test_summary=detailed
+test --test_summary=short
 
 # "nonpip" tests are regular py_test tests.
 # Pass --config=nonpip to run the same suite of tests. If you want to run just
