@@ -61,9 +61,3 @@ RUN /setup.python.sh $PYTHON_VERSION devel.requirements.txt
 # Setup build and environment
 COPY devel.usertools /usertools
 COPY devel.bashrc /root/.bashrc
-
-# Setup system files for unlimited threads
-COPY devel.limits.conf /etc/security/limits.conf
-COPY devel.logind.conf /etc/systemd/logind.conf
-COPY devel.sysctl.conf /etc/sysctl.conf
-COPY devel.system.conf /etc/systemd/system.conf
