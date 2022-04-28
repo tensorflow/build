@@ -43,7 +43,10 @@ build --action_env=TF_CUDA_VERSION="11"
 build --action_env=TF_CUDNN_VERSION="8"
 build --action_env=CUDA_TOOLKIT_PATH="/usr/local/cuda-11.2"
 build --action_env=GCC_HOST_COMPILER_PATH="/dt9/usr/bin/gcc"
-build --action_env=LD_LIBRARY_PATH="/usr/local/cuda:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64:/usr/local/tensorrt/lib"
+# TensorRT 7 for CUDA 11.1 is compatible with CUDA 11.2, but requires
+# libnvrtc.so.11.1. See https://github.com/NVIDIA/TensorRT/issues/1064.
+# TODO(b/187962120): Remove CUDA-11.1 when upgrading to TensorRT 8.
+build --action_env=LD_LIBRARY_PATH="/usr/local/cuda:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64:/usr/local/tensorrt/lib:/usr/local/cuda-11.1/lib64""
 build --crosstool_top=@ubuntu20.04-gcc9_manylinux2014-cuda11.2-cudnn8.1-tensorrt7.2_config_cuda//crosstool:toolchain
 
 # CUDA: Enable TensorRT optimizations
