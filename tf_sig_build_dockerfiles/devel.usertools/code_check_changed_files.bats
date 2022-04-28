@@ -25,6 +25,7 @@ setup_file() {
 # Note: this is excluded on the full code base, since any submitted code must
 # have passed Google's internal style guidelines.
 @test "Check formatting for C++ files" {
+    skip "clang-format in OSS doesn't match Google-internal, and reports too much."
     echo "clang-format is recommended. Here are the suggested changes:"
     echo "============================="
     grep -e '\.h$' -e '\.cc$' $BATS_FILE_TMPDIR/changed_files > $BATS_TEST_TMPDIR/files || true

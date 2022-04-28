@@ -38,12 +38,12 @@ RUN /setup.sources.sh && /setup.packages.sh /devel.packages.txt && /setup.cuda.s
 # - bazelisk: always use the correct bazel version
 # - buildifier: clean bazel build deps
 # - buildozer: clean bazel build deps
-RUN git clone --branch v1.5.0 https://github.com/bats-core/bats-core.git && bats-core/install.sh /usr/local && rm -rf bats-core
-RUN wget https://github.com/bazelbuild/bazelisk/releases/download/v1.7.4/bazelisk-linux-amd64 -O /usr/local/bin/bazel && chmod +x /usr/local/bin/bazel
+# - gcloud SDK: communicate with Google Cloud Platform (GCP) for RBE, CI
+RUN git clone --branch v1.6.0 https://github.com/bats-core/bats-core.git && bats-core/install.sh /usr/local && rm -rf bats-core
+RUN wget https://github.com/bazelbuild/bazelisk/releases/download/v1.11.0/bazelisk-linux-amd64 -O /usr/local/bin/bazel && chmod +x /usr/local/bin/bazel
 RUN wget https://github.com/bazelbuild/buildtools/releases/download/3.5.0/buildifier -O /usr/local/bin/buildifier && chmod +x /usr/local/bin/buildifier
 RUN wget https://github.com/bazelbuild/buildtools/releases/download/3.5.0/buildozer -O /usr/local/bin/buildozer && chmod +x /usr/local/bin/buildozer
-RUN curl -sSL https://sdk.cloud.google.com > /tmp/gcl && bash /tmp/gcl --install-dir=~/usr/local/bin --disable-prompts
-# RUN wget https://github.com/llvm/llvm-project/releases/download/llvmorg-13.0.0/clang+llvm-13.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz -O /clang.tar.xz && tar xf /clang.tar.xz clang+llvm-13.0.0-x86_64-linux-gnu-ubuntu-20.04/bin/clang-format && mv ./clang+llvm-13.0.0-x86_64-linux-gnu-ubuntu-20.04/bin/clang-format /usr/local/bin/clang-format && rm -rf ./clang+llvm-13.0.0-x86_64-linux-gnu-ubuntu.tar.xz ./clang+llvm-13.0.0-x86_64-linux-gnu-ubuntu
+RUN curl -sSL https://sdk.cloud.google.com > /tmp/gcloud && bash /tmp/gcloud --install-dir=~/usr/local/bin --disable-prompts
 
 
 # All lines past this point are reset when $CACHEBUSTER is set. We need this
@@ -61,4 +61,3 @@ RUN /setup.python.sh $PYTHON_VERSION devel.requirements.txt
 # Setup build and environment
 COPY devel.usertools /usertools
 COPY devel.bashrc /root/.bashrc
-
