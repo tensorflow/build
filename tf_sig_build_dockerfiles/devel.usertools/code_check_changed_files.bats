@@ -1,9 +1,11 @@
 # vim: filetype=bash
-# This file is a work in progress, designed to replace the complicated test
-# orchestration previously placed in TensorFlow's ci_sanity.sh.
-# This is not currently in use.
 setup_file() {
     cd /tf/tensorflow
+    ls -al
+    pwd
+    ls -al .git || true
+    stat .git || true
+    git init
     bazel version  # Start the bazel server
     # Note that you could generate a list of all the affected targets with e.g.:
     # bazel query $(paste -sd "+" $BATS_FILE_TMPDIR/changed_files) --keep_going
