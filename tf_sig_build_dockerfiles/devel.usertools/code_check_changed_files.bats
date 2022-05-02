@@ -5,7 +5,7 @@ setup_file() {
     pwd
     ls -al .git || true
     stat .git || true
-    git init
+    git init || true
     bazel version  # Start the bazel server
     # Note that you could generate a list of all the affected targets with e.g.:
     # bazel query $(paste -sd "+" $BATS_FILE_TMPDIR/changed_files) --keep_going
