@@ -1,18 +1,14 @@
 # vim: filetype=bash
 setup_file() {
     cd /tf/tensorflow
-    ls -al
-    pwd
-    ls -al .git || true
-    stat .git || true
-    git init || true
+    cat .git/HEAD
     bazel version  # Start the bazel server
     # Note that you could generate a list of all the affected targets with e.g.:
     # bazel query $(paste -sd "+" $BATS_FILE_TMPDIR/changed_files) --keep_going
     # This assumes that origin/master will always be the correct base branch
     # comparison... maybe this could be optionally passed in from GitHub Actions
     # Only shows Added, Changed, Modified, Renamed, and Type-changed files
-    git diff --diff-filter ACMRT --name-only origin/master > $BATS_FILE_TMPDIR/changed_files
+    git -C /tf/tensorflow diff --diff-filter ACMRT --name-only origin/master > $BATS_FILE_TMPDIR/changed_files
 }
 
 # Note: this is excluded on the full code base, since any submitted code must
