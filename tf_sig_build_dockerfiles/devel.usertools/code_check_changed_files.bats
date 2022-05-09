@@ -1,14 +1,20 @@
 # vim: filetype=bash
 setup_file() {
     cd /tf/tensorflow
-    cat .git/HEAD
     bazel version  # Start the bazel server
+    # Without this, git errors if /tf/tensorflow directory owner is different
+    git config --global --add safe.directory /tf/tensorflow
     # Note that you could generate a list of all the affected targets with e.g.:
     # bazel query $(paste -sd "+" $BATS_FILE_TMPDIR/changed_files) --keep_going
-    # This assumes that origin/master will always be the correct base branch
-    # comparison... maybe this could be optionally passed in from GitHub Actions
     # Only shows Added, Changed, Modified, Renamed, and Type-changed files
-    git -C /tf/tensorflow diff --diff-filter ACMRT --name-only origin/master > $BATS_FILE_TMPDIR/changed_files
+    if [[ "$(git rev-parse --abbrev-ref HEAD)" = "pull_branch" ]]; then
+        # TF's CI runs 'git fetch origin "pull/PR#/merge:pull_branch"'
+        # To get the as-merged branch during the CI tests
+        git diff --diff-filter ACMRT --name-only pull_branch^1 pull_branch^2 > $BATS_FILE_TMPDIR/changed_files
+    else
+        # If the branch is not present, then diff against origin/master
+        git diff --diff-filter ACMRT --name-only origin/master > $BATS_FILE_TMPDIR/changed_files
+    fi
 }
 
 # Note: this is excluded on the full code base, since any submitted code must
@@ -23,7 +29,7 @@ setup_file() {
 # Note: this is excluded on the full code base, since any submitted code must
 # have passed Google's internal style guidelines.
 @test "Check formatting for C++ files" {
-    skip "clang-format in OSS doesn't match Google-internal, and reports too much."
+    skip "clang-format doesn't match internal clang-format checker"
     echo "clang-format is recommended. Here are the suggested changes:"
     echo "============================="
     grep -e '\.h$' -e '\.cc$' $BATS_FILE_TMPDIR/changed_files > $BATS_TEST_TMPDIR/files || true
