@@ -10,7 +10,7 @@ setup_file() {
     if [[ "$(git rev-parse --abbrev-ref HEAD)" = "pull_branch" ]]; then
         # TF's CI runs 'git fetch origin "pull/PR#/merge:pull_branch"'
         # To get the as-merged branch during the CI tests
-        git diff --diff-filter ACMRT --name-only pull_branch^1 pull_branch^2 > $BATS_FILE_TMPDIR/changed_files
+        git diff --diff-filter ACMRT --name-only pull_branch^ pull_branch > $BATS_FILE_TMPDIR/changed_files
     else
         # If the branch is not present, then diff against origin/master
         git diff --diff-filter ACMRT --name-only origin/master > $BATS_FILE_TMPDIR/changed_files
