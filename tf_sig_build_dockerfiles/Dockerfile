@@ -21,6 +21,9 @@ RUN /build_devtoolset.sh devtoolset-9 /dt9
 ################################################################################
 FROM nvidia/cuda:11.2.2-base-ubuntu20.04 as devel
 ################################################################################
+# LD Library Path is not correctly set. It points to /usr/local/nvidia/lib:/usr/local/nvidia/lib64
+RUN echo $LD_LIBRARY_PATH
+RUN export LD_LIBRARY_PATH="/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64:/usr/local/cuda-11.1/lib64"
 
 COPY --from=builder /dt7 /dt7
 COPY --from=builder /dt9 /dt9
