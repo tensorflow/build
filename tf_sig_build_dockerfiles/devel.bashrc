@@ -22,5 +22,10 @@ export PS1="\[\e[31m\]tf-docker\[\e[m\] \[\e[33m\]\w\[\e[m\] > "
 export TERM=xterm-256color
 alias grep="grep --color=auto"
 alias ls="ls --color=auto"
+
+# LD Library Path is not correctly set. It points to /usr/local/nvidia/lib:/usr/local/nvidia/lib64
+echo $LD_LIBRARY_PATH
+export LD_LIBRARY_PATH="/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64:/usr/local/cuda-11.1/lib64"
+echo $LD_LIBRARY_PATH
 # Fix nvidia-docker
 ldconfig 
