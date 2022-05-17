@@ -44,6 +44,8 @@ Want to add your own project to this list? It's easy: check out
 * [**Distroless Dockerfiles**](https://github.com/uvarc/rivanna-docker):
   Distroless ([info](https://github.com/GoogleContainerTools)) TensorFlow
   images, which are smaller than TensorFlow's official images.
+* [**DevInfra Win RBE**](devinfra_win_rbe):
+  Static snapshot of TF DevInfra's Windows Remote Build Execution images
 
 ### Language Bindings
 
