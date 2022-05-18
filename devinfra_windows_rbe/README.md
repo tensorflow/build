@@ -9,55 +9,49 @@ Maintainer: @angerson (TensorFlow, SIG Build)
 This directory was extracted from TF's internal code base in May 2022. It's not
 being updated.
 
-## Updating RBE Containers
+## Building RBE Containers & The Toolchains
 
-These examples use Powershell on a Windows machine with Docker installed,
-starting from this directory.
+These examples use bash-via-Msys on a Windows machine with Docker installed,
+starting from this directory. Since it's bash, I used `pwd -W` to get the
+Windows paths for volume mounts, and manually escaped extra backslashes.
 
-1.  Update the Dockerfile as you wish
+1.  Make any changes to the Dockerfile
 2.  Build the image
 
     ```
     docker build . -t tf_win_rbe
     ```
-    
-3. Push the new image to a GCP docker repository so you can use it with RBE
-    
-3. Compile the basic project to create the toolchain config
+
+3.  Compile the basic project in the container to create the toolchain config:
 
     ```
     md toolchain
-    docker run --name tf -itd --rm ^
-      -v workspace:C:\workspace ^
-      -v toolchain:C:\config ^
-      -w C:\workspace tf_win_rbe
-      powershell
+    docker run --name tf -itd -v "$(pwd -W)\workspace:C:\workspace" -v "$(pwd -W)\toolchain:C:\config" -w "C:\\workspace" tf_win_rbe powershell
     docker exec tf bazel build //:cc_test
-    docker exec tf robocopy bazel-workspace\external\local_config_cc C:\config\ BUILD *.bzl builtin_include_directory_paths_msvc
+    docker exec tf robocopy bazel-workspace\\external\\local_config_cc C:\\config\\ BUILD "*.bzl" builtin_include_directory_paths_msvc
     docker stop tf
     docker rm tf
     ```
-    
-4.  Update the toolchain that TensorFlow uses for RBE Windows builds. Create a
-    new folder under
-    [`tensorflow/tools/toolchains/win`](http://github.com/tensorflow/tensorflow/tree/master/tensorflow/tensorflow/tools/toolchains/win)
-    and place all the files from the `toolchains` artifact directory under
-    there. DevInfra runs buildifier on these to auto-format them.
 
-5.  Update the docker image hash used by the RBE configuration: Update the hash
-    in
-    [`win/BUILD.oss`](http://github.com/tensorflow/tensorflow/tree/master/tensorflow/toolchains/win/BUILD.oss)
-    to the same hash as the new one you uploaded
+Now you have a Docker container for RBE, and a Windows toolchain to use with it.
+Your use case may be different than TensorFlow's. Here's how we configured ours.
 
-6.  Update the TensorFlow
-    [`.bazelrc`](http://github.com/tensorflow/tensorflow/tree/master/.bazelrc)
-    with the new toolchain directory. There are a few lines that will look
-    something like this:
+For the toolchains, the TF team would copy those new "toolchain" files into a
+new directory in `//tensorflow/tools/toolchains/win`, e.g.
+[tf_win_08062020](https://github.com/tensorflow/tensorflow/tree/master/tensorflow/tools/toolchains/win/tf_win_08062020).
+We run buildifier on these to auto-format them. We'd then update the TensorFlow
+[`.bazelrc`](http://github.com/tensorflow/tensorflow/tree/master/.bazelrc). with
+the new toolchain directory. We'd change all instances of `tf_win_YYYYMMDD` in
+the new file to the new directory, e.g. lines like this:
 
-    ```
-    build:rbe_win --crosstool_top="//tensorflow/tools/toolchains/win/tf_win_06242021:toolchain"
-    build:rbe_win --extra_toolchains="//tensorflow/tools/toolchains/win/tf_win_06242021:cc-toolchain-x64_windows"
-    ```
+```
+build:rbe_win --crosstool_top="//tensorflow/tools/toolchains/win/tf_win_06242021:toolchain"
+build:rbe_win --extra_toolchains="//tensorflow/tools/toolchains/win/tf_win_06242021:cc-toolchain-x64_windows"
+```
 
-    Change all instances of `tf_win_YYYYMMDD` to the new directory you made,
-    which should share the same naming scheme.
+For the RBE container, we would upload the new container to a GCP Docker repo
+and update our RBE configuration rule in
+[`//tensorflow/tools/toolchains/win/BUILD`](http://github.com/tensorflow/tensorflow/tree/master/tensorflow/toolchains/win/BUILD).
+with the new hash. You can see the identifier `rbe_windows_ltsc2019` in our
+[`.bazelrc`](http://github.com/tensorflow/tensorflow/tree/master/.bazelrc). Past
+that, I'm not really sure about how Bazel does RBE environment selection.
