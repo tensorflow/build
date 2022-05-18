@@ -51,7 +51,7 @@ build:rbe_win --extra_toolchains="//tensorflow/tools/toolchains/win/tf_win_06242
 
 For the RBE container, we would upload the new container to a GCP Docker repo
 and update our RBE configuration rule in
-[`//tensorflow/tools/toolchains/win/BUILD`](http://github.com/tensorflow/tensorflow/tree/master/tensorflow/toolchains/win/BUILD).
+[`//tensorflow/tools/toolchains/win/BUILD`](http://github.com/tensorflow/tensorflow/tree/master/tensorflow/tools/toolchains/win/BUILD).
 with the new hash. You can see the identifier `rbe_windows_ltsc2019` in our
 [`.bazelrc`](http://github.com/tensorflow/tensorflow/tree/master/.bazelrc). Past
 that, I'm not really sure about how Bazel does RBE environment selection.
