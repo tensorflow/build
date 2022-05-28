@@ -22,7 +22,7 @@ teardown_file() {
     # Ref. cs/test_tf_whl_size (internal only)
     case "$TF_WHEEL" in
         # CPU:
-        *cpu*manylinux*) LARGEST_OK_SIZE=200 ;;
+        *cpu*manylinux*) LARGEST_OK_SIZE=220 ;;
         *cpu*win*)       LARGEST_OK_SIZE=170 ;;
         *macos*)         LARGEST_OK_SIZE=225 ;;
         # GPU:
