@@ -1,7 +1,4 @@
 # vim: filetype=bash
-# This file is a work in progress, designed to replace the complicated test
-# orchestration previously placed in TensorFlow's ci_sanity.sh.
-# This is not currently in use.
 setup_file() {
     cd /tf/tensorflow
     bazel version  # Start the bazel server
