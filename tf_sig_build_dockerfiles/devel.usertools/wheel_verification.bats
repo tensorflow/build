@@ -26,7 +26,7 @@ teardown_file() {
         *cpu*win*)       LARGEST_OK_SIZE=170 ;;
         *macos*)         LARGEST_OK_SIZE=225 ;;
         # GPU:
-        *manylinux*)     LARGEST_OK_SIZE=500 ;;
+        *manylinux*)     LARGEST_OK_SIZE=580 ;;
         *win*)           LARGEST_OK_SIZE=345 ;;
         # Unknown:
         *)
