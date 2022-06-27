@@ -34,7 +34,7 @@ build --copt=-mavx --host_copt=-mavx
 # Store performance profiling log in the mounted artifact directory.
 # The profile can be viewed by visiting chrome://tracing in a Chrome browser.
 # See https://docs.bazel.build/versions/main/skylark/performance.html#performance-profiling
-build --profile=/tf/pkg/profile.json
+build --profile=/tf/pkg/profile.json.gz
 
 # CUDA: Set up compilation CUDA version and paths
 build --@local_config_cuda//:enable_cuda
