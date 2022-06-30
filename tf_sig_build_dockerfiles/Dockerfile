@@ -19,7 +19,7 @@ RUN /build_devtoolset.sh devtoolset-7 /dt7
 RUN /build_devtoolset.sh devtoolset-9 /dt9 
 
 ################################################################################
-FROM nvidia/cuda:11.2.2-base-ubuntu20.04 as devel
+FROM nvidia/cuda:11.7.0-base-ubuntu20.04 as devel
 ################################################################################
 COPY --from=builder /dt7 /dt7
 COPY --from=builder /dt9 /dt9
