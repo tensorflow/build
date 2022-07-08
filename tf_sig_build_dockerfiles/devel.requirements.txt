@@ -51,5 +51,5 @@ twine ~= 3.6.0
 
 # For user tool scripts
 junitparser ~= 2.2.0
-lxml ~= 4.6.4
+lxml ~= 4.9.1
 pylint ~= 2.13.9
