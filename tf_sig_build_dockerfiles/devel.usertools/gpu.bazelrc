@@ -47,7 +47,7 @@ build --action_env=GCC_HOST_COMPILER_PATH="/dt9/usr/bin/gcc"
 # libnvrtc.so.11.1. See https://github.com/NVIDIA/TensorRT/issues/1064.
 # TODO(b/187962120): Remove CUDA-11.1 when upgrading to TensorRT 8.
 build --action_env=LD_LIBRARY_PATH="/usr/local/cuda:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64:/usr/local/tensorrt/lib:/usr/local/cuda-11.1/lib64""
-build --crosstool_top=@ubuntu20.04-gcc9_manylinux2014-cuda11.2-cudnn8.1-tensorrt7.2_config_cuda//crosstool:toolchain
+build --crosstool_top="@sigbuild-r2.10_config_cuda//crosstool:toolchain"
 
 # CUDA: Enable TensorRT optimizations
 # https://developer.nvidia.com/tensorrt
@@ -112,7 +112,6 @@ build:rbe --bes_timeout=600s
 build:rbe --define=EXECUTOR=remote
 build:rbe --distinct_host_configuration=false
 build:rbe --flaky_test_attempts=3
-# TODO(angerson) Testing speed change from 200->1000
 build:rbe --jobs=1000
 build:rbe --remote_executor=grpcs://remotebuildexecution.googleapis.com
 build:rbe --remote_timeout=3600
