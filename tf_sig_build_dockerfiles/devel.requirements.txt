@@ -31,7 +31,7 @@ gast == 0.4.0
 # Note that the CACHEBUSTER variable, set in the CI builds, will force these to
 # be the latest version.
 keras-nightly ~= 2.11.0.dev
-tb-nightly ~= 2.11.0.a
+tb-nightly ~= 2.9.0.a
 tf-estimator-nightly ~= 2.11.0.dev
 
 # Test dependencies
