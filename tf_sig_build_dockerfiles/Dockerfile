@@ -30,11 +30,7 @@ COPY setup.sources.sh /setup.sources.sh
 COPY setup.packages.sh /setup.packages.sh
 COPY setup.cuda.sh /setup.cuda.sh
 COPY devel.packages.txt /devel.packages.txt
-# Temporary test
-# RUN /setup.sources.sh && /setup.packages.sh /devel.packages.txt && /setup.cuda.sh
-RUN /setup.sources.sh
-RUN /setup.packages.sh /devel.packages.txt
-RUN /setup.cuda.sh
+RUN /setup.sources.sh && /setup.packages.sh /devel.packages.txt && /setup.cuda.sh
 
 # Install various tools.
 # - bats: bash unit testing framework
