@@ -43,7 +43,7 @@ build --action_env=TF_CUDA_VERSION="11"
 build --action_env=TF_CUDNN_VERSION="8"
 build --action_env=CUDA_TOOLKIT_PATH="/usr/local/cuda-11.2"
 # build --action_env=GCC_HOST_COMPILER_PATH="/dt9/usr/bin/gcc"
-build --action_env=CLANG_CUDA_COMPILER_PATH="/usr/bin/clang"
+build --action_env=CLANG_CUDA_COMPILER_PATH="/usr/bin/clang-14"
 build --action_env=TF_CUDA_CLANG="1"
 # TensorRT 7 for CUDA 11.1 is compatible with CUDA 11.2, but requires
 # libnvrtc.so.11.1. See https://github.com/NVIDIA/TensorRT/issues/1064.
