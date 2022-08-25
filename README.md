@@ -37,7 +37,7 @@ Want to add your own project to this list? It's easy: check out
 
 ### Docker
 
-* [**TF SIG Build Dockerfiles**](tf_sig_build_dockerfiles):
+* [**TF SIG Build Dockerfiles**](https://github.com/tensorflow/tensorflow/tree/master/tensorflow/tools/tf_sig_build_dockerfiles):
   Standard Dockerfiles for TensorFlow builds, used internally at Google
 * [**Manylinux 2014 Docker Images**](manylinux2014_docker_images):
   `manylinux2014` build environment for TensorFlow packages.
