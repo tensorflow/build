@@ -6,28 +6,57 @@ Maintainer: @wamuir
 
 * * *
 
-**Important: TensorFlow for Go is no longer supported by the TensorFlow team.**
-
-# Install TensorFlow for Go
+## About
 
 TensorFlow provides a
 [Go API](https://pkg.go.dev/github.com/tensorflow/tensorflow/tensorflow/go)
 particularly useful for loading models created with Python and running them
 within a Go application.
 
-Caution: The TensorFlow Go API is *not* covered by the TensorFlow
+**Important**: TensorFlow for Go is no longer supported by the TensorFlow team.
+The TensorFlow Go API is also *not* covered by the TensorFlow
 [API stability guarantees](https://www.tensorflow.org/guide/versions).
 
-
-## Supported Platforms
+### Supported Platforms
 
 The Go bindings for TensorFlow work on the following systems, and likely others:
 
 * Linux, 64-bit, x86
 * macOS, Version 10.12.6 (Sierra) or higher
 
+### Installation
 
-## Installation and Setup
+Install the TensorFlow Go API from a community build (compatible with `go get`)
+or from source.
+
+## Community Build
+
+> Note: the Go bindings depend on
+> [libtensorflow](https://www.tensorflow.org/install/lang_c), which should be
+> downloaded (or compiled) and installed first.
+
+
+A community build, Graft, contains nightly and release builds of the Go
+language bindings to the TensorFlow C API, including Go-compiled TensorFlow
+protocol buffers and generated Go wrappers for TensorFlow operations. This
+community build can be fetched using `go get`.
+
+After installing [libtensorflow](https://www.tensorflow.org/install/lang_c),
+use Graft exactly as you would use the Go bindings found in the main TensorFlow
+repo, and with one of the following import statements:
+
+
+| TensorFlow C API               | Graft                                                                                             |
+| :----------------------------  | :-----------------------------------------------------------------------------------------------  |
+| TensorFlow Release 2.10.0      | [`go get github.com/wamuir/graft/tensorflow@v0.2.0`](https://github.com/wamuir/graft/tree/r0.2)     |
+| TensorFlow Release 2.9.2       | [`go get github.com/wamuir/graft/tensorflow@v0.1.1`](https://github.com/wamuir/graft/tree/r0.1)     |
+| TensorFlow Nightly             | [`go get github.com/wamuir/graft/tensorflow@nightly`](https://github.com/wamuir/graft/tree/nightly) |
+
+
+## Build from Source
+
+<details>
+<summary>Click to expand</summary>
 
 ### 1. Install the TensorFlow C Library
 
@@ -36,7 +65,7 @@ library is required for use of the TensorFlow Go package at runtime. For example
 on Linux (64-bit, x86):
 
   ```sh
-  $ curl -L https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-cpu-linux-x86_64-2.9.0.tar.gz | tar xz --directory /usr/local
+  $ curl -L https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-cpu-linux-x86_64-2.10.0.tar.gz | tar xz --directory /usr/local
   $ ldconfig
   ```
 
@@ -70,11 +99,11 @@ Instead, follow these instructions.***
   $ go env GOPATH
   ```
 
-- Clone the TensorFlow source respository, substituting the location of your Go
+- Clone the TensorFlow source repository, substituting the location of your Go
   workspace for `/go` in the command below.
 
   ```sh
-  $ git clone --branch v2.9.0 https://github.com/tensorflow/tensorflow.git /go/src/github.com/tensorflow/tensorflow
+  $ git clone --branch v2.10.0 https://github.com/tensorflow/tensorflow.git /go/src/github.com/tensorflow/tensorflow
   ```
 
 - Change the working directory to the base of the cloned TensorFlow repository,
@@ -121,7 +150,7 @@ workspace for `/go` in the command below:
 
 ```sh
 $ go mod init hello-world
-$ go mod edit -require github.com/tensorflow/tensorflow@v2.9.0+incompatible
+$ go mod edit -require github.com/tensorflow/tensorflow@v2.10.0+incompatible
 $ go mod edit -replace github.com/tensorflow/tensorflow=/go/src/github.com/tensorflow/tensorflow
 $ go mod tidy
 ```
@@ -167,7 +196,7 @@ func main() {
 
 ```sh
 $ go mod init app
-$ go mod edit -require github.com/tensorflow/tensorflow@v2.9.0+incompatible
+$ go mod edit -require github.com/tensorflow/tensorflow@v2.10.0+incompatible
 $ go mod edit -replace github.com/tensorflow/tensorflow=/go/src/github.com/tensorflow/tensorflow
 $ go mod tidy
 ```
@@ -195,3 +224,4 @@ following commands:
 $ docker build -t tensorflow/build:golang-example https://github.com/tensorflow/build.git#:golang_install_guide/example-program
 $ docker run tensorflow/build:golang-example
 ```
+</details>
