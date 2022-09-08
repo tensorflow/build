@@ -14,10 +14,10 @@
 # ============================================================================
 
 
-FROM golang:1.18-bullseye
+FROM golang:1.19-bullseye
 
-# 1. Install the TensorFlow C Library (v2.9.0).
-RUN curl -L https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-cpu-linux-$(uname -m)-2.9.0.tar.gz \
+# 1. Install the TensorFlow C Library (v2.10.0).
+RUN curl -L https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-cpu-linux-$(uname -m)-2.10.0.tar.gz \
     | tar xz --directory /usr/local \
     && ldconfig
 
@@ -27,7 +27,7 @@ RUN apt-get update && apt-get -y install --no-install-recommends \
     protobuf-compiler
 
 # 3. Install and Setup the TensorFlow Go API.
-RUN git clone --branch=v2.9.0 https://github.com/tensorflow/tensorflow.git /go/src/github.com/tensorflow/tensorflow \
+RUN git clone --branch=v2.10.0 https://github.com/tensorflow/tensorflow.git /go/src/github.com/tensorflow/tensorflow \
     && cd /go/src/github.com/tensorflow/tensorflow \
     && go mod init github.com/tensorflow/tensorflow \
     && (cd tensorflow/go/op && go generate) \
@@ -38,7 +38,7 @@ RUN git clone --branch=v2.9.0 https://github.com/tensorflow/tensorflow.git /go/s
 WORKDIR /example-program
 COPY hello_tf.go .
 RUN go mod init app \
-    && go mod edit -require github.com/tensorflow/tensorflow@v2.9.0+incompatible \
+    && go mod edit -require github.com/tensorflow/tensorflow@v2.10.0+incompatible \
     && go mod edit -replace github.com/tensorflow/tensorflow=/go/src/github.com/tensorflow/tensorflow \
     && go mod tidy \
     && go build
