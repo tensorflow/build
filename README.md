@@ -6,6 +6,7 @@
 
 [![Gitter chat](https://img.shields.io/badge/chat-on%20gitter-46bc99.svg)](https://gitter.im/tensorflow/sig-build)
 [![SIG Build Forum](https://img.shields.io/badge/discuss-on%20tensorflow.org-orange)](https://groups.google.com/a/tensorflow.org/g/build)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/joycebrum/build/badge)](https://api.securityscorecards.dev/projects/github.com/joycebrum/build)
 
 **TensorFlow SIG Build** is a community group dedicated to the TensorFlow build
 process. This repository is a showcase of resources, guides, tools, and builds
