@@ -46,11 +46,12 @@ use Graft exactly as you would use the Go bindings found in the main TensorFlow
 repo, and with one of the following import statements:
 
 
-| TensorFlow C API               | Graft                                                                                             |
-| :----------------------------  | :-----------------------------------------------------------------------------------------------  |
-| TensorFlow Release 2.10.0      | [`go get github.com/wamuir/graft/tensorflow@v0.2.0`](https://github.com/wamuir/graft/tree/r0.2)     |
-| TensorFlow Release 2.9.2       | [`go get github.com/wamuir/graft/tensorflow@v0.1.1`](https://github.com/wamuir/graft/tree/r0.1)     |
-| TensorFlow Nightly             | [`go get github.com/wamuir/graft/tensorflow@nightly`](https://github.com/wamuir/graft/tree/nightly) |
+| TensorFlow C API          | Graft                                                                                               |
+| :------------------------ | :-------------------------------------------------------------------------------------------------- |
+| TensorFlow Release 2.11.0 | [`go get github.com/wamuir/graft/tensorflow@v0.3.0`](https://github.com/wamuir/graft/tree/v0.3.0)   |
+| TensorFlow Release 2.10.1 | [`go get github.com/wamuir/graft/tensorflow@v0.2.1`](https://github.com/wamuir/graft/tree/v0.2.1)   |
+| TensorFlow Release 2.9.3  | [`go get github.com/wamuir/graft/tensorflow@v0.1.2`](https://github.com/wamuir/graft/tree/v0.1.2)   |
+| TensorFlow Nightly        | [`go get github.com/wamuir/graft/tensorflow@nightly`](https://github.com/wamuir/graft/tree/nightly) |
 
 
 ## Build from Source
@@ -65,7 +66,7 @@ library is required for use of the TensorFlow Go package at runtime. For example
 on Linux (64-bit, x86):
 
   ```sh
-  $ curl -L https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-cpu-linux-x86_64-2.10.0.tar.gz | tar xz --directory /usr/local
+  $ curl -L https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-cpu-linux-x86_64-2.11.0.tar.gz | tar xz --directory /usr/local
   $ ldconfig
   ```
 
@@ -103,7 +104,7 @@ Instead, follow these instructions.***
   workspace for `/go` in the command below.
 
   ```sh
-  $ git clone --branch v2.10.0 https://github.com/tensorflow/tensorflow.git /go/src/github.com/tensorflow/tensorflow
+  $ git clone --branch v2.11.0 https://github.com/tensorflow/tensorflow.git /go/src/github.com/tensorflow/tensorflow
   ```
 
 - Change the working directory to the base of the cloned TensorFlow repository,
@@ -120,10 +121,29 @@ Instead, follow these instructions.***
    $ go mod init github.com/tensorflow/tensorflow
    ```
 
+- Patch tensorflow/go/genop to generate TSL protobufs.
+
+   ```sh
+   $ sed -i '72 i \    ${TF_DIR}\/tensorflow\/tsl\/protobuf\/*.proto \\' tensorflow/go/genop/generate.sh
+   ```
+
 - Generate wrappers and protocol buffers.
 
    ```sh
    $ (cd tensorflow/go/op && go generate)
+   ```
+
+- Use Go Mod's `replace` directive to locate TSL protos.
+
+   ```sh
+   $ go mod edit -require github.com/google/tsl@v0.0.0+incompatible
+   $ go mod edit -replace github.com/google/tsl=/go/src/github.com/google/tsl
+   ```
+
+- Initialize a new go.mod for TSL and add dependencies.
+
+   ```sh
+   $ (cd /go/src/github.com/google/tsl && go mod init github.com/google/tsl && go mod tidy)
    ```
 
 - Add missing modules.
@@ -150,7 +170,9 @@ workspace for `/go` in the command below:
 
 ```sh
 $ go mod init hello-world
-$ go mod edit -require github.com/tensorflow/tensorflow@v2.10.0+incompatible
+$ go mod edit -require github.com/google/tsl@v0.0.0+incompatible
+$ go mod edit -require github.com/tensorflow/tensorflow@v2.11.0+incompatible
+$ go mod edit -replace github.com/google/tsl=/go/src/github.com/google/tsl
 $ go mod edit -replace github.com/tensorflow/tensorflow=/go/src/github.com/tensorflow/tensorflow
 $ go mod tidy
 ```
@@ -196,7 +218,9 @@ func main() {
 
 ```sh
 $ go mod init app
-$ go mod edit -require github.com/tensorflow/tensorflow@v2.10.0+incompatible
+$ go mod edit -require github.com/google/tsl@v0.0.0+incompatible
+$ go mod edit -require github.com/tensorflow/tensorflow@v2.11.0+incompatible
+$ go mod edit -replace github.com/google/tsl=/go/src/github.com/google/tsl
 $ go mod edit -replace github.com/tensorflow/tensorflow=/go/src/github.com/tensorflow/tensorflow
 $ go mod tidy
 ```
