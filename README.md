@@ -40,12 +40,14 @@ Want to add your own project to this list? It's easy: check out
 
 * [**TF SIG Build Dockerfiles**](https://github.com/tensorflow/tensorflow/tree/master/tensorflow/tools/tf_sig_build_dockerfiles):
   Standard Dockerfiles for TensorFlow builds, used internally at Google
+* [**TensorFlow Runtime Dockerfiles**](tensorflow_runtime_dockerfiles):
+  Simple Dockerfiles for running TensorFlow, with Jupyter variants.
 * [**Manylinux 2014 Docker Images**](manylinux2014_docker_images):
   `manylinux2014` build environment for TensorFlow packages.
 * [**Distroless Dockerfiles**](https://github.com/uvarc/rivanna-docker):
   Distroless ([info](https://github.com/GoogleContainerTools)) TensorFlow
   images, which are smaller than TensorFlow's official images.
-* [**DevInfra Windown RBE**](devinfra_windows_rbe):
+* [**DevInfra Windows RBE**](devinfra_windows_rbe):
   Static snapshot of TF DevInfra's Windows Remote Build Execution images
 
 ### Language Bindings
