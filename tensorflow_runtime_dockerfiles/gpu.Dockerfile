@@ -36,8 +36,6 @@ RUN /setup.cuda.sh
 COPY bashrc /etc/bash.bashrc
 RUN chmod a+rwx /etc/bash.bashrc
 
-COPY test.import_gpu.sh /test.import_gpu.sh
-
 FROM base as jupyter
 
 COPY jupyter.requirements.txt /jupyter.requirements.txt
@@ -50,3 +48,9 @@ WORKDIR /tf
 EXPOSE 8888
 
 CMD ["bash", "-c", "source /etc/bash.bashrc && jupyter notebook --notebook-dir=/tf --ip 0.0.0.0 --no-browser --allow-root"]
+
+FROM base as test
+
+ENV LD_LIBRARY_PATH /usr/local/cuda/lib64/stubs/:$LD_LIBRARY_PATH
+COPY test.import_cpu.sh /test.import_cpu.sh
+RUN /test.import_cpu.sh

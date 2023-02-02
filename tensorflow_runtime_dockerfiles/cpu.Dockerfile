@@ -34,8 +34,6 @@ RUN pip install --no-cache-dir ${TENSORFLOW_PACKAGE}
 COPY bashrc /etc/bash.bashrc
 RUN chmod a+rwx /etc/bash.bashrc
 
-COPY test.import_cpu.sh /test.import_cpu.sh
-
 FROM base as jupyter
 
 COPY jupyter.requirements.txt /jupyter.requirements.txt
@@ -48,3 +46,8 @@ WORKDIR /tf
 EXPOSE 8888
 
 CMD ["bash", "-c", "source /etc/bash.bashrc && jupyter notebook --notebook-dir=/tf --ip 0.0.0.0 --no-browser --allow-root"]
+
+FROM base as test
+
+COPY test.import_cpu.sh /test.import_cpu.sh
+RUN /test.import_cpu.sh
