@@ -35,7 +35,6 @@ COPY bashrc /etc/bash.bashrc
 RUN chmod a+rwx /etc/bash.bashrc
 
 COPY test.import_cpu.sh /test.import_cpu.sh
-RUN /test.import_cpu.sh
 
 FROM base as jupyter
 

@@ -37,7 +37,6 @@ COPY bashrc /etc/bash.bashrc
 RUN chmod a+rwx /etc/bash.bashrc
 
 COPY test.import_gpu.sh /test.import_gpu.sh
-RUN /test.import_gpu.sh
 
 FROM base as jupyter
 
