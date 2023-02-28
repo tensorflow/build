@@ -63,6 +63,12 @@ Want to add your own project to this list? It's easy: check out
   for building on Raspberry Pi. Needs an owner.
 * [**WSL2 GPU Guide**](wsl2_gpu_guide): Instructions for enabling GPU with Tensorflow
   on a WSL2 virtual machine.
+  
+### Bazel Build Statistics
+
+* [**Bazel Build Statistics Cloud Functions**](utils/build_stats): Cloud Functions
+for analyzing Bazel build profiles and build event protocols and uploading them
+to BigQuery.
 
 ### WIP / Other
 
