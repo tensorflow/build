@@ -1,0 +1,11 @@
+{"otherData":{"build_id":"8a87a964-5ef2-4a19-8f74-67887a15a1f1","output_base":"/root/.cache/bazel/_bazel_root/fbac33eb30dbfb6b11b15a7ff5ac830d","date":"Thu Dec 08 23:31:24 UTC 2022"},"traceEvents":[
+    {"name":"thread_name","ph":"M","pid":1,"tid":0,"args":{"name":"Critical Path"}},
+    {"name":"thread_sort_index","ph":"M","pid":1,"tid":0,"args":{"sort_index":0}},
+    {"name":"thread_name","ph":"M","pid":1,"tid":38,"args":{"name":"Main Thread"}},
+    {"name":"thread_sort_index","ph":"M","pid":1,"tid":38,"args":{"sort_index":"1"}},
+    {"cat":"build phase marker","name":"Launch Blaze","ph":"X","ts":-2826000,"dur":2826000,"pid":1,"tid":38},
+    {"cat":"build phase marker","name":"Initialize command","ph":"i","ts":0,"pid":1,"tid":38},
+    {"cat":"general information","name":"BazelStartupOptionsModule.beforeCommand","ph":"X","ts":310798,"dur":399,"pid":1,"tid":38},
+    {"cat":"Unknown event","name":"merged 4 events","ph":"X","ts":136562234,"dur":1150,"pid":1,"tid":1767}
+  ]
+}
