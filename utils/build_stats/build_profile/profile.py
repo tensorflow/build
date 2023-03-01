@@ -18,7 +18,7 @@ import logging
 import os
 import re
 
-
+import functions_framework
 from google.cloud import bigquery
 from google.cloud import logging 
 from google.cloud import storage
@@ -36,62 +36,67 @@ class IncorrectProfileFormatError(Exception):
   """This file is not in the correct Build Profile format."""
 
 
-# @functions_framework.cloud_event
-def main(cloud_event: any()):
+@functions_framework.cloud_event
+def main(cloud_event: any):
   """Entry point function that is triggered by uploading build profile.
-
   Gathers stats from build profile file and sends to BigQuery. Goes through
   each thread in the file and for each event in the thread extracts relevant
   info and writes as an object into bigquery
-
   Args:
     cloud_event: the google cloud event that triggered the function
-
   """
-  storage_bucket = os.environ.get("STORAGE_BUCKET")
-  table_id = os.environ.get("TABLE_ID")
+  STORAGE_BUCKET = os.environ.get("STORAGE_BUCKET")
+  TABLE_ID = os.environ.get("TABLE_ID")
   try:
-    logging_client = logging.Client()
-    logging_client.setup_logging()
+    client = logging.Client()
+    log_name = "trying-this-out"
+    logger = client.logger(log_name)
+    logger.log_text("Successfully connected to GCP Logging Client", severity="INFO")
   except logging.Error:
-    logging.warning("Unable to connect to GCP Logging client")
+    logger.log_text("Unable to connect to GCP Logging client", severity="WARNING")
     return
   data = cloud_event.data
   if "name" not in data:
-    logging.warning("No filename was found")
+    logger.log_text("No filename was found", severity="WARNING")
     return
   file_name = data["name"]
+  print(file_name)
   check_file = check_path(file_name)
   if not check_file:
-    logging.info(
-        "The current file is not a build profile according to its path"
+    logger.log_text(
+        "The current file is not a build profile according to its path", severity="INFO"
     )
     return
+  else:
+    logger.log_text("Build profile found", severity="INFO")
   try:
     storage_client = storage.Client()
-    bucket = storage_client.get_bucket(storage_bucket)
+    print(STORAGE_BUCKET)
+    bucket = storage_client.get_bucket(STORAGE_BUCKET)
+    print(bucket)
     data_blob = bucket.get_blob(file_name)
+    print(data_blob)
   except Exception as exc:
-    logging.warning("Unable to access Cloud Storage client or storage bucket")
+    logger.log_text("Unable to access Cloud Storage client or storage bucket", severity="WARNING")
     raise Exception() from exc
   threads = get_data(data_blob)
   all_threads = get_percents(threads)
   if len(all_threads) == 0:
-    logging.warning(
-        "Profile had no completed action events or wasn't in correct format"
+    logger.log_text(
+        "Profile had no completed action events or wasn't in correct format", severity="WARNING"
     )
     return
   objs = create_event_objects(all_threads)
   try:
     bigquery_client = bigquery.Client()
     for obj in objs:
-      errors = bigquery_client.insert_rows_json(table_id, [obj])
+      errors = bigquery_client.insert_rows_json(TABLE_ID, [obj])
       if not errors:
-        logging.info("New rows have been added.")
+        logger.log_text("New rows have been added.", severity="INFO")
       else:
-        logging.info("Encountered errors while inserting rows")
+        logger.log_text("Encountered errors while inserting rows", severity="INFO")
   except bigquery.Error:
-    logging.warning("Unable to access Bigquery client")
+    logger.log_text("Unable to access Bigquery client", severity="WARNING")
     return
 
 def check_path(file_name: str):
@@ -100,22 +105,19 @@ def check_path(file_name: str):
   return check_file
 
 
-def get_data(data_blob: any()):
+def get_data(data_blob: any):
   """Goes through each line in blob file and converts strings to dictionary object.
-
   Args:
     data_blob: the blob file that was uploaded in the triggering cloud event
-
   Raises:
     MissingTopLevelError: Doesn't have top level object
     IncorrectProfileFormatError: Missing required fields for a profile
     IncorrectFileTypeError: One or more lines is not in correct JSON format
-
   Returns:
     A dict mapping keys of thread ids to an array of events in that thread
   """
   threads = {}
-  with open(data_blob, "r") as file:
+  with data_blob.open("r") as file:
     i = 0
     for line in file:
       if i == 0:
@@ -123,6 +125,7 @@ def get_data(data_blob: any()):
         # MetaData "Otherdata" and "TraceEvents"
         if "otherData" not in line or "traceEvents" not in line:
           raise MissingTopLevelError()
+          logger.log_text("Missing first line of profile", severity="WARNING")
       if i > 0:
         my_json = line.rstrip()
         if my_json[-1] == ",":
@@ -147,13 +150,10 @@ def get_data(data_blob: any()):
 
 def get_percents(threads: dict):
   """For each event in thread keep track of total time it takes.
-
   Args:
     threads: dictionary of {thread id: [events in thread]}
-
   Raises:
     IncorrectProfileFormatError: Incorrect format for profile format
-
   Returns:
     A dict mapping type of event to total time event took
   """
