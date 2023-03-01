@@ -13,14 +13,16 @@
 # limitations under the License.
 # =============================================================================
 
+
 """Python Code for grabbing stats from build event protocol to be used."""
 import json
 import logging
 import os
 import re
 
+import functions_framework
 from google.cloud import bigquery
-from google.cloud import logging 
+import google.cloud.logging
 from google.cloud import storage
 
 
@@ -35,38 +37,38 @@ class IncorrectFileFormatError(Exception):
 
 
 # Triggered by a change in a storage bucket
-#@functions_framework.cloud_event
-def main(cloud_event):
+@functions_framework.cloud_event
+def main(cloud_event: any):
   """Entry point function that is triggered by cloud event.
-
   Gathers stats from Build Event Protocol file and sends to BigQuery
-
   Args:
     cloud_event: event that triggers the function
   """
-  storage_bucket = os.environ.get("STORAGE_BUCKET")
-  table_id = os.environ.get("TABLE_ID")
+  STORAGE_BUCKET = os.environ.get("STORAGE_BUCKET")
+  TABLE_ID = os.environ.get("TABLE_ID")
   try:
-    logging_client = logging.Client()
-    logging_client.logging()
+    client = google.cloud.logging.Client()
+    log_name = "trying-this-out"
+    logger = client.logger(log_name)
+    logger.log_text("Successfully connected to GCP Logging Client", severity="INFO")
   except logging.Error:
-    logging.warning("Unable to connect to GCP Logging client")
+    logger.log_text("Unable to connect to GCP Logging client", severity="WARNING")
     raise logging.Error()
   data = cloud_event.data
   if "name" not in data:
-    logging.warning("No filename was found")
+    logger.log_text("No filename was found", severity="WARNING")
     return
   file_name = data["name"]
   check_file = check_path(file_name)
   if not check_file:
-    logging.info("This file path is not in the correct format for a BEP")
+    logger.log_text("This file path is not in the correct format for a BEP", severity="INFO")
     return
   try:
     storage_client = storage.Client()
-    bucket = storage_client.get_bucket(storage_bucket)
+    bucket = storage_client.get_bucket(STORAGE_BUCKET)
     data_blob = bucket.get_blob(file_name)
   except Exception as exc:
-    logging.warning("Unable to access Cloud Storage client or storage bucket")
+    logger.log_text("Unable to access Cloud Storage client or storage bucket", severity="WARNING")
     raise Exception() from exc
   # Loops through file
   all_events = extract_events(data_blob)
@@ -74,14 +76,14 @@ def main(cloud_event):
     bigquery_client = bigquery.Client()
     for event in all_events:
       event = [event]
-      errors = bigquery_client.insert_rows_json(table_id, event)
+      errors = bigquery_client.insert_rows_json(TABLE_ID, event)
       if not errors:
-        logging.info("Successfully added row to table")
+        logger.log_text("Successfully added row to table", severity="INFO")
       else:
-        logging.info("Encountered errors while inserting rows")
+        logger.log_text("Encountered errors while inserting rows", severity="INFO")
     # log instead no one's ever going to catch that ever if it gets printed
   except bigquery.Error:
-    logging.warning("Unable to access Bigquery client")
+    logger.log_text("Unable to access Bigquery client", severity="WARNING")
     return
   # Make an API request and make sure it executes correctly
 
@@ -94,14 +96,11 @@ def check_path(file_name: str):
 
 def extract_events(data_blob):
   """Extracts the build events from build event protocol.
-
   Args:
     data_blob: the file
-
   Raises:
     IncorrectFileTypeError: not JSON file
     IncorrectFileFormatError: wrong format
-
   Returns:
     list of all build events in file in an array
   """
@@ -131,6 +130,6 @@ def extract_events(data_blob):
           raise IncorrectFileFormatError() from exc
         all_events.append(obj)
     if len(all_events) == 0:
-      logging.warning("Empty output")
+      logger.log_text("Empty File", severity="WARNING")
       raise EmptyFileError()
   return all_events
