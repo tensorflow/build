@@ -37,12 +37,9 @@ def test_check_path():
   assert r3 is None
 
 def test_extract_events():
-  # file_name = '/usr/local/google/home/halseycamilla/pytest/build/utils/build_stats/testing_files/build_event.json'
-  # r1 = build_event.extract_events(file_name)
-  # f2 = '/usr/local/google/home/halseycamilla/pytest/build/utils/build_stats/testing_files/extract_events_outputs1.json'
-  # with open(f2, 'r') as f:
-
-  #   assert r1 == f.read()
+  file_name = '/usr/local/google/home/halseycamilla/pytest/build/utils/build_stats/testing_files/example.json'
+  r1 = build_event.extract_events(file_name)
+  assert r1 is not None
   file_no_test = '/usr/local/google/home/halseycamilla/pytest/build/utils/build_stats/testing_files/no_test_label.json'
   with pytest.raises(build_event.IncorrectFileFormatError):
     build_event.extract_events(file_no_test)
