@@ -67,12 +67,12 @@ Want to add your own project to this list? It's easy: check out
 
 ### WIP / Other
 
+* [**Build Stats Functions**](utils/build_stats_functions): Cloud Functions
+  for analyzing Bazel build profiles and build event protocols and uploading them
+  to BigQuery.
 * [**Directory Template**](directory_template): Example short description.
 * [**Tekton CI**](tekton): perfinion's experimental directory for using Tekton 
   CI with TensorFlow
-* [**Bazel Build Statistics Cloud Functions**](utils/build_stats): Cloud Functions
-  for analyzing Bazel build profiles and build event protocols and uploading them
-  to BigQuery.
 
 
 ## Community Supported TensorFlow Builds
