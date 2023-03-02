@@ -1,4 +1,4 @@
-## Build Stats
+## Build Stats Functions
 
 Python Files that analyze and parse Bazel Build statistics.
 
