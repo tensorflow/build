@@ -1,0 +1,55 @@
+{
+  repository(name: "tensorflow", owner: "tensorflow") {
+    defaultBranchRef {
+      target {
+        ... on Commit {
+          history(first: 100) {
+            nodes {
+              messageHeadline
+              message
+              messageBody
+              commitUrl
+              statusCheckRollup {
+                contexts(first: 20) {
+                  totalCount
+                  nodes {
+                    ... on StatusContext {
+                      id
+                      state
+                      context
+                      targetUrl
+                      description
+                    }
+                    ... on CheckRun {
+                      id
+                      name
+                      detailsUrl
+                      url
+                      status
+                      conclusion
+                      checkSuite {
+                        workflowRun {
+                          workflow {
+                            name
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+              oid
+              committedDate
+            }
+          }
+        }
+      }
+    }
+  }
+  rateLimit {
+    limit
+    cost
+    remaining
+    resetAt
+  }
+}
