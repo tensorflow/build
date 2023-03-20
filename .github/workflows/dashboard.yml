@@ -56,13 +56,13 @@ jobs:
         uses: actions/upload-artifact@83fd05a356d7e2593de66fc9913b3002723633cb # v3.1.1
         with:
           name: Merged Data
-          path: old.json
+          path: tf_oss_dashboard/old.json
           retention-days: 5
 
       - name: "Upload dashboard"
         uses: actions/upload-artifact@83fd05a356d7e2593de66fc9913b3002723633cb # v3.1.1
         with:
           name: Dashboard
-          path: dashboard.html
+          path: tf_oss_dashboard/dashboard.html
           retention-days: 5
 
