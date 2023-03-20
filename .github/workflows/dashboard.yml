@@ -43,13 +43,13 @@ jobs:
 
       - name: Download artifact
         id: download-artifact
+        continue-on-error: true
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow_conclusion: success
 
       - name: Run Script
         id: run-script
-        continue-on-error: true
         run: cd tf_oss_dashboard; ./script.sh
 
       - name: "Upload merged data"
