@@ -50,6 +50,8 @@ jobs:
 
       - name: Run Script
         id: run-script
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         run: cd tf_oss_dashboard; ./script.sh
 
       - name: "Upload merged data"
