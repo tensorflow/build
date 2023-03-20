@@ -19,6 +19,7 @@ on:
   branch_protection_rule:
   schedule:
     - cron: '*/5 * * * *'
+  workflow_dispatch:
 
 # Declare default permissions as read only.
 permissions: read-all
