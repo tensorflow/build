@@ -9,5 +9,5 @@ if [[ -e old.json ]]; then
 else
   mv new.json merged.json
 fi
-cat merged.json ./dashboard.py > dashboard.html
+cat merged.json | ./dashboard.py > dashboard.html
 mv merged.json old.json
