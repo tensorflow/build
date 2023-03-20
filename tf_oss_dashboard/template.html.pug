@@ -1,0 +1,72 @@
+!!! 5
+html(lang="en")
+  head
+    title TensorFlow GitHub Status
+    meta(charset="UTF-8")
+    link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous")
+    script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous")
+    script(src="https://code.jquery.com/jquery-3.6.4.slim.min.js" integrity="sha256-a2yjHM4jnF9f54xUQakjZGaqYs/V1CYvWpoqZzC2/Bw=" crossorigin="anonymous")
+    style= css
+  body
+    nav.navbar.navbar-dark.navbar-expand-lg.py-0.mb-2
+      .container-fluid.py-0
+        .d-flex.flex-row
+          a.navbar-brand TensorFlow GitHub CI
+          .navbar-text Last updated on #{now}
+        ul.navbar-nav
+          li.nav-item
+            a.nav-link(role="button" data-bs-toggle="modal" data-bs-target="#help-modal") Help
+      
+    .d-flex.flex-column.gap-1.m-1
+      each category, everythin in by_group.items() 
+        .fw-bold.ps-4
+          span.text-light= category
+        .d-flex.flex-row.flex-wrap.gap-1.m-1
+          each name, tests in everythin.items()
+            .card.flex-shrink-1.flex-grow-1(class=tests[0]["card_class"] data-name=name)
+              span.position-absolute.lh-1.fs-2.favorite ☆
+              if tests[1]["is_important"]
+                span.position-absolute.end-0.lh-1.fs-2.important.pe-1 ♦
+              .card-body
+                h4.text-center.fw-bold= name
+                .d-flex.flex-row.flex-wrap.gap-1
+                  each test in tests
+                    if "date_tag" in test:
+                      .btn.p-2.tf-date.cursor-pointer= test["date_tag"]
+                    else
+                      .btn.p-2(class=test["state"] data-record=test.raw data-bs-toggle='modal' data-bs-target=test["commit_id"])
+
+
+    each commit, jobs in by_commit.items()
+      .modal.modal-lg.fade(tabindex='-1' aria-labelledby=commit id=commit aria-hidden='true')
+        .modal-dialog
+          .modal-content
+            .modal-header
+              .d-flex.flex-column
+                div.fw-bold.text-wrap
+                  a.badge.me-1.tf-hash(href=jobs[0]["commit_url"])= jobs[0]["short_commit"]
+                  =jobs[0]["commit_summary"]
+            .modal-body
+              .d-flex.flex-row
+                a.badge.me-1.tf-fulldate(href=jobs[0]["commit_url"])= jobs[0]["date_human"]
+                if "cl" in jobs[0]:
+                  a.badge.tf-cl(href=jobs[0]["cl_url"]) cl/#{jobs[0]["cl"]}
+                else
+                  span.badge.tf-nocl No CL Attached
+              .d-flex.flex-column.text-wrap
+                !{jobs[0]["commit_body"]}
+              hr
+              each job in jobs
+                .d-flex.flex-row.gap-1.py-1
+                    a.badge.my-auto(href=job["result_url"] class=job["state"])= job["state"]
+                    if "previous_diff_url" in job:
+                      a.badge.my-auto.text-center.tf-diff(href=job["previous_diff_url"]) Diff
+                    else
+                      span.badge.my-auto.tf-nodiff No Diff
+                    span.lh-1= job["name"]
+    .modal.modal-lg.fade(tabindex='-1' aria-labelledby="help-modal" id="help-modal" aria-hidden='true')
+      .modal-dialog
+        .modal-content
+          .modal-header.fw-bold Dashboard Help
+          .modal-body !{helptext}
+    script !{js}

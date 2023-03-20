@@ -1,0 +1,68 @@
+# Copyright 2023 The TensorFlow Authors. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ============================================================================
+
+name: Dashboard Generator
+on:
+  # Only the default branch is supported.
+  branch_protection_rule:
+  schedule:
+    - cron: '*/5 * * * *'
+
+# Declare default permissions as read only.
+permissions: read-all
+
+jobs:
+  dashboard:
+    if: github.repository == 'tensorflow/build' # Don't do this in forks
+    name: Generate Dashboard
+    runs-on: ubuntu-latest
+    permissions:
+      # Needed to upload the results to code-scanning dashboard.
+      security-events: write
+      # Used to receive a badge.
+      id-token: write
+
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
+        with:
+          persist-credentials: false
+
+      - name: Download artifact
+        id: download-artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow_conclusion: success
+
+      - name: Run Script
+        id: run-script
+        run:
+          - cd tf_oss_dashboard
+          - ./script.sh
+
+      - name: "Upload merged data"
+        uses: actions/upload-artifact@83fd05a356d7e2593de66fc9913b3002723633cb # v3.1.1
+        with:
+          name: Merged Data
+          path: old.json
+          retention-days: 5
+
+      - name: "Upload dashboard"
+        uses: actions/upload-artifact@83fd05a356d7e2593de66fc9913b3002723633cb # v3.1.1
+        with:
+          name: Dashboard
+          path: dashboard.html
+          retention-days: 5
+

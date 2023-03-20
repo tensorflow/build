@@ -67,6 +67,8 @@ Want to add your own project to this list? It's easy: check out
 ### WIP / Other
 
 * [**Directory Template**](directory_template): Example short description.
+* [**TF OSS Dashboard**](tf_oss_dashboard): Dashboard for all continuous
+  statuses on TF GitHub Commits.
 * [**Tekton CI**](tekton): perfinion's experimental directory for using Tekton 
   CI with TensorFlow
 

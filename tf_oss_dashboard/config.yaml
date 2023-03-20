@@ -1,0 +1,13 @@
+categories:
+  TF DevInfra:
+    - Py+CPP Test Suite - Ubuntu GPU, Python 3.9
+    - Py+CPP Test Suite - Ubuntu CPU, Python 3.9
+    - Code Check - Full
+    - MacOS CPU Python3.9 Shard 1/2
+    - MacOS CPU Python3.9 Shard 2/2
+  Everything Else:
+    - Default
+  Ignorable:
+    - "? / cla/google"
+    - import/copybara
+    - kokoro
