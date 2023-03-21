@@ -78,7 +78,6 @@ jobs:
         uses: actions/configure-pages@v3
 
       - name: Move dashboard around
-        env:
         run: cd tf_oss_dashboard; mkdir _site; mv dashboard.html ./_site/index.html
 
       - name: Upload artifact
