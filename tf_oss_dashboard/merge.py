@@ -18,7 +18,7 @@ for commit in new["data"]["repository"]["defaultBranchRef"]["target"]["history"]
 
 if overlap:
   a = list(commits.values())
-  a.sort(key: lambda x: x["committedDate"])
+  a.sort(key=lambda x: x["committedDate"])
   # Only store 1000 commits worth of data, which is roughly 2 wks max
   new["data"]["repository"]["defaultBranchRef"]["target"]["history"]["nodes"] = a[:1000]
 print(json.dumps(new))
