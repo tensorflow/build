@@ -17,6 +17,8 @@ for commit in new["data"]["repository"]["defaultBranchRef"]["target"]["history"]
   commits[commit["oid"]] = commit
 
 if overlap:
-  # TODO(angerson) guarantee that this is sorted by date before being sliced
-  new["data"]["repository"]["defaultBranchRef"]["target"]["history"]["nodes"] = list(commits.values())[0:300]
+  a = list(commits.values())
+  a.sort(key: lambda x: x["committedDate"])
+  # Only store 1000 commits worth of data, which is roughly 2 wks max
+  new["data"]["repository"]["defaultBranchRef"]["target"]["history"]["nodes"] = a[:1000]
 print(json.dumps(new))

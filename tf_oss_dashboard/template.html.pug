@@ -58,7 +58,10 @@ html(lang="en")
               hr
               each job in jobs
                 .d-flex.flex-row.gap-1.py-1
-                    a.badge.my-auto(href=job["result_url"] class=job["state"])= job["state"]
+                    if job["result_url"]
+                      a.badge.my-auto(href=job["result_url"] class=job["state"])= job["state"]
+                    else:
+                      .badge.my-auto(class=job["state"])= job["state"]
                     if "previous_diff_url" in job:
                       a.badge.my-auto.text-center.tf-diff(href=job["previous_diff_url"]) Diff
                     else
