@@ -21,14 +21,20 @@ on:
     - cron: '*/5 * * * *'
   workflow_dispatch:
 
-# Declare default permissions as read only.
-permissions: read-all
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
   dashboard:
     if: github.repository == 'tensorflow/build' # Don't do this in forks
     name: Generate Dashboard
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     permissions:
       # Needed to upload the results to code-scanning dashboard.
       security-events: write
@@ -68,3 +74,15 @@ jobs:
           path: tf_oss_dashboard/dashboard.html
           retention-days: 5
 
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          # Upload entire repository
+          path: './tf_oss_dashboard'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
