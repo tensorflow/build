@@ -21,12 +21,6 @@ on:
     - cron: '*/5 * * * *'
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
 jobs:
   dashboard:
     if: github.repository == 'tensorflow/build' # Don't do this in forks
@@ -36,9 +30,8 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     permissions:
-      # Needed to upload the results to code-scanning dashboard.
-      security-events: write
-      # Used to receive a badge.
+      contents: read
+      pages: write
       id-token: write
 
     steps:
