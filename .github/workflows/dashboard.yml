@@ -50,7 +50,7 @@ jobs:
         id: run-script
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-        run: find; cd tf_oss_dashboard; ./script.sh
+        run: cd tf_oss_dashboard; ./script.sh
 
       - name: "Upload merged data"
         uses: actions/upload-artifact@83fd05a356d7e2593de66fc9913b3002723633cb # v3.1.1
