@@ -80,8 +80,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          # Upload entire repository
-          path: './tf_oss_dashboard'
+          path: './tf_oss_dashboard/dashboard.html'
 
       - name: Deploy to GitHub Pages
         id: deployment
