@@ -79,8 +79,8 @@ for name, jobs in by_name.items():
   new_jobs[0]["first_non_pending_status"] = first_non_pending_status
   new_jobs[0]["is_pending"] = new_jobs[1]["state"] in ["PENDING", "IN_PROGRESS", "QUEUED"]
   new_jobs[0]["card_class"] = " ".join([first_non_pending_status, "CARD_PENDING" if new_jobs[0]["is_pending"] else "CARD_NOT_PENDING"])
-  # only render up to 100 commits per card
-  by_name[name] = new_jobs[0:100]
+  # only render up to 150 commits per card
+  by_name[name] = new_jobs[0:150]
 
 by_group = defaultdict(dict)
 for category, items in yaml_config["categories"].items():

@@ -16,6 +16,8 @@ for commit in new["data"]["repository"]["defaultBranchRef"]["target"]["history"]
     overlap = True
   commits[commit["oid"]] = commit
 
+print("Total number of commits:", len(commits), file=sys.stderr)
+
 if overlap:
   a = list(commits.values())
   a.sort(key=lambda x: x["committedDate"])
