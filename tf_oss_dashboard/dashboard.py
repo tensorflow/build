@@ -25,13 +25,15 @@ for d in data["data"]["repository"]["defaultBranchRef"]["target"]["history"]["no
   record = {
     "commit": d["oid"],
     "commit_id": "#" + d["oid"],
-    "date": arrow.get(d["committedDate"], "YYYY-MM-DDTHH:mm:ssZ"),
+    "date": arrow.get(d["committedDate"], "YYYY-MM-DDTHH:mm:ssZ").to('US/Pacific'),
     "commit_url": d["commitUrl"],
     "commit_summary": d["messageHeadline"],
-    "commit_body": d["messageBody"].replace("\n", "</br>"),
     "commit_message": d["message"],
     "short_commit": d["oid"][0:7]
   }
+  if "PiperOrigin-RevId" in d["messageBody"]:
+    d["messageBody"] = "".join(d["messageBody"].splitlines()[0:-1])
+  record["commit_body"] = markdown.markdown(d["messageBody"])
   record["date_human"] = record["date"].to('US/Pacific').format("ddd, MMM D [at] h:mma ZZZ")
   has_cl = cl_re.search(d["message"])
   if has_cl:
