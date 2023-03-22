@@ -32,7 +32,7 @@ html(lang="en")
                 .d-flex.flex-row.flex-wrap.gap-1
                   each test in tests
                     if "date_tag" in test:
-                      .btn.p-2.tf-date.cursor-pointer= test["date_tag"]
+                      .btn.p-2.tf-date= test["date_tag"]
                     else
                       .btn.p-2(class=test["state"] data-record=test.raw data-bs-toggle='modal' data-bs-target=test["commit_id"])
 
