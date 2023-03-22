@@ -34,7 +34,7 @@ html(lang="en")
                     if "date_tag" in test:
                       .btn.p-2.tf-date= test["date_tag"]
                     else
-                      .btn.p-2(class=test["state"] data-record=test.raw data-bs-toggle='modal' data-bs-target=test["commit_id"])
+                      .btn.p-2(class=test["state"] data-bs-toggle='modal' data-bs-target=test["commit_id"])
 
 
     each commit, jobs in by_commit.items()
@@ -56,17 +56,21 @@ html(lang="en")
               .d-flex.flex-column.text-wrap
                 !{jobs[0]["commit_body"]}
               hr
-              each job in jobs
-                .d-flex.flex-row.gap-1.py-1
-                    if job["result_url"]
-                      a.badge.my-auto(href=job["result_url"] class=job["state"])= job["state"]
-                    else:
-                      .badge.my-auto(class=job["state"])= job["state"]
-                    if "previous_diff_url" in job:
-                      a.badge.my-auto.text-center.tf-diff(href=job["previous_diff_url"]) Diff
-                    else
-                      span.badge.my-auto.tf-nodiff No Diff
-                    span.lh-1= job["name"]
+              table.table.table-sm.table-striped
+                each job in jobs
+                  tr
+                    td.text-center.py-1.px-1.m-0.align-middle
+                      if job["result_url"]
+                        a.badge.tf-state(href=job["result_url"] class=job["state"])= job["state"]
+                      else:
+                        .badge.tf-state(class=job["state"])= job["state"]
+                    td.text-center.py-1.px-1.m-0.align-middle
+                      if "previous_diff_url" in job:
+                        a.badge.text-center.tf-diff(href=job["previous_diff_url"]) Diff
+                      else
+                        span.badge.tf-nodiff No Diff
+                    td.py-1.px-1.m-0.text
+                      span= job["name"]
     .modal.modal-lg.fade(tabindex='-1' aria-labelledby="help-modal" id="help-modal" aria-hidden='true')
       .modal-dialog
         .modal-content

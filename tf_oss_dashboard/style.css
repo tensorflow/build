@@ -15,6 +15,17 @@ body {
   background-color: darkgoldenrod;
 }
 
+.tf-state {
+}
+
+table td {
+  line-height: 0;
+}
+
+table td.text {
+  line-height: 1.2;
+}
+
 .tf-cl {
   background-color: green;
 }
