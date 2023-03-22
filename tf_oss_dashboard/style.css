@@ -65,9 +65,16 @@ body {
 
 /* See https://www.w3schools.com/cssref/css_colors.php */
 /* See https://htmlcolorcodes.com/color-names/ */
-.ERROR, .FAILURE, .TIMED_OUT {
+.FAILURE {
   background-color: firebrick;
 }
+.TIMED_OUT {
+  background-color: orange;
+}
+.ERROR {
+  background-color: sienna;
+}
+
 .EXPECTED, .PENDING, .QUEUED, .IN_PROGRESS {
   animation: pending 2s linear infinite;
 }
