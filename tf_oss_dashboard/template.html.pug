@@ -21,33 +21,32 @@ html(lang="en")
       each category, everythin in by_group.items() 
         .fw-bold.ps-4
           span.text-light= category
-        .d-flex.flex-row.flex-wrap.gap-1.m-1
+        .d-flex.flex-row.flex-wrap.gap-1.m-1.card-section
           each name, tests in everythin.items()
             .card.flex-shrink-1.flex-grow-1(class=tests[0]["card_class"] data-name=name)
-              span.position-absolute.lh-1.fs-2.favorite ☆
-              if tests[1]["is_important"]
-                span.position-absolute.end-0.lh-1.fs-2.important.pe-1 ♦
               .card-body
                 h4.text-center.fw-bold= name
                 .d-flex.flex-row.flex-wrap.gap-1
+                  .badge.tf-dot.p-2.pe-1.ps-1.favorite 🟊
+                  if tests[0]["is_public"]
+                    .badge.p-2.tf-dot.tf-public Public
+                  else
+                    .badge.p-2.tf-dot.tf-internal Internal
                   each test in tests
                     if "date_tag" in test:
-                      .btn.p-2.tf-date= test["date_tag"]
+                      .badge.p-2.tf-dot.tf-date= test["date_tag"]
                     else
-                      .btn.p-2(class=test["state"] data-bs-toggle='modal' data-bs-target=test["commit_id"])
+                      .badge.p-2(class=test["state"] data-bs-toggle='modal' data-bs-target=test["commit_id"])
 
 
     each commit, jobs in by_commit.items()
       .modal.modal-lg.fade(tabindex='-1' aria-labelledby=commit id=commit aria-hidden='true')
         .modal-dialog
           .modal-content
-            .modal-header
-              .d-flex.flex-column
-                div.fw-bold.text-wrap
-                  a.badge.me-1.tf-hash(href=jobs[0]["commit_url"])= jobs[0]["short_commit"]
-                  =jobs[0]["commit_summary"]
+            .modal-header.fw-bold.text-wrap= jobs[0]["commit_summary"]
             .modal-body
               .d-flex.flex-row
+                a.badge.me-1.tf-hash(href=jobs[0]["commit_url"])= jobs[0]["short_commit"]
                 a.badge.me-1.tf-fulldate(href=jobs[0]["commit_url"])= jobs[0]["date_human"]
                 if "cl" in jobs[0]:
                   a.badge.tf-cl(href=jobs[0]["cl_url"]) cl/#{jobs[0]["cl"]}
@@ -59,6 +58,11 @@ html(lang="en")
               table.table.table-sm.table-striped
                 each job in jobs
                   tr
+                    td.text-center.py-1.px-1.m-0.align-middle
+                      if job["is_public"]
+                        span.badge.tf-ispublic Public
+                      else
+                        span.badge.tf-isinternal Internal
                     td.text-center.py-1.px-1.m-0.align-middle
                       if job["result_url"]
                         a.badge.tf-state(href=job["result_url"] class=job["state"])= job["state"]

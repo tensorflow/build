@@ -56,6 +56,7 @@ for d in data["data"]["repository"]["defaultBranchRef"]["target"]["history"]["no
           "result_url": item["url"]
       }
     raw = record | sub
+    raw["is_public"] = raw["result_url"] and "http://fusion" not in raw["result_url"]
     raw["category"] = category_map.get(raw["name"], "Everything Else")
     raw["raw"] = json.dumps(raw, default=str)
     records.append(raw)
@@ -69,9 +70,12 @@ for name, jobs in by_name.items():
   new_jobs = []
   new_jobs.append({"date_tag": jobs[0]["date"].strftime("%a %b %d")})
   first_non_pending_status = None
+  is_public = False
   for job in jobs:
     if first_non_pending_status in [None, "PENDING", "IN_PROGRESS", "QUEUED"]:
       first_non_pending_status = job["state"]
+    if job["is_public"]:
+      is_public = True
   for left, right in itertools.pairwise(jobs):
     left["previous_diff_url"] = f"https://github.com/tensorflow/tensorflow/compare/{left['commit']}..{right['commit']}"
     new_jobs.append(left)
@@ -79,6 +83,7 @@ for name, jobs in by_name.items():
       new_jobs.append({"date_tag": right["date"].strftime("%a %b %d")})
   new_jobs.append(jobs[-1])
   new_jobs[0]["first_non_pending_status"] = first_non_pending_status
+  new_jobs[0]["is_public"] = is_public
   new_jobs[0]["is_pending"] = new_jobs[1]["state"] in ["PENDING", "IN_PROGRESS", "QUEUED"]
   new_jobs[0]["card_class"] = " ".join([first_non_pending_status, "CARD_PENDING" if new_jobs[0]["is_pending"] else "CARD_NOT_PENDING"])
   # only render up to 150 commits per card
