@@ -6,23 +6,42 @@ body {
   background-color: #002 !important;
 }
 
-.tf-date {
+.tf-dot {
   line-height: 0;
-  background-color: darkgoldenrod;
+  color: rgba(0,0,0,0.7);
+}
+
+.tf-date {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.tf-public {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.tf-internal {
+  background-color: rgba(0, 0, 0, 0.3);
+  color: rgba(255,255,255,0.7);
 }
 
 .tf-fulldate {
   background-color: darkgoldenrod;
 }
 
-.tf-state {
-}
-
 table td {
   line-height: 0;
 }
 
+.card .badge:empty {
+  display:inline-block;
+  cursor: pointer;
+}
+.card .badge:empty:hover {
+  filter: brightness(150%);
+}
+
 table td.text {
+  vertical-align: bottom;
   line-height: 1.2;
 }
 
@@ -34,8 +53,15 @@ table td.text {
   background-color: darkslategray;
 }
 
-.favorite, .important {
-  opacity: 60%;
+.favorite {
+  background-color: rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+}
+
+.favorited {
+  background-color: goldenrod;
+  color: white;
+  cursor: pointer;
 }
 
 .tf-hash {
@@ -47,7 +73,15 @@ table td.text {
 }
 
 .tf-nodiff {
+  background-color: gray;
+}
+
+.tf-ispublic {
   background-color: darkslategray;
+}
+
+.tf-isinternal {
+  background-color: gray;
 }
 
 .card {
