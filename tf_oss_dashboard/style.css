@@ -2,6 +2,10 @@ body {
   background-color: #113;
 }
 
+h4 {
+  color: #161616;
+}
+
 .navbar {
   background-color: #002 !important;
 }
@@ -139,8 +143,8 @@ table td.text {
 .SUCCESS {
   background-color: green;
 }
-.CANCELED {
-  background-color: black;
+.CANCELLED {
+  background-color: #333;
 }
 .NEUTRAL {
   background-color: slategray;

@@ -30,7 +30,7 @@ html(lang="en")
           span.text-light= category
         .d-flex.flex-row.flex-wrap.gap-1.m-1.card-section
           each name, tests in everythin.items()
-            .card.flex-shrink-1.flex-grow-1(class=tests[0]["card_class"] data-name=name)
+            .card.flex-shrink-1.flex-grow-1(title=tests[0]["job_description"] class=tests[0]["card_class"] data-name=name)
               .card-body
                 h4.text-center.fw-bold= name
                 .d-flex.flex-row.flex-wrap.gap-1
