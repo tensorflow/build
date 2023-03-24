@@ -70,7 +70,7 @@ jobs:
         uses: actions/configure-pages@v3
 
       - name: Move dashboard around
-        run: cd tf_oss_dashboard; mkdir _site; mv dashboard.html ./_site/index.html
+        run: cd tf_oss_dashboard; mkdir _site; mv dashboard.html ./_site/index.html; mv favicon.png ./_site/favicon.png
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
