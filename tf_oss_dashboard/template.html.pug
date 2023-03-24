@@ -14,8 +14,9 @@ html(lang="en")
       .container-fluid.py-0
         .d-flex.flex-row
           a.navbar-brand TensorFlow GitHub CI
-          .navbar-text#tf-now(data-isonow=isonow) Last updated on #{now} 
-            a#tf-ago(title="Check the dashboard deployment GitHub Actions workflow" href="https://github.com/tensorflow/build/actions/workflows/dashboard.yml")
+          .navbar-text#tf-now(data-isonow=isonow) Last updated on 
+            a(title="Check the dashboard deployment GitHub Actions workflow" href="https://github.com/tensorflow/build/actions/workflows/dashboard.yml")= now
+            a#tf-ago
         ul.navbar-nav
           li.nav-item
             a.nav-link(role="button" data-bs-toggle="modal" data-bs-target="#help-modal") Help
