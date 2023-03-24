@@ -88,14 +88,7 @@ for name, jobs in by_name.items():
   new_jobs[0]["is_public"] = is_public
   new_jobs[0]["is_pending"] = new_jobs[1]["state"] in ["PENDING", "IN_PROGRESS", "QUEUED"]
   new_jobs[0]["card_class"] = " ".join([first_non_pending_status, "CARD_PENDING" if new_jobs[0]["is_pending"] else "CARD_NOT_PENDING"])
-  # only render up to 150 commits per card
-  by_name[name] = new_jobs[0:150]
-
-by_group = defaultdict(dict)
-for category, items in yaml_config["categories"].items():
-  by_group[category] = {}
-for name, jobs in sorted(by_name.items(), key=lambda x: x[0]):
-  by_group[category_map.get(name, "Everything Else")][name] = jobs
+  by_name[name] = new_jobs
 
 by_commit = defaultdict(list)
 for name, jobs in by_name.items():
@@ -103,8 +96,24 @@ for name, jobs in by_name.items():
     if "commit" not in job:
       continue
     by_commit[job["commit"]].append(job)
+    by_name[name] = jobs[0:150]
 for name, jobs in by_commit.items():
   jobs.sort(key=lambda k: k["name"])
+
+not_seen = set(by_commit.keys())
+for name, jobs in by_name.items():
+  for job in jobs:
+    if "commit" not in job:
+      continue
+    not_seen.discard(job["commit"])
+for commit in not_seen:
+  del by_commit[commit]
+
+by_group = defaultdict(dict)
+for category, items in yaml_config["categories"].items():
+  by_group[category] = {}
+for name, jobs in sorted(by_name.items(), key=lambda x: x[0]):
+  by_group[category_map.get(name, "Everything Else")][name] = jobs
 
 with open("style.css", "r") as f:
   css = f.read()
