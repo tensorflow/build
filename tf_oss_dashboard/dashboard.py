@@ -39,6 +39,8 @@ for d in data["data"]["repository"]["defaultBranchRef"]["target"]["history"]["no
   if has_cl:
     record["cl"] = has_cl.group(1)
     record["cl_url"] = f"http://cl/{record['cl']}"
+  if d["statusCheckRollup"] is None:
+    continue
   for item in d["statusCheckRollup"]["contexts"]["nodes"]:
     if "context" in item:
       sub = {
@@ -119,4 +121,5 @@ env = Environment(
 )
 template = env.get_template('template.html.pug')
 now = arrow.now().to('US/Pacific').format("ddd, MMM D [at] h:mma ZZZ")
-print(template.render(records=by_name, by_group=by_group, by_commit=by_commit, css=css, js=js, helptext=helptext, now=now))
+isonow = arrow.now().to('US/Pacific').isoformat() 
+print(template.render(records=by_name, by_group=by_group, by_commit=by_commit, css=css, js=js, helptext=helptext, now=now, isonow=isonow))

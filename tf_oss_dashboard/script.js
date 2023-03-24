@@ -29,3 +29,11 @@ $('.favorite').each(function() {
   }
 })
 reorder()
+
+
+function setTimer() {
+  str = moment($('#tf-now').attr("data-isonow"), moment.ISO_8601).fromNow()
+  $('#tf-ago').text("(" + str + ")")
+}
+setInterval(setTimer, 300000) // 5 minutes in ms
+setTimer()
