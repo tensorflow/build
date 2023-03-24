@@ -30,10 +30,28 @@ $('.favorite').each(function() {
 })
 reorder()
 
+$("a.badge").on('click', function() {
+})
+
+$(".commit-modal").on('show.bs.modal', function(e) {
+  let source = e.relatedTarget
+  name = $(source).closest('.card').attr("data-name")
+  $(this).find("td span").filter(function() {
+    return $(this).text() === name
+  }).closest("tr").toggleClass("table-info")
+  $(this).attr("data-tf-trigger", name)
+})
+
+$(".commit-modal").on('hidden.bs.modal', function(e) {
+  let name = $(this).attr("data-tf-trigger") 
+  $(this).find("td span").filter(function() {
+    return $(this).text() === name
+  }).closest("tr").toggleClass("table-info")
+})
 
 function setTimer() {
-  str = moment($('#tf-now').attr("data-isonow"), moment.ISO_8601).fromNow()
+  let str = moment($('#tf-now').attr("data-isonow"), moment.ISO_8601).fromNow()
   $('#tf-ago').text("(" + str + ")")
 }
-setInterval(setTimer, 300000) // 5 minutes in ms
+setInterval(setTimer, 60000) // 1 minute in ms
 setTimer()

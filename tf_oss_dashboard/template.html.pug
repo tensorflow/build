@@ -47,20 +47,19 @@ html(lang="en")
 
 
     each commit, jobs in by_commit.items()
-      .modal.modal-lg.fade(tabindex='-1' aria-labelledby=commit id=commit aria-hidden='true')
+      .modal.modal-lg.fade.commit-modal(tabindex='-1' aria-labelledby=commit id=commit aria-hidden='true')
         .modal-dialog
           .modal-content
-            .modal-header.fw-bold.text-wrap= jobs[0]["commit_summary"]
             .modal-body
               .d-flex.flex-row
+                .badge.me-1.tf-fulldate= jobs[0]["date_human"]
                 a.badge.me-1.tf-hash(href=jobs[0]["commit_url"])= jobs[0]["short_commit"]
-                a.badge.me-1.tf-fulldate(href=jobs[0]["commit_url"])= jobs[0]["date_human"]
                 if "cl" in jobs[0]:
                   a.badge.tf-cl(href=jobs[0]["cl_url"]) cl/#{jobs[0]["cl"]}
                 else
                   span.badge.tf-nocl No CL Attached
-              .d-flex.flex-column.text-wrap
-                !{jobs[0]["commit_body"]}
+              .d-flex.flex-column.text-wrap.container.lh-sm.pt-4
+                !{jobs[0]["commit_message"]}
               hr
               table.table.table-sm.table-striped
                 each job in jobs
@@ -74,7 +73,7 @@ html(lang="en")
                       if job["result_url"]
                         a.badge.tf-state(href=job["result_url"] class=job["state"])= job["state"]
                       else:
-                        .badge.tf-state(class=job["state"])= job["state"]
+                        .badge.tf-state(title="This job has no result page. Strange!" class=job["state"])= job["state"]
                     td.text-center.py-1.px-1.m-0.align-middle
                       if "previous_diff_url" in job:
                         a.badge.text-center.tf-diff(href=job["previous_diff_url"]) Diff
