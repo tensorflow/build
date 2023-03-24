@@ -9,5 +9,8 @@ categories:
     - Default
   Ignorable:
     - "? / cla/google"
+    - "? / Scorecard"
     - import/copybara
     - kokoro
+docs:
+  "Code Check - Full": Runs static code checks, like for license accuracy.
