@@ -5,7 +5,7 @@ from jinja2 import Environment, FileSystemLoader
 import arrow
 import itertools
 import json
-import markdown
+import pycmarkgfm
 import pypugjs
 import re
 import sys
@@ -28,17 +28,20 @@ for d in data["data"]["repository"]["defaultBranchRef"]["target"]["history"]["no
     "date": arrow.get(d["committedDate"], "YYYY-MM-DDTHH:mm:ssZ").to('US/Pacific'),
     "commit_url": d["commitUrl"],
     "commit_summary": d["messageHeadline"],
-    "commit_message": d["message"],
+    "commit_body": d["message"],
     "short_commit": d["oid"][0:7]
   }
-  if "PiperOrigin-RevId" in d["messageBody"]:
-    d["messageBody"] = "\n".join(d["messageBody"].splitlines()[0:-1])
-  record["commit_body"] = markdown.markdown(d["messageBody"])
-  record["date_human"] = record["date"].to('US/Pacific').format("ddd, MMM D [at] h:mma ZZZ")
   has_cl = cl_re.search(d["message"])
   if has_cl:
     record["cl"] = has_cl.group(1)
     record["cl_url"] = f"http://cl/{record['cl']}"
+  if "PiperOrigin-RevId" in d["messageBody"]:
+    d["messageBody"] = "\n".join(d["messageBody"].splitlines()[0:-1])
+  if "PiperOrigin-RevId" in d["message"]:
+    d["message"] = "\n".join(d["message"].splitlines()[0:-1])
+  record["commit_body"] = pycmarkgfm.gfm_to_html(d["messageBody"])
+  record["commit_message"] = pycmarkgfm.gfm_to_html(d["message"])
+  record["date_human"] = record["date"].to('US/Pacific').format("ddd, MMM D [at] h:mma ZZZ")
   if d["statusCheckRollup"] is None:
     continue
   for item in d["statusCheckRollup"]["contexts"]["nodes"]:
@@ -123,7 +126,7 @@ with open("script.js", "r") as f:
   js = f.read()
 
 with open("help.md", "r") as f:
-  helptext = markdown.markdown(f.read())
+  helptext = pycmarkgfm.gfm_to_html(f.read())
 
 env = Environment(
     loader=FileSystemLoader('.'),
