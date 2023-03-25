@@ -3,3 +3,4 @@ arrow
 markdown
 pypugjs
 jinja2
+cmarkgfm

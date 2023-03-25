@@ -5,7 +5,7 @@ from jinja2 import Environment, FileSystemLoader
 import arrow
 import itertools
 import json
-import pycmarkgfm
+import cmarkgfm
 import pypugjs
 import re
 import sys
@@ -39,8 +39,8 @@ for d in data["data"]["repository"]["defaultBranchRef"]["target"]["history"]["no
     d["messageBody"] = "\n".join(d["messageBody"].splitlines()[0:-1])
   if "PiperOrigin-RevId" in d["message"]:
     d["message"] = "\n".join(d["message"].splitlines()[0:-1])
-  record["commit_body"] = pycmarkgfm.gfm_to_html(d["messageBody"])
-  record["commit_message"] = pycmarkgfm.gfm_to_html(d["message"])
+  record["commit_body"] = cmarkgfm.github_flavored_markdown_to_html(d["messageBody"])
+  record["commit_message"] = cmarkgfm.github_flavored_markdown_to_html(d["message"])
   record["date_human"] = record["date"].to('US/Pacific').format("ddd, MMM D [at] h:mma ZZZ")
   if d["statusCheckRollup"] is None:
     continue
@@ -126,7 +126,7 @@ with open("script.js", "r") as f:
   js = f.read()
 
 with open("help.md", "r") as f:
-  helptext = pycmarkgfm.gfm_to_html(f.read())
+  helptext = cmarkgfm.github_flavored_markdown_to_html(f.read())
 
 env = Environment(
     loader=FileSystemLoader('.'),
