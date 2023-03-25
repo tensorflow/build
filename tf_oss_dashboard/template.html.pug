@@ -48,7 +48,7 @@ html(lang="en")
 
     each commit, jobs in by_commit.items()
       .modal.modal-lg.fade.commit-modal(tabindex='-1' aria-labelledby=commit id=commit aria-hidden='true')
-        .modal-dialog
+        .modal-dialog.modal-dialog-centered
           .modal-content
             .modal-body
               .d-flex.flex-row
@@ -82,7 +82,7 @@ html(lang="en")
                     td.py-1.px-1.m-0.text
                       span= job["name"]
     .modal.modal-lg.fade(tabindex='-1' aria-labelledby="help-modal" id="help-modal" aria-hidden='true')
-      .modal-dialog
+      .modal-dialog.modal-dialog-centered
         .modal-content
           .modal-header.fw-bold Dashboard Help
           .modal-body !{helptext}
