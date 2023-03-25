@@ -66,9 +66,9 @@ html(lang="en")
                   tr
                     td.text-center.py-1.px-1.m-0.align-middle
                       if job["is_public"]
-                        span.badge.tf-ispublic(title="This job has publicly-visible results pages.") Public
+                        span.badge.tf-ispublic Public
                       else
-                        span.badge.tf-isinternal(title="This job only has private, Googler-restricted results pages.") Internal
+                        span.badge.tf-isinternal Internal
                     td.text-center.py-1.px-1.m-0.align-middle
                       if job["result_url"]
                         a.badge.tf-state(href=job["result_url"] class=job["state"])= job["state"]
