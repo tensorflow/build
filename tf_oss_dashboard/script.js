@@ -1,14 +1,21 @@
 function reorder() {
   let favorites = JSON.parse(localStorage.getItem('favorites') || '{}')
-  $('.favorite').each(function() {
+  $('.favorites-section .card-section').empty()
+  $('.tf-is-listed .favorite').each(function() {
     let current = $(this).closest('.card').attr("data-name")
     if (favorites[current]) {
-      $(this).closest('.card-section').prepend($(this).closest('.card'))
+      $(this).closest('.card').clone(true).appendTo('.favorites-section .card-section')
     }
   })
+  if ($('.favorites-section .card-section').children().length > 0) {
+    $('.favorites-section').removeClass("d-none")
+  } else {
+    $('.favorites-section').addClass("d-none")
+  }
 }
 
 $('.favorite').on('click', function() {
+  console.log("clicked")
   let current = $(this).closest('.card').attr("data-name")
   let favorites = JSON.parse(localStorage.getItem('favorites') || '{}')
   if (favorites[current] !== null) {
