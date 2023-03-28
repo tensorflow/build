@@ -30,10 +30,10 @@ $('.favorite').each(function() {
 })
 reorder()
 
-$("a.badge").on('click', function() {
-})
+let modal_is_open = false;
 
 $(".commit-modal").on('show.bs.modal', function(e) {
+  modal_is_open = true;
   let source = e.relatedTarget
   name = $(source).closest('.card').attr("data-name")
   $(this).find("td span").filter(function() {
@@ -43,15 +43,22 @@ $(".commit-modal").on('show.bs.modal', function(e) {
 })
 
 $(".commit-modal").on('hidden.bs.modal', function(e) {
+  modal_is_open = false;
   let name = $(this).attr("data-tf-trigger") 
   $(this).find("td span").filter(function() {
     return $(this).text() === name
   }).closest("tr").toggleClass("table-info")
 })
 
-function setTimer() {
+function humanizeTimestamp() {
   let str = moment($('#tf-now').attr("data-isonow"), moment.ISO_8601).fromNow()
   $('#tf-ago').text("(" + str + ")")
 }
-setInterval(setTimer, 60000) // 1 minute in ms
-setTimer()
+function autoRefresh() {
+  if (!modal_is_open) {
+    location.reload()
+  }
+}
+setInterval(autoRefresh, 300000) // Every 5 mins, refresh unless modal is open
+setInterval(humanizeTimestamp, 60000) // Every 1 min, update the timestamp
+humanizeTimestamp()
