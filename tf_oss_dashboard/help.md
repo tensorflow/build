@@ -17,8 +17,9 @@ Here are some tips and notes about the dashboard:
 - The "cl/..." badge on each commit links to Google's internal code review
   system and is unavailable to external users. This is the same as the
   "PiperOrigin-RevId" Git trailer in each commit message.
-- Click on a star to favorite that job. Favorites move to the front of the
-  section. The ordering is only stable after refreshing the page.
+- You can zoom out to fit more jobs on the page at once.
+- Click on a star to favorite that job. Favorites are displayed in the
+  "Favorites" section at the top, in the same order as they are on the page.
 - "Public" build results should be visible to external users. "Internal" build
   results are only visible to Googlers.
 - Each "diff" links to the diff between this commit and the previous commit for
