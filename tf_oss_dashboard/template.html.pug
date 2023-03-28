@@ -8,7 +8,7 @@ html(lang="en")
     script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous")
     script(src="https://code.jquery.com/jquery-3.6.4.slim.min.js" integrity="sha256-a2yjHM4jnF9f54xUQakjZGaqYs/V1CYvWpoqZzC2/Bw=" crossorigin="anonymous")
     script(src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.3/moment.min.js" crossorigin="anonymous" referrerpolicy="no-referrer")
-    style= css
+    style !{css}
   body
     nav.navbar.navbar-dark.navbar-expand-lg.py-0.mb-2
       .container-fluid.py-0
@@ -18,13 +18,20 @@ html(lang="en")
             a(title="Check the dashboard deployment GitHub Actions workflow" href="https://github.com/tensorflow/build/actions/workflows/dashboard.yml") #{now}
             |  
             a#tf-ago
+            .tf-mytimer(title="The page auto-refreshes every 5 minutes (delayed if a modal is open) to check and see if the dashboard has been updated.")
         ul.navbar-nav
           li.nav-item
             a.nav-link(role="button" data-bs-toggle="modal" data-bs-target="#help-modal") Help
           li.nav-item
             a.nav-link(href="https://github.com/tensorflow/tensorflow/commits/master") Commits
+          li.nav-item
+            a.nav-link(href="https://github.com/tensorflow/build/issues/142") Suggestions
       
     .d-flex.flex-column.gap-1.m-1
+      .favorites-section.d-none
+        .fw-bold.ps-4
+          span.text-light= Favorites
+        .d-flex.flex-row.flex-wrap.gap-1.m-1.card-section
       each category, everythin in by_group.items() 
         .fw-bold.ps-4
           span.text-light= category
@@ -81,7 +88,7 @@ html(lang="en")
                         span.badge.tf-nodiff No Diff
                     td.py-1.px-1.m-0.text
                       span= job["name"]
-    .modal.modal-lg.fade(tabindex='-1' aria-labelledby="help-modal" id="help-modal" aria-hidden='true')
+    .modal.help-modal.modal-lg.fade(tabindex='-1' aria-labelledby="help-modal" id="help-modal" aria-hidden='true')
       .modal-dialog.modal-dialog-centered
         .modal-content
           .modal-header.fw-bold Dashboard Help

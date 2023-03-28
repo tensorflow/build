@@ -50,15 +50,17 @@ $(".commit-modal").on('hidden.bs.modal', function(e) {
   }).closest("tr").toggleClass("table-info")
 })
 
+let autorefreshready = false
 function humanizeTimestamp() {
+  if (!modal_is_open && autorefreshready) {
+    location.reload()
+  }
   let str = moment($('#tf-now').attr("data-isonow"), moment.ISO_8601).fromNow()
   $('#tf-ago').text("(" + str + ")")
 }
-function autoRefresh() {
-  if (!modal_is_open) {
-    location.reload()
-  }
+function autoRefreshIsReady() {
+  autorefreshready = true
 }
-setInterval(autoRefresh, 300000) // Every 5 mins, refresh unless modal is open
-setInterval(humanizeTimestamp, 60000) // Every 1 min, update the timestamp
+setInterval(autoRefreshIsReady, 300000) // Every 5 mins, refresh unless modal is open
+setInterval(humanizeTimestamp, 60500) // Every 1 min, update the timestamp
 humanizeTimestamp()

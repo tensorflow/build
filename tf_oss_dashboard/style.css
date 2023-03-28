@@ -149,3 +149,28 @@ table td.text {
 .NEUTRAL {
   background-color: slategray;
 }
+
+@property --tfpercentage {
+  initial-value: 100%;
+  inherits: false;
+  syntax: "<percentage>";
+}
+
+.tf-mytimer {
+  background: conic-gradient(white var(--tfpercentage), rgba(0,0,0,0) 0);
+  border-radius: 50%;
+  width: 1.5vmin;
+  height: 1.5vmin;
+  animation: mytimer 300s 1 linear forwards;
+  display: inline-block;
+}
+
+@keyframes mytimer {
+  to {
+    --tfpercentage: 0%;
+  }
+}
+
+.help-modal .modal-body li {
+  margin-bottom: 0.5em;
+}
