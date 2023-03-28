@@ -159,8 +159,8 @@ table td.text {
 .tf-mytimer {
   background: conic-gradient(white var(--tfpercentage), rgba(0,0,0,0) 0);
   border-radius: 50%;
-  width: 1.5vmin;
-  height: 1.5vmin;
+  width: 0.75em;
+  height: 0.75em;
   animation: mytimer 300s 1 linear forwards;
   display: inline-block;
 }
