@@ -90,6 +90,7 @@ table td.text {
 
 .card {
   flex-basis: 20em;
+  max-width: 25em;
   background-image: linear-gradient(rgb(0 0 0/30%) 0 0);
 }
 
