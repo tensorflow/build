@@ -143,7 +143,7 @@ def extract_events(data_blob: any):
           obj["TOTAL_RUN_COUNT"] = test_summary["totalRunCount"]
           obj["STATUS"] = test_summary["overallStatus"]
           run_duration = test_summary["totalRunDuration"]
-          obj["TOTAL_RUN_DURATION"] = float(run_duration[:-1])/1000)
+          obj["TOTAL_RUN_DURATION"] = float(run_duration[:-1])/1000
           obj["ATTEMPT_COUNT"] = test_summary["attemptCount"]
         except KeyError as exc:
           raise IncorrectFileFormatError() from exc
