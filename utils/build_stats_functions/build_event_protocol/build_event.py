@@ -16,15 +16,14 @@
 
 """Python Code for grabbing stats from build event protocol to be used."""
 import json
-import logging
 import os
 import re
+from os import path
 
 import functions_framework
 from google.cloud import bigquery
-import google.cloud.logging
+from google.cloud import logging 
 from google.cloud import storage
-
 
 class IncorrectFileTypeError(Exception):
   """This file is not correctly formatted in JSON."""
@@ -40,15 +39,15 @@ class IncorrectFileFormatError(Exception):
 @functions_framework.cloud_event
 def main(cloud_event: any):
   """Entry point function that is triggered by cloud event.
-  Gathers stats from Build Event Protocol file and sends to BigQuery
+  Gathers stats from Build Event Protocol file and sends to BigQuery.
   Args:
     cloud_event: event that triggers the function
   """
   STORAGE_BUCKET = os.environ.get("STORAGE_BUCKET")
   TABLE_ID = os.environ.get("TABLE_ID")
   try:
-    client = google.cloud.logging.Client()
-    log_name = "trying-this-out"
+    client = logging.Client()
+    log_name = "build-event-testing"
     logger = client.logger(log_name)
     logger.log_text("Successfully connected to GCP Logging Client", severity="INFO")
   except logging.Error:
@@ -61,8 +60,15 @@ def main(cloud_event: any):
   file_name = data["name"]
   check_file = check_path(file_name)
   if not check_file:
-    logger.log_text("This file path is not in the correct format for a BEP", severity="INFO")
+    logger.log_text(
+        "The current file is not a BEP according to its path", severity="INFO"
+    )
     return
+  # Extract job name from overall path
+    logger.log_text("Build Event Protocol found", severity="INFO")
+    r = re.search("/[0-9].*", file_name)
+    index = r.span()[0]
+    job = file_name[0:index]
   try:
     storage_client = storage.Client()
     bucket = storage_client.get_bucket(STORAGE_BUCKET)
@@ -70,42 +76,57 @@ def main(cloud_event: any):
   except Exception as exc:
     logger.log_text("Unable to access Cloud Storage client or storage bucket", severity="WARNING")
     raise Exception() from exc
-  # Loops through file
+  # Extract test information from file
   all_events = extract_events(data_blob)
+  # In the event that the job does not test
+  if not all_events:
+    logger.log_text("This job does not run tests", severity="INFO")
+    return
+  # Make an API request and make sure it executes correctly
   try:
     bigquery_client = bigquery.Client()
     for event in all_events:
+      event["JOB_NAME"] = job
       event = [event]
       errors = bigquery_client.insert_rows_json(TABLE_ID, event)
       if not errors:
         logger.log_text("Successfully added row to table", severity="INFO")
       else:
         logger.log_text("Encountered errors while inserting rows", severity="INFO")
-    # log instead no one's ever going to catch that ever if it gets printed
   except bigquery.Error:
     logger.log_text("Unable to access Bigquery client", severity="WARNING")
     return
-  # Make an API request and make sure it executes correctly
+  
 
 
 def check_path(file_name: str):
-  regex = "resultstore/prod/tensorflow/rel.*/build_event.json"
+  """Checks that the uploaded file is a BEP using regex
+  Args:
+    file_name: file path name
+  Returns:
+    The first occurence in the path that matches regex 
+    or None if no match
+  """
+  regex = "prod/tensorflow/.*/bep.json"
   check_file = re.match(regex, file_name)
   return check_file
 
 
-def extract_events(data_blob):
-  """Extracts the build events from build event protocol.
+def extract_events(data_blob: any):
+  """Extracts the TestSummary build events from build event protocol.
   Args:
-    data_blob: the file
+    data_blob: the blob file that was uploaded in the triggering cloud event
   Raises:
     IncorrectFileTypeError: not JSON file
     IncorrectFileFormatError: wrong format
   Returns:
-    list of all build events in file in an array
+    Array of objects representing each TestSummary event
   """
   all_events = []
-  with open(data_blob, "r") as file:
+  # Loop through each line of the file and if in correct
+  # format convert to json. If the current event is
+  # a TestSummary event extract the relevant information.
+  with data_blob.open("r") as file:
     for line in file:
       try:
         curr = json.loads(line)
@@ -113,23 +134,18 @@ def extract_events(data_blob):
         raise IncorrectFileTypeError()
       if type(curr) is not dict:
         raise IncorrectFileTypeError()
-      # have string version because curr["id"] is json object and string allows
-      # for easier searching for terms
-      event_id = str(curr["id"])
+      event_id = curr["id"]
       if "testSummary" in event_id:
         test_summary = curr["testSummary"]
         obj = {}
         try:
-          obj["TEST_NAME"] = curr["id"]["testSummary"]["label"]
+          obj["TEST_NAME"] = event_id["testSummary"]["label"]
           obj["TOTAL_RUN_COUNT"] = test_summary["totalRunCount"]
           obj["STATUS"] = test_summary["overallStatus"]
           run_duration = test_summary["totalRunDuration"]
-          obj["TOTAL_RUN_DURATION"] = float(run_duration[:-1])
+          obj["TOTAL_RUN_DURATION"] = float(run_duration[:-1]/1000)
           obj["ATTEMPT_COUNT"] = test_summary["attemptCount"]
         except KeyError as exc:
           raise IncorrectFileFormatError() from exc
         all_events.append(obj)
-    if len(all_events) == 0:
-      logger.log_text("Empty File", severity="WARNING")
-      raise EmptyFileError()
   return all_events
