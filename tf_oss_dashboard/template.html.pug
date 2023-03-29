@@ -1,0 +1,96 @@
+!!! 5
+html(lang="en")
+  head
+    title TensorFlow GitHub Status
+    meta(charset="UTF-8")
+    link(rel="icon" href="favicon.png")
+    link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous")
+    script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous")
+    script(src="https://code.jquery.com/jquery-3.6.4.slim.min.js" integrity="sha256-a2yjHM4jnF9f54xUQakjZGaqYs/V1CYvWpoqZzC2/Bw=" crossorigin="anonymous")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.3/moment.min.js" crossorigin="anonymous" referrerpolicy="no-referrer")
+    style !{css}
+  body
+    nav.navbar.navbar-dark.navbar-expand-lg.py-0.mb-2
+      .container-fluid.py-0
+        .d-flex.flex-row
+          a.navbar-brand TensorFlow GitHub CI
+          .navbar-text#tf-now(data-isonow=isonow) Last updated on 
+            a(title="Check the dashboard deployment GitHub Actions workflow" href="https://github.com/tensorflow/build/actions/workflows/dashboard.yml") #{now}
+            |  
+            a#tf-ago
+            .tf-mytimer(title="The page auto-refreshes every 5 minutes (delayed if a modal is open) to check and see if the dashboard has been updated.")
+        ul.navbar-nav
+          li.nav-item
+            a.nav-link(role="button" data-bs-toggle="modal" data-bs-target="#help-modal") Help
+          li.nav-item
+            a.nav-link(href="https://github.com/tensorflow/tensorflow/commits/master") Commits
+          li.nav-item
+            a.nav-link(href="https://github.com/tensorflow/build/issues/142") Suggestions
+      
+    .d-flex.flex-column.gap-1.m-1
+      .favorites-section.d-none
+        .fw-bold.ps-4
+          span.text-light Favorites
+        .d-flex.flex-row.flex-wrap.gap-1.m-1.card-section
+      each category, everythin in by_group.items() 
+        .fw-bold.ps-4
+          span.text-light= category
+        .d-flex.flex-row.flex-wrap.gap-1.m-1.card-section.tf-is-listed
+          each name, tests in everythin.items()
+            .card.flex-shrink-1.flex-grow-1(title=tests[0]["job_description"] class=tests[0]["card_class"] data-name=name)
+              .card-body
+                h4.text-center.fw-bold= name
+                .d-flex.flex-row.flex-wrap.gap-1
+                  .badge.tf-dot.p-2.pe-1.ps-1.favorite ★
+                  if tests[0]["is_public"]
+                    .badge.p-2.tf-dot.tf-public(title="This job has publicly-visible results pages.") Public
+                  else
+                    .badge.p-2.tf-dot.tf-internal(title="This job only has private, Googler-restricted results pages.") Internal
+                  each test in tests
+                    if "date_tag" in test:
+                      .badge.p-2.tf-dot.tf-date= test["date_tag"]
+                    else
+                      a.badge.p-2(title="#{test['date_human']} - #{test['commit_summary']}" class=test["state"] data-bs-toggle='modal' data-bs-target=test["commit_id"])
+
+
+    each commit, jobs in by_commit.items()
+      .modal.modal-lg.fade.commit-modal(tabindex='-1' aria-labelledby=commit id=commit aria-hidden='true')
+        .modal-dialog.modal-dialog-centered
+          .modal-content
+            .modal-body
+              .d-flex.flex-row
+                .badge.me-1.tf-fulldate= jobs[0]["date_human"]
+                a.badge.me-1.tf-hash(href=jobs[0]["commit_url"])= jobs[0]["short_commit"]
+                if "cl" in jobs[0]:
+                  a.badge.tf-cl(href=jobs[0]["cl_url"]) cl/#{jobs[0]["cl"]}
+                else
+                  span.badge.tf-nocl No CL Attached
+              .d-flex.flex-column.text-wrap.container.lh-sm.pt-4
+                !{jobs[0]["commit_message"]}
+              hr
+              table.table.table-sm.table-striped
+                each job in jobs
+                  tr
+                    td.text-center.py-1.px-1.m-0.align-middle
+                      if job["is_public"]
+                        span.badge.tf-ispublic Public
+                      else
+                        span.badge.tf-isinternal Internal
+                    td.text-center.py-1.px-1.m-0.align-middle
+                      if job["result_url"]
+                        a.badge.tf-state(href=job["result_url"] class=job["state"])= job["state"]
+                      else:
+                        .badge.tf-state(title="This job has no result page. Strange!" class=job["state"])= job["state"]
+                    td.text-center.py-1.px-1.m-0.align-middle
+                      if "previous_diff_url" in job:
+                        a.badge.text-center.tf-diff(href=job["previous_diff_url"]) Diff
+                      else
+                        span.badge.tf-nodiff No Diff
+                    td.py-1.px-1.m-0.text
+                      span= job["name"]
+    .modal.help-modal.modal-lg.fade(tabindex='-1' aria-labelledby="help-modal" id="help-modal" aria-hidden='true')
+      .modal-dialog.modal-dialog-centered
+        .modal-content
+          .modal-header.fw-bold Dashboard Help
+          .modal-body !{helptext}
+    script !{js}
