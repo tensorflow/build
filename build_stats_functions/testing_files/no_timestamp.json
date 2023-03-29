@@ -1,0 +1,4 @@
+{"otherData":{"build_id":"8a87a964-5ef2-4a19-8f74-67887a15a1f1","output_base":"/root/.cache/bazel/_bazel_root/fbac33eb30dbfb6b11b15a7ff5ac830d","date":"Thu Dec 08 23:31:24 UTC 2022"},"traceEvents":[
+  {"cat":"Unknown event","name":"merged 4 events","ph":"X","dur":1150,"pid":1,"tid":1767}
+]
+}

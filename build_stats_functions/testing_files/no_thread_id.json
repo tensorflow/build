@@ -1,0 +1,4 @@
+{"otherData":{"build_id":"8a87a964-5ef2-4a19-8f74-67887a15a1f1","output_base":"/root/.cache/bazel/_bazel_root/fbac33eb30dbfb6b11b15a7ff5ac830d","date":"Thu Dec 08 23:31:24 UTC 2022"},"traceEvents":[
+  {"name":"thread_name","ph":"M","pid":1,"args":{"name":"Critical Path"}}
+]
+}
