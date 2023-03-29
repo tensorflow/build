@@ -37,4 +37,4 @@ Here are some tips and notes about the dashboard:
 - The "kokoro" job is actually multiple jobs that are all called "kokoro." These
   statuses overlap and are effectively useless, because each dot points to a
   different job. If your (Google) team owns one of these, you need to change the
-  `github_status_context` github_scm config value to a real name.
+  `commit_status_context` github_scm config value to a real name.
