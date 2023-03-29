@@ -90,14 +90,14 @@ table td.text {
 
 .card {
   flex-basis: 20em;
-  max-width: 25em;
+  max-width: 33em;
   background-image: linear-gradient(rgb(0 0 0/30%) 0 0);
 }
 
 .CARD_PENDING {
   background-image:
     repeating-linear-gradient(
-      -45deg,
+      45deg,
       #0006,
       #0006 .5rem,
       #0004 .5rem,
