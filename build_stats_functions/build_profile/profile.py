@@ -35,6 +35,9 @@ class MissingTopLevelError(Exception):
 
 class IncorrectProfileFormatError(Exception):
   """This file is not in the correct Build Profile format."""
+  
+class UnableToUnzipFile(Exception):
+  """Unable to Unzip Build Profile."""
 
 
 @functions_framework.cloud_event
@@ -128,44 +131,47 @@ def get_data(data_blob: any):
   """
   # Unzip file
   root = path.dirname(path.abspath(__file__))
-  root = root + "/profile.json.gz"
+  root = root + "tmp/profile.json.gz"
   data_blob.download_to_filename(root)
   threads = {}
-  with gzip.open(root, "rb") as file:
-    i = 0
-    for line in file:
-      line = line.decode('utf-8')
-      if i == 0:
+  try:
+    with gzip.open(root, "rb") as file:
+      i = 0
+      for line in file:
+        line = line.decode('utf-8')
+        if i == 0:
         # Make sure the first line is top level object containing
         # MetaData "Otherdata" and "TraceEvents"
-        if "otherData" not in line or "traceEvents" not in line:
-          raise MissingTopLevelError()
-          logger.log_text("Missing first line of profile", severity="WARNING")
-        # Remove the "traceEvents" and outstanding "[" in top level to be able
-        # to parse it as a Json
-        line = line[0:len(line)-17] + "}"
-        line = json.loads(line)
-        if "build_id" not in line["otherData"]:
-          raise IncorrectProfileFormatError()
-        build_id = line["otherData"]["build_id"]
-      if i > 0:
-        my_json = line.rstrip()
-        if my_json[-1] == ",":
-          my_json = my_json[0 : len(my_json) - 1]
-        if my_json[-1] != "}":
-          break
-        try:
-          data = json.loads(my_json)
-        except ValueError as exc:
-          raise IncorrectFileTypeError() from exc
-        if "tid" not in data:
-          raise IncorrectProfileFormatError()
-        a = data["tid"]
-        if a not in threads:
-          threads[a] = []
-        threads[a].append(data)
-      i += 1
-  res = [build_id, threads]
+          if "otherData" not in line or "traceEvents" not in line:
+            raise MissingTopLevelError()
+            logger.log_text("Missing first line of profile", severity="WARNING")
+            # Remove the "traceEvents" and outstanding "[" in top level to be able
+            # to parse it as a Json
+          line = line[0:len(line)-17] + "}"
+          line = json.loads(line)
+          if "build_id" not in line["otherData"]:
+            raise IncorrectProfileFormatError()
+          build_id = line["otherData"]["build_id"]
+        if i > 0:
+          my_json = line.rstrip()
+          if my_json[-1] == ",":
+            my_json = my_json[0 : len(my_json) - 1]
+          if my_json[-1] != "}":
+            break
+          try:
+            data = json.loads(my_json)
+          except ValueError as exc:
+            raise IncorrectFileTypeError() from exc
+          if "tid" not in data:
+            raise IncorrectProfileFormatError()
+          a = data["tid"]
+          if a not in threads:
+            threads[a] = []
+          threads[a].append(data)
+        i += 1
+    res = [build_id, threads]
+  except Exception:
+    raise UnableToUnzipFile()
   return res
       
 
@@ -196,14 +202,14 @@ def get_times(threads: dict):
       if event["ph"] == "X":
         if "ts" not in event or "dur" not in event:
           raise IncorrectProfileFormatError()
-      # Only look at complete events (indicated by phase X)
-        # To calculate self time want to get the duration
-        # and subtract the time of any child jobs.
-        # Child events show up before the current event however can be out of 
-        # order overall so hence loop through all previous events in the file.
-        # If the time stamps overlap we see it is a child event.
-        # NOTE: In rare occassions there won't be an overlap showing up but 
-        # this only throws off overall self time of event by 10ths of a second.
+          # Only look at complete events (indicated by phase X)
+          # To calculate self time want to get the duration
+          # and subtract the time of any child jobs.
+          # Child events show up before the current event however can be out of 
+          # order overall so hence loop through all previous events in the file.
+          # If the time stamps overlap we see it is a child event.
+          # NOTE: In rare occassions there won't be an overlap showing up but 
+          # this only throws off overall self time of event by 10ths of a second.
         self_time = event["dur"]
         categories[event["name"]] = event["cat"]
         if total_time > 0:
