@@ -17,9 +17,6 @@ import profile
 import pytest
 
 
-os.environ['STORAGE_BUCKET'] = 'processing_files_build_logs'
-os.environ['TABLE_ID'] = 'tensorflow-devel.build_profile_stats'
-
 def test_check_path():
   # Path for where to find the build profiles we want in GCS storage
   r1 = profile.check_path(
