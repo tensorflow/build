@@ -51,8 +51,7 @@ def main(cloud_event: any):
   TABLE_ID = os.environ.get("TABLE_ID")
   try:
     client = logging.Client()
-    log_name = "build-profile-testing"
-    logger = client.logger(log_name)
+    logger = client.logger("build-profile-testing")
     logger.log_text("Successfully connected to GCP Logging Client", severity="INFO")
   except logging.Error:
     logger.log_text("Unable to connect to GCP Logging client", severity="WARNING")
