@@ -47,8 +47,7 @@ def main(cloud_event: any):
   TABLE_ID = os.environ.get("TABLE_ID")
   try:
     client = logging.Client()
-    log_name = "build-event-testing"
-    logger = client.logger(log_name)
+    logger = client.logger("build-event-testing")
     logger.log_text("Successfully connected to GCP Logging Client", severity="INFO")
   except logging.Error:
     logger.log_text("Unable to connect to GCP Logging client", severity="WARNING")
@@ -58,17 +57,16 @@ def main(cloud_event: any):
     logger.log_text("No filename was found", severity="WARNING")
     return
   file_name = data["name"]
-  check_file = check_path(file_name)
-  if not check_file:
+  if not check_path(file_name):
     logger.log_text(
         "The current file is not a BEP according to its path", severity="INFO"
     )
     return
   # Extract job name from overall path
-    logger.log_text("Build Event Protocol found", severity="INFO")
-    r = re.search("/[0-9].*", file_name)
-    index = r.span()[0]
-    job = file_name[0:index]
+  logger.log_text("Build Event Protocol found", severity="INFO")
+  r = re.search("/[0-9].*", file_name)
+  index = r.span()[0]
+  job = file_name[0:index]
   try:
     storage_client = storage.Client()
     bucket = storage_client.get_bucket(STORAGE_BUCKET)
