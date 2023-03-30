@@ -18,9 +18,6 @@ import build_event
 import pytest
 
 
-os.environ['STORAGE_BUCKET'] = 'processing_files_build_logs'
-os.environ['TABLE_ID'] = 'tensorflow-devel.build_event_protocol_stats'
-
 def test_check_path():
   # This is the path for where to find the build events we want in GCS storage
   r1 = build_event.check_path(
