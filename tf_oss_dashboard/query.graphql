@@ -10,7 +10,7 @@
               messageBody
               commitUrl
               statusCheckRollup {
-                contexts(first: 20) {
+                contexts(first: 100) {
                   totalCount
                   nodes {
                     ... on StatusContext {
