@@ -94,13 +94,25 @@ for name, jobs in by_name.items():
   new_jobs[0]["card_class"] = " ".join([first_non_pending_status, "CARD_PENDING" if new_jobs[0]["is_pending"] else "CARD_NOT_PENDING"])
   by_name[name] = new_jobs
 
+DATE_BADGE_SIZE = 3
+MAX_CARD_SIZE = 100
+
 by_commit = defaultdict(list)
 for name, jobs in by_name.items():
+  by_name_new = []
+  by_name_size = 0
   for job in jobs:
     if "commit" not in job:
-      continue
-    by_commit[job["commit"]].append(job)
-    by_name[name] = jobs[0:150]
+      by_name_size += DATE_BADGE_SIZE
+    else:
+      by_name_size += 1
+      by_commit[job["commit"]].append(job)
+    if by_name_size <= MAX_CARD_SIZE:
+      by_name_new.append(job)
+  if "commit" not in by_name_new[-1]:
+    by_name_new.pop()
+  by_name[name] = by_name_new
+
 for name, jobs in by_commit.items():
   jobs.sort(key=lambda k: k["name"])
 
