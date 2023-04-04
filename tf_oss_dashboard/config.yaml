@@ -27,6 +27,7 @@ categories:
     - Nightly - Py+CPP Test Suite - Windows, Python 3.10
     - Nightly - Py+CPP Test Suite - Windows, Python 3.8
     - Nightly - Py+CPP Test Suite - Windows, Python 3.9
+  TF Nightly Clang:
     - Nightly Clang - Libtensorflow - Ubuntu GPU
     - Nightly Clang - Py+CPP Test Suite - Ubuntu CPU, Python 3.10
     - Nightly Clang - Py+CPP Test Suite - Ubuntu CPU, Python 3.11
