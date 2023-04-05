@@ -18,7 +18,7 @@
 import json
 import os
 import re
-from os import path
+from datetime import date
 
 import functions_framework
 from google.cloud import bigquery
@@ -28,8 +28,6 @@ from google.cloud import storage
 class IncorrectFileTypeError(Exception):
   """This file is not correctly formatted in JSON."""
 
-class EmptyFileError(Exception):
-  """The file passed in was empty"""
 
 class IncorrectFileFormatError(Exception):
   """This file is not in the correct Build Event Protocol format."""
@@ -76,26 +74,24 @@ def main(cloud_event: any):
     raise Exception() from exc
   # Extract test information from file
   all_events = extract_events(data_blob)
-  # In the event that the job does not test
+  # In the event that the job does not return any data
   if not all_events:
-    logger.log_text("This job does not run tests", severity="INFO")
+    logger.log_text("Empty file received", severity="WARNING")
     return
   # Make an API request and make sure it executes correctly
   try:
     bigquery_client = bigquery.Client()
     for event in all_events:
       event["JOB_NAME"] = job
-      event = [event]
-      errors = bigquery_client.insert_rows_json(TABLE_ID, event)
+      event["DATE_CREATED"] = str(date.today())
+      errors = bigquery_client.insert_rows_json(TABLE_ID, [event])
       if not errors:
         logger.log_text("Successfully added row to table", severity="INFO")
       else:
         logger.log_text("Encountered errors while inserting rows", severity="INFO")
-  except bigquery.Error:
+  except Exception:
     logger.log_text("Unable to access Bigquery client", severity="WARNING")
     return
-  
-
 
 def check_path(file_name: str):
   """Checks that the uploaded file is a BEP using regex
@@ -121,29 +117,33 @@ def extract_events(data_blob: any):
     Array of objects representing each TestSummary event
   """
   all_events = []
-  # Loop through each line of the file and if in correct
-  # format convert to json. If the current event is
-  # a TestSummary event extract the relevant information.
-  with data_blob.open("r") as file:
-    for line in file:
-      try:
-        curr = json.loads(line)
-      except ValueError:
-        raise IncorrectFileTypeError()
-      if type(curr) is not dict:
-        raise IncorrectFileTypeError()
-      event_id = curr["id"]
-      if "testSummary" in event_id:
-        test_summary = curr["testSummary"]
-        obj = {}
-        try:
-          obj["TEST_NAME"] = event_id["testSummary"]["label"]
+  try:
+    with data_blob.open("rb") as file:
+      for line in file:
+        data = json.loads(line)
+        line_id = data["id"]
+        if "targetCompleted" in line_id:
+          if "testSummary" not in data["children"]:
+            obj = {}
+            obj["TARGET_NAME"] = line_id["targetCompleted"]["label"]
+            if data["completed"]["success"] == True:
+              obj["STATUS"] = "SUCCESS"
+            else:
+              obj["STATUS"] = "FAILED"
+            obj["isTest"] = False
+            all_events.append(obj)
+        elif "testSummary" in line_id:
+          obj = {}
+          obj["isTest"] = True
+          obj["TARGET_NAME"] = line_id["testSummary"]["label"]
+          test_summary = data["testSummary"]
+          obj["TEST_NAME"] = line_id["testSummary"]["label"]
           obj["TOTAL_RUN_COUNT"] = test_summary["totalRunCount"]
           obj["STATUS"] = test_summary["overallStatus"]
           run_duration = test_summary["totalRunDuration"]
-          obj["TOTAL_RUN_DURATION"] = float(run_duration[:-1])/1000
+          obj["TOTAL_RUN_DURATION"] = float(run_duration[:-1])
           obj["ATTEMPT_COUNT"] = test_summary["attemptCount"]
-        except KeyError as exc:
-          raise IncorrectFileFormatError() from exc
-        all_events.append(obj)
+          all_events.append(obj)
+  except Exception:
+    raise IncorrectFileFormatError()
   return all_events
