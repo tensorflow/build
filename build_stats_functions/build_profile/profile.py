@@ -14,28 +14,39 @@
 # =============================================================================
 """Python Code for grabbing stats from build profile to import into BigQuery."""
 import json
+import logging
 import os
 import re
-from os import path
 import gzip
 import tempfile
+from datetime import date
 
 import functions_framework
 from google.cloud import bigquery
 from google.cloud import logging 
 from google.cloud import storage
 
+class UnableToUnzipFile(Exception):
+  """Unable to unzip input file."""
+
+class IncorrectFileTypeError(Exception):
+  """This file is not correctly formatted in JSON."""
+
+
+class MissingTopLevelError(Exception):
+  """The build profile is missing the top-level object."""
 
 
 class IncorrectProfileFormatError(Exception):
   """This file is not in the correct Build Profile format."""
-  
 
 
 @functions_framework.cloud_event
 def main(cloud_event: any):
   """Entry point function that is triggered by uploading build profile.
-  Gathers stats from build profile and uploads to Bigquery.
+  Gathers stats from build profile file and sends to BigQuery. Goes through
+  each thread in the file and for each event in the thread extracts relevant
+  info and writes as an object into bigquery
   Args:
     cloud_event: the google cloud event that triggered the function
   """
@@ -49,18 +60,16 @@ def main(cloud_event: any):
     logger.log_text("Unable to connect to GCP Logging client", severity="WARNING")
     return
   data = cloud_event.data
-  if "name" not in data: 
+  if "name" not in data:
     logger.log_text("No filename was found", severity="WARNING")
     return
   file_name = data["name"]
-  check_file = check_path(file_name)
-  if not check_file:
+  if not check_path(file_name):
     logger.log_text(
-        "The current file is not a Build profile according to its path", severity="INFO"
+        "The current file is not a build profile according to its path", severity="INFO"
     )
     return
   else:
-    # Extract job name from overall path
     logger.log_text("Build profile found", severity="INFO")
     r = re.search("/[0-9].*", file_name)
     index = r.span()[0]
@@ -72,38 +81,32 @@ def main(cloud_event: any):
   except Exception as exc:
     logger.log_text("Unable to access Cloud Storage client or storage bucket", severity="WARNING")
     raise Exception() from exc
-  results = get_data(data_blob)
-  build_id = results[0]
-  threads = results[1]
+  res = get_data(data_blob)
+  build_id = res[0]
+  threads = res[1]
   all_threads = get_times(threads)
   if len(all_threads) == 0:
     logger.log_text(
         "Profile had no completed action events or wasn't in correct format", severity="WARNING"
     )
     return
-  objs = create_event_objects(all_threads)
   try:
     bigquery_client = bigquery.Client()
+    objs = create_event_objects(all_threads)
     for obj in objs:
       obj["BUILD_ID"] = build_id
       obj["JOB_NAME"] = job
+      obj["DATE_CREATED"] = str(date.today())
       errors = bigquery_client.insert_rows_json(TABLE_ID, [obj])
       if not errors:
-        logger.log_text("Successfully added row to table", severity="INFO")
+        logger.log_text("New rows have been added.", severity="INFO")
       else:
-        logger.log_text("Encountered errors while inserting rows", severity="INFO")
-  except bigquery.Error:
+        logger.log_text("Encountered errors while inserting rows "+ errors, severity="INFO")
+  except Exception:
     logger.log_text("Unable to access Bigquery client", severity="WARNING")
     return
 
 def check_path(file_name: str):
-  """Checks that the uploaded file is a BEP using regex
-  Args:
-    file_name: file path name
-  Returns:
-    The first occurence in the path that matches regex 
-    or None if no match
-  """
   regex = "prod/tensorflow/rel.*/profile.json.gz"
   check_file = re.match(regex, file_name)
   return check_file
@@ -114,34 +117,44 @@ def get_data(data_blob: any):
   Args:
     data_blob: the blob file that was uploaded in the triggering cloud event
   Raises:
+    MissingTopLevelError: Doesn't have top level object
     IncorrectProfileFormatError: Missing required fields for a profile
+    IncorrectFileTypeError: One or more lines is not in correct JSON format
+    UnableToUnzipFile: Unable to unzip input file
   Returns:
     A dict mapping keys of thread ids to an array of events in that thread
   """
   temp_dir = tempfile.TemporaryDirectory()
   temp_file = temp_dir.name + "/profile.json.gz"
   data_blob.download_to_filename(temp_file)
-  thread_names = {}
   threads = {}
   cats = {}
   try:
-    with gzip.open(root, "rb") as file:
-      data = json.load(file)
+    with gzip.open(temp_file, "rb") as file:
+      try:
+        data = json.load(file)
+      except Exception:
+        raise IncorrectProfileFormatError()
+      if "otherData" not in data or "traceEvents" not in data:
+        raise MissingTopLevelError()
+        logger.log_text("Missing first line of profile", severity="WARNING")
+      if "build_id" not in data["otherData"]:
+        raise IncorrectProfileFormatError()
       build_id = data["otherData"]["build_id"]
       for line in data['traceEvents']:
         if "cat" in line:
           if line["cat"] not in cats:
             cats[line["cat"]] = []
           cats[line["cat"]].append(line["name"])
-          a = line["tid"]
-        if a not in thread_names:
-          curr_thread = line["args"]["name"]
-          thread_names[a] = curr_thread
-          threads[curr_thread] = []
-        threads[thread_names[a]].append(line)
+        if "tid" not in line:
+          raise IncorrectProfileFormatError()
+        a = line["tid"]
+        if a not in threads:
+          threads[a] = []
+        threads[a].append(line)
+  except Exception:
+    raise UnableToUnzipFile()
   res = [build_id, threads]
-  except Exception:     
-    raise IncorrectProfileFormatError()
   return res
 
 
