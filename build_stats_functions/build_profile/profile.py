@@ -18,6 +18,7 @@ import os
 import re
 from os import path
 import gzip
+import tempfile
 
 import functions_framework
 from google.cloud import bigquery
@@ -25,19 +26,10 @@ from google.cloud import logging
 from google.cloud import storage
 
 
-class IncorrectFileTypeError(Exception):
-  """This file is not correctly formatted in JSON."""
-
-
-class MissingTopLevelError(Exception):
-  """The build profile is missing the top-level object."""
-
 
 class IncorrectProfileFormatError(Exception):
   """This file is not in the correct Build Profile format."""
   
-class UnableToUnzipFile(Exception):
-  """Unable to Unzip Build Profile."""
 
 
 @functions_framework.cloud_event
@@ -122,57 +114,35 @@ def get_data(data_blob: any):
   Args:
     data_blob: the blob file that was uploaded in the triggering cloud event
   Raises:
-    MissingTopLevelError: Doesn't have top level object
     IncorrectProfileFormatError: Missing required fields for a profile
-    IncorrectFileTypeError: One or more lines is not in correct JSON format
   Returns:
     A dict mapping keys of thread ids to an array of events in that thread
   """
-  # Unzip file
-  root = path.dirname(path.abspath(__file__))
-  root = root + "tmp/profile.json.gz"
-  data_blob.download_to_filename(root)
+  temp_dir = tempfile.TemporaryDirectory()
+  temp_file = temp_dir.name + "/profile.json.gz"
+  data_blob.download_to_filename(temp_file)
+  thread_names = {}
   threads = {}
+  cats = {}
   try:
     with gzip.open(root, "rb") as file:
-      i = 0
-      for line in file:
-        line = line.decode('utf-8')
-        if i == 0:
-        # Make sure the first line is top level object containing
-        # MetaData "Otherdata" and "TraceEvents"
-          if "otherData" not in line or "traceEvents" not in line:
-            raise MissingTopLevelError()
-            logger.log_text("Missing first line of profile", severity="WARNING")
-            # Remove the "traceEvents" and outstanding "[" in top level to be able
-            # to parse it as a Json
-          line = line[0:len(line)-17] + "}"
-          line = json.loads(line)
-          if "build_id" not in line["otherData"]:
-            raise IncorrectProfileFormatError()
-          build_id = line["otherData"]["build_id"]
-        if i > 0:
-          my_json = line.rstrip()
-          if my_json[-1] == ",":
-            my_json = my_json[0 : len(my_json) - 1]
-          if my_json[-1] != "}":
-            break
-          try:
-            data = json.loads(my_json)
-          except ValueError as exc:
-            raise IncorrectFileTypeError() from exc
-          if "tid" not in data:
-            raise IncorrectProfileFormatError()
-          a = data["tid"]
-          if a not in threads:
-            threads[a] = []
-          threads[a].append(data)
-        i += 1
-    res = [build_id, threads]
-  except Exception:
-    raise UnableToUnzipFile()
+      data = json.load(file)
+      build_id = data["otherData"]["build_id"]
+      for line in data['traceEvents']:
+        if "cat" in line:
+          if line["cat"] not in cats:
+            cats[line["cat"]] = []
+          cats[line["cat"]].append(line["name"])
+          a = line["tid"]
+        if a not in thread_names:
+          curr_thread = line["args"]["name"]
+          thread_names[a] = curr_thread
+          threads[curr_thread] = []
+        threads[thread_names[a]].append(line)
+  res = [build_id, threads]
+  except Exception:     
+    raise IncorrectProfileFormatError()
   return res
-      
 
 
 def get_times(threads: dict):
