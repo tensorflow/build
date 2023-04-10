@@ -13,21 +13,23 @@
 # limitations under the License.
 # =============================================================================
 """Python Code for grabbing stats from build profile to import into BigQuery."""
+import datetime
+import gzip
 import json
 import logging
 import os
 import re
-import gzip
 import tempfile
-from datetime import date
 
 import functions_framework
 from google.cloud import bigquery
-from google.cloud import logging 
+from google.cloud import logging
 from google.cloud import storage
 
-class UnableToUnzipFile(Exception):
+
+class UnableToUnzipFileError(Exception):
   """Unable to unzip input file."""
+
 
 class IncorrectFileTypeError(Exception):
   """This file is not correctly formatted in JSON."""
@@ -41,23 +43,48 @@ class IncorrectProfileFormatError(Exception):
   """This file is not in the correct Build Profile format."""
 
 
+class MissingFirstLineError(Exception):
+  """This file is missing top level data."""
+
+
 @functions_framework.cloud_event
 def main(cloud_event: any):
   """Entry point function that is triggered by uploading build profile.
-  Gathers stats from build profile file and sends to BigQuery. Goes through
-  each thread in the file and for each event in the thread extracts relevant
-  info and writes as an object into bigquery
+
+  Gathers stats from build profile file and sends to BigQuery. Goes through each
+  thread in the file and for each event in the thread extracts relevant info and
+  writes as an object into bigquery
+
   Args:
     cloud_event: the google cloud event that triggered the function
   """
-  STORAGE_BUCKET = os.environ.get("STORAGE_BUCKET")
-  TABLE_ID = os.environ.get("TABLE_ID")
   try:
     client = logging.Client()
     logger = client.logger("build-profile-testing")
-    logger.log_text("Successfully connected to GCP Logging Client", severity="INFO")
+    logger.log_text(
+        "Successfully connected to GCP Logging Client", severity="INFO"
+    )
   except logging.Error:
-    logger.log_text("Unable to connect to GCP Logging client", severity="WARNING")
+    logger.log_text(
+        "Unable to connect to GCP Logging client", severity="WARNING"
+    )
+    return
+  try:
+    STORAGE_BUCKET = os.environ.get("STORAGE_BUCKET")
+    TABLE_ID = os.environ.get("TABLE_ID")
+  except Exception as exc:
+    logger.log_text("Unable to get environment variables", severity="WARNING")
+    raise exc
+  try:
+    client = logging.Client()
+    logger = client.logger("build-profile-testing")
+    logger.log_text(
+        "Successfully connected to GCP Logging Client", severity="INFO"
+    )
+  except logging.Error:
+    logger.log_text(
+        "Unable to connect to GCP Logging client", severity="WARNING"
+    )
     return
   data = cloud_event.data
   if "name" not in data:
@@ -66,28 +93,32 @@ def main(cloud_event: any):
   file_name = data["name"]
   if not check_path(file_name):
     logger.log_text(
-        "The current file is not a build profile according to its path", severity="INFO"
+        "The current file is not a build profile according to its path",
+        severity="INFO",
     )
     return
-  else:
-    logger.log_text("Build profile found", severity="INFO")
-    r = re.search("/[0-9].*", file_name)
-    index = r.span()[0]
-    job = file_name[0:index]
+  logger.log_text("Build profile found", severity="INFO")
+  r = re.search("/[0-9].*", file_name)
+  index = r.span()[0]
+  job = file_name[0:index]
   try:
     storage_client = storage.Client()
     bucket = storage_client.get_bucket(STORAGE_BUCKET)
     data_blob = bucket.get_blob(file_name)
   except Exception as exc:
-    logger.log_text("Unable to access Cloud Storage client or storage bucket", severity="WARNING")
-    raise Exception() from exc
+    logger.log_text(
+        "Unable to access Cloud Storage client or storage bucket",
+        severity="WARNING",
+    )
+    raise exc
   res = get_data(data_blob)
   build_id = res[0]
   threads = res[1]
   all_threads = get_times(threads)
-  if len(all_threads) == 0:
+  if not all_threads:
     logger.log_text(
-        "Profile had no completed action events or wasn't in correct format", severity="WARNING"
+        "Profile had no completed action events or wasn't in correct format",
+        severity="WARNING",
     )
     return
   try:
@@ -96,15 +127,12 @@ def main(cloud_event: any):
     for obj in objs:
       obj["BUILD_ID"] = build_id
       obj["JOB_NAME"] = job
-      obj["DATE_CREATED"] = str(date.today())
-      errors = bigquery_client.insert_rows_json(TABLE_ID, [obj])
-      if not errors:
-        logger.log_text("New rows have been added.", severity="INFO")
-      else:
-        logger.log_text("Encountered errors while inserting rows "+ errors, severity="INFO")
-  except Exception:
+      obj["DATE_CREATED"] = str(datetime.date.today())
+      bigquery_client.insert_rows_json(TABLE_ID, [obj])
+  except Exception as exc:
     logger.log_text("Unable to access Bigquery client", severity="WARNING")
-    return
+    raise exc
+
 
 def check_path(file_name: str):
   regex = "prod/tensorflow/rel.*/profile.json.gz"
@@ -112,10 +140,12 @@ def check_path(file_name: str):
   return check_file
 
 
-def get_data(data_blob: any):
+def get_data(data_blob: storage.Blob):
   """Goes through each line in blob file and converts strings to dictionary object.
+
   Args:
     data_blob: the blob file that was uploaded in the triggering cloud event
+
   Raises:
     MissingTopLevelError: Doesn't have top level object
     IncorrectProfileFormatError: Missing required fields for a profile
@@ -133,15 +163,14 @@ def get_data(data_blob: any):
     with gzip.open(temp_file, "rb") as file:
       try:
         data = json.load(file)
-      except Exception:
-        raise IncorrectProfileFormatError()
+      except Exception as exc:
+        raise IncorrectProfileFormatError() from exc
       if "otherData" not in data or "traceEvents" not in data:
         raise MissingTopLevelError()
-        logger.log_text("Missing first line of profile", severity="WARNING")
       if "build_id" not in data["otherData"]:
         raise IncorrectProfileFormatError()
       build_id = data["otherData"]["build_id"]
-      for line in data['traceEvents']:
+      for line in data["traceEvents"]:
         if "cat" in line:
           if line["cat"] not in cats:
             cats[line["cat"]] = []
@@ -152,17 +181,19 @@ def get_data(data_blob: any):
         if a not in threads:
           threads[a] = []
         threads[a].append(line)
-  except Exception:
-    raise UnableToUnzipFile()
+  except Exception as exc:
+    raise UnableToUnzipFileError() from exc
   res = [build_id, threads]
   return res
 
 
-def get_times(threads: dict):
-  """For each event in thread keep track of total time it takes
+def get_times(threads: dict[str, list[str]]):
+  """For each event in thread keep track of total time it takes.
+
   and its category
   Args:
     threads: dictionary of {thread id: [events in thread]}
+
   Raises:
     IncorrectProfileFormatError: Incorrect format for profile format
   Returns:
@@ -172,7 +203,6 @@ def get_times(threads: dict):
   # Also keep an overall dictionary of all of the threads
   all_threads = {}
   categories = {}
-  build_time = 0 
   for thread in threads:
     total_time = 0
     all_events = []
@@ -187,11 +217,12 @@ def get_times(threads: dict):
           # Only look at complete events (indicated by phase X)
           # To calculate self time want to get the duration
           # and subtract the time of any child jobs.
-          # Child events show up before the current event however can be out of 
+          # Child events show up before the current event however can be out of
           # order overall so hence loop through all previous events in the file.
           # If the time stamps overlap we see it is a child event.
-          # NOTE: In rare occassions there won't be an overlap showing up but 
-          # this only throws off overall self time of event by 10ths of a second.
+          # NOTE: In rare occassions there won't be an overlap showing up but
+          # this only throws off overall self time of event by 10ths of
+          # a second.
         self_time = event["dur"]
         categories[event["name"]] = event["cat"]
         if total_time > 0:
@@ -218,10 +249,13 @@ def get_times(threads: dict):
     all_threads[thread] = event_times
   return [all_threads, categories]
 
-def create_event_objects(data: list):
-  """For each event in each thread create an object
+
+def create_event_objects(data: list[dict[str, dict[str, int]]]):
+  """For each event in each thread create an object.
+
   Args:
     data: list of threads and categories
+
   Returns:
     A list of all events as objects
   """
@@ -234,6 +268,6 @@ def create_event_objects(data: list):
       ev["EVENT_NAME"] = data
       ev["CATEGORY"] = categories[data]
       ev["THREAD"] = line
-      ev["TIME_TAKEN"] = float(all_threads[line][data])/1000000
+      ev["TIME_TAKEN"] = float(all_threads[line][data]) / 1000000
       objs.append(ev)
   return objs
