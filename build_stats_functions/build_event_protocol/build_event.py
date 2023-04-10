@@ -15,15 +15,16 @@
 
 
 """Python Code for grabbing stats from build event protocol to be used."""
+import datetime
 import json
 import os
 import re
-from datetime import date
 
 import functions_framework
 from google.cloud import bigquery
-from google.cloud import logging 
+from google.cloud import logging
 from google.cloud import storage
+
 
 class IncorrectFileTypeError(Exception):
   """This file is not correctly formatted in JSON."""
@@ -37,19 +38,29 @@ class IncorrectFileFormatError(Exception):
 @functions_framework.cloud_event
 def main(cloud_event: any):
   """Entry point function that is triggered by cloud event.
+
   Gathers stats from Build Event Protocol file and sends to BigQuery.
+
   Args:
     cloud_event: event that triggers the function
   """
-  STORAGE_BUCKET = os.environ.get("STORAGE_BUCKET")
-  TABLE_ID = os.environ.get("TABLE_ID")
   try:
     client = logging.Client()
     logger = client.logger("build-event-testing")
-    logger.log_text("Successfully connected to GCP Logging Client", severity="INFO")
-  except logging.Error:
-    logger.log_text("Unable to connect to GCP Logging client", severity="WARNING")
-    raise logging.Error()
+    logger.log_text(
+        "Successfully connected to GCP Logging Client", severity="INFO"
+    )
+  except Exception as exc:
+    logger.log_text(
+        "Unable to connect to GCP Logging client", severity="WARNING"
+    )
+    raise logging.Error() from exc
+  try:
+    STORAGE_BUCKET = os.environ.get("STORAGE_BUCKET")
+    TABLE_ID = os.environ.get("TABLE_ID")
+  except Exception as exc:
+    logger.log_text("Unable to get environment variables", severity="WARNING")
+    raise exc
   data = cloud_event.data
   if "name" not in data:
     logger.log_text("No filename was found", severity="WARNING")
@@ -70,35 +81,37 @@ def main(cloud_event: any):
     bucket = storage_client.get_bucket(STORAGE_BUCKET)
     data_blob = bucket.get_blob(file_name)
   except Exception as exc:
-    logger.log_text("Unable to access Cloud Storage client or storage bucket", severity="WARNING")
-    raise Exception() from exc
+    logger.log_text(
+        "Unable to access Cloud Storage client or storage bucket",
+        severity="WARNING",
+    )
+    raise exc
   # Extract test information from file
   all_events = extract_events(data_blob)
   # In the event that the job does not return any data
   if not all_events:
-    logger.log_text("Empty file received", severity="WARNING")
+    logger.log_text("Malformed file received", severity="WARNING")
     return
   # Make an API request and make sure it executes correctly
   try:
     bigquery_client = bigquery.Client()
     for event in all_events:
       event["JOB_NAME"] = job
-      event["DATE_CREATED"] = str(date.today())
-      errors = bigquery_client.insert_rows_json(TABLE_ID, [event])
-      if not errors:
-        logger.log_text("Successfully added row to table", severity="INFO")
-      else:
-        logger.log_text("Encountered errors while inserting rows", severity="INFO")
-  except Exception:
+      event["DATE_CREATED"] = str(datetime.date.today())
+      bigquery_client.insert_rows_json(TABLE_ID, [event])
+  except Exception as exc:
     logger.log_text("Unable to access Bigquery client", severity="WARNING")
-    return
+    raise exc
+
 
 def check_path(file_name: str):
-  """Checks that the uploaded file is a BEP using regex
+  """Checks that the uploaded file is a BEP using regex.
+
   Args:
     file_name: file path name
+
   Returns:
-    The first occurence in the path that matches regex 
+    The first occurence in the path that matches regex
     or None if no match
   """
   regex = "prod/tensorflow/.*/bep.json"
@@ -106,10 +119,12 @@ def check_path(file_name: str):
   return check_file
 
 
-def extract_events(data_blob: any):
+def extract_events(data_blob: storage.Blob):
   """Extracts the TestSummary build events from build event protocol.
+
   Args:
     data_blob: the blob file that was uploaded in the triggering cloud event
+
   Raises:
     IncorrectFileTypeError: not JSON file
     IncorrectFileFormatError: wrong format
@@ -126,7 +141,7 @@ def extract_events(data_blob: any):
           if "testSummary" not in data["children"]:
             obj = {}
             obj["TARGET_NAME"] = line_id["targetCompleted"]["label"]
-            if data["completed"]["success"] == True:
+            if data["completed"]["success"]:
               obj["STATUS"] = "SUCCESS"
             else:
               obj["STATUS"] = "FAILED"
@@ -136,14 +151,14 @@ def extract_events(data_blob: any):
           obj = {}
           obj["isTest"] = True
           obj["TARGET_NAME"] = line_id["testSummary"]["label"]
-          test_summary = data["testSummary"]
+          summary = data["testSummary"]
           obj["TEST_NAME"] = line_id["testSummary"]["label"]
-          obj["TOTAL_RUN_COUNT"] = test_summary["totalRunCount"]
-          obj["STATUS"] = test_summary["overallStatus"]
-          run_duration = test_summary["totalRunDuration"]
+          obj["TOTAL_RUN_COUNT"] = summary["totalRunCount"]
+          obj["STATUS"] = summary["overallStatus"]
+          run_duration = summary["totalRunDuration"]
           obj["TOTAL_RUN_DURATION"] = float(run_duration[:-1])
-          obj["ATTEMPT_COUNT"] = test_summary["attemptCount"]
+          obj["ATTEMPT_COUNT"] = summary["attemptCount"]
           all_events.append(obj)
-  except Exception:
-    raise IncorrectFileFormatError()
+  except Exception as exc:
+    raise IncorrectFileTypeError() from exc
   return all_events
