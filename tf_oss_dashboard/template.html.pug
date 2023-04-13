@@ -20,13 +20,22 @@ html(lang="en")
             a#tf-ago
             .tf-mytimer(title="The page auto-refreshes every 5 minutes (delayed if a modal is open) to check and see if the dashboard has been updated.")
         ul.navbar-nav
+          .form-check.form-switch.m-auto
+            input.form-check-input(title="Toggle colorblind view" type="checkbox" role="switch" id="colorblind")
           li.nav-item
             a.nav-link(role="button" data-bs-toggle="modal" data-bs-target="#help-modal") Help
           li.nav-item
             a.nav-link(href="https://github.com/tensorflow/tensorflow/commits/master") Commits
           li.nav-item
             a.nav-link(href="https://github.com/tensorflow/build/issues/142") Suggestions
-      
+          li.nav-item
+            span.nav-link © #{year} Google, LLC
+    //- putting this here means there's no flash when the page reloads...
+    script(type="text/javascript").
+      if (localStorage.getItem('cb') == 'true') {
+        $("#colorblind").prop("checked", true)
+        $("body").toggleClass("colorblind")
+      }
     .d-flex.flex-column.gap-1.m-1
       .favorites-section.d-none
         .fw-bold.ps-4

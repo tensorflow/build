@@ -11,6 +11,7 @@ Here are some tips and notes about the dashboard:
 
 - Click on a status dot to see all statuses for that commit. The job you
   clicked is highlighted.
+- Click the toggle switch in the navbar to swap to colorblind mode.
 - All times are always in USA Pacific time.
 - The dashboard is a static page, and is re-generated roughly every 15 minutes.
   This page refreshes roughly every 5 minutes to check for updates.

@@ -122,7 +122,7 @@ table td.text {
   background-color: orange;
 }
 .ERROR {
-  background-color: sienna;
+  background-color: rebeccapurple;
 }
 
 .EXPECTED, .PENDING, .QUEUED, .IN_PROGRESS {
@@ -143,6 +143,9 @@ table td.text {
 
 .SUCCESS {
   background-color: green;
+}
+.colorblind .SUCCESS {
+  background-color: steelblue;
 }
 .CANCELLED {
   background-color: #333;
@@ -174,4 +177,8 @@ table td.text {
 
 .help-modal .modal-body li {
   margin-bottom: 0.5em;
+}
+
+.tf-table-highlight {
+  background-color: #FF6F0099;
 }
