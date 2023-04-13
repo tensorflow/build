@@ -77,3 +77,7 @@ $("#colorblind").change(function(e) {
   localStorage.setItem('cb', $(this).prop('checked'))
   $("body").toggleClass("colorblind")
 })
+$("#showfailures").change(function(e) {
+  localStorage.setItem('showfailures', $(this).prop('checked'))
+  $("body").toggleClass("showfailures")
+})

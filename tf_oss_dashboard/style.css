@@ -124,6 +124,12 @@ table td.text {
 .ERROR {
   background-color: #5B2B5B;
 }
+.failures-section {
+  display: none;
+}
+.showfailures .failures-section {
+  display: block;
+}
 
 .EXPECTED, .PENDING, .QUEUED, .IN_PROGRESS {
   animation: pending 2s linear infinite;
