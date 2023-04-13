@@ -21,6 +21,8 @@ html(lang="en")
             .tf-mytimer(title="The page auto-refreshes every 5 minutes (delayed if a modal is open) to check and see if the dashboard has been updated.")
         ul.navbar-nav
           .form-check.form-switch.m-auto
+            input.form-check-input(title="Toggle failure section" type="checkbox" role="switch" id="showfailures")
+          .form-check.form-switch.m-auto
             input.form-check-input(title="Toggle colorblind view" type="checkbox" role="switch" id="colorblind")
           li.nav-item
             a.nav-link(role="button" data-bs-toggle="modal" data-bs-target="#help-modal") Help
@@ -34,15 +36,36 @@ html(lang="en")
         $("#colorblind").prop("checked", true)
         $("body").toggleClass("colorblind")
       }
+      if (localStorage.getItem('showfailures') == 'true') {
+        $("#showfailures").prop("checked", true)
+        $("body").toggleClass("showfailures")
+      }
     .d-flex.flex-column.gap-1.m-1
       .favorites-section.d-none
         .fw-bold.ps-4
           span.text-light Favorites
         .d-flex.flex-row.flex-wrap.gap-1.m-1.card-section
-      .failures-section.d-none
+      .failures-section
         .fw-bold.ps-4
-          span.text-light Failures
-        .d-flex.flex-row.flex-wrap.gap-1.m-1.card-section
+          span.text-light Build Cop Failures
+        .d-flex.flex-row.flex-wrap.gap-1.m-1.card-section.tf-is-listed
+          each category, everythin in by_group.items()
+            if category in yaml["show_failures"]
+              each name, tests in everythin.items()
+                if tests[0]["card_class"].split(" ")[0] in ["FAILURE", "ERROR", "TIMEOUT"]
+                  .card.flex-shrink-1.flex-grow-1(title=tests[0]["job_description"] class=tests[0]["card_class"] data-name=name)
+                    .card-body
+                      h4.text-center.fw-bold= name
+                      .d-flex.flex-row.flex-wrap.gap-1
+                        if tests[0]["is_public"]
+                          .badge.p-2.tf-dot.tf-public(title="This job has publicly-visible results pages.") Public
+                        else
+                          .badge.p-2.tf-dot.tf-internal(title="This job only has private, Googler-restricted results pages.") Internal
+                        each test in tests
+                          if "date_tag" in test:
+                            .badge.p-2.tf-dot.tf-date= test["date_tag"]
+                          else
+                            a.badge.p-2(title="#{test['date_human']} - #{test['commit_summary']}" class=test["state"] data-bs-toggle='modal' data-bs-target=test["commit_id"])
       each category, everythin in by_group.items() 
         .fw-bold.ps-4
           span.text-light= category
