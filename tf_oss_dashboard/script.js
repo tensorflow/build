@@ -47,7 +47,7 @@ $(".commit-modal").on('show.bs.modal', function(e) {
   name = $(source).closest('.card').attr("data-name")
   $(this).find("td span").filter(function() {
     return $(this).text() === name
-  }).closest("tr").toggleClass("table-info")
+  }).closest("tr").toggleClass("tf-table-highlight")
   $(this).attr("data-tf-trigger", name)
 })
 
@@ -56,7 +56,7 @@ $(".commit-modal").on('hidden.bs.modal', function(e) {
   let name = $(this).attr("data-tf-trigger") 
   $(this).find("td span").filter(function() {
     return $(this).text() === name
-  }).closest("tr").toggleClass("table-info")
+  }).closest("tr").toggleClass("tf-table-highlight")
 })
 
 let autorefreshready = false
@@ -73,3 +73,7 @@ function autoRefreshIsReady() {
 setInterval(autoRefreshIsReady, 300000) // Every 5 mins, refresh unless modal is open
 setInterval(humanizeTimestamp, 60500) // Every 1 min, update the timestamp
 humanizeTimestamp()
+$("#colorblind").change(function(e) {
+  localStorage.setItem('cb', $(this).prop('checked'))
+  $("body").toggleClass("colorblind")
+})
