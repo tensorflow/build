@@ -116,13 +116,13 @@ table td.text {
 /* See https://www.w3schools.com/cssref/css_colors.php */
 /* See https://htmlcolorcodes.com/color-names/ */
 .FAILURE {
-  background-color: firebrick;
+  background-color: brown;
 }
 .TIMED_OUT {
   background-color: orange;
 }
 .ERROR {
-  background-color: #663366;
+  background-color: #5B2B5B;
 }
 
 .EXPECTED, .PENDING, .QUEUED, .IN_PROGRESS {
@@ -142,7 +142,7 @@ table td.text {
 }
 
 .SUCCESS {
-  background-color: green;
+  background-color: forestgreen;
 }
 .colorblind .SUCCESS {
   background-color: steelblue;
