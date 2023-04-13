@@ -122,7 +122,7 @@ table td.text {
   background-color: orange;
 }
 .ERROR {
-  background-color: rebeccapurple;
+  background-color: indigo;
 }
 
 .EXPECTED, .PENDING, .QUEUED, .IN_PROGRESS {
