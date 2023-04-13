@@ -39,6 +39,10 @@ html(lang="en")
         .fw-bold.ps-4
           span.text-light Favorites
         .d-flex.flex-row.flex-wrap.gap-1.m-1.card-section
+      .failures-section.d-none
+        .fw-bold.ps-4
+          span.text-light Failures
+        .d-flex.flex-row.flex-wrap.gap-1.m-1.card-section
       each category, everythin in by_group.items() 
         .fw-bold.ps-4
           span.text-light= category
