@@ -147,4 +147,4 @@ env = Environment(
 template = env.get_template('template.html.pug')
 now = arrow.now().to('US/Pacific').format("ddd, MMM D [at] h:mma ZZZ")
 isonow = arrow.now().to('US/Pacific').isoformat() 
-print(template.render(records=by_name, by_group=by_group, by_commit=by_commit, css=css, js=js, helptext=helptext, now=now, isonow=isonow, year=arrow.now().year))
+print(template.render(records=by_name, by_group=by_group, by_commit=by_commit, css=css, js=js, helptext=helptext, now=now, isonow=isonow))
