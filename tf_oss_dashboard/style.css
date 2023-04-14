@@ -122,7 +122,10 @@ table td.text {
   background-color: orange;
 }
 .ERROR {
-  background-color: #5F2F5F;
+  background-color: #202020;
+}
+.ERROR h4 {
+  color: lightgray;
 }
 .failures-section {
   display: none;
