@@ -9,23 +9,44 @@ process.
 
 Here are some tips and notes about the dashboard:
 
+## Basic Usage
+
 - Click on a status dot to see all statuses for that commit. The job you
   clicked is highlighted.
-- Click the toggle switch in the navbar to swap to colorblind mode.
-- All times are always in USA Pacific time.
-- The dashboard is a static page, and is re-generated roughly every 15 minutes.
-  This page refreshes roughly every 5 minutes to check for updates.
-- The "cl/..." badge on each commit links to Google's internal code review
-  system and is unavailable to external users. This is the same as the
-  "PiperOrigin-RevId" Git trailer in each commit message.
+- Click the left toggle switch in the navbar to show a section at the top
+  that contains all "important" jobs that the TF build cop team monitors.
+- Click the right toggle switch in the navbar to swap to colorblind mode.
 - You can zoom out to fit more jobs on the page at once.
 - Click on a star to favorite that job. Favorites are displayed in the
   "Favorites" section at the top, in the same order as they are on the page.
+- This page refreshes roughly every 5 minutes to check for updates.
+- Statuses:
+  - SUCCESS - all good
+  - FAILURE - a test failed
+  - ERROR - infrastructure aborted the job for some reason. Kokoro may report
+    timeouts as ERRORs.
+  - TIMEOUT - Testing ran over time. Kokoro doesn't seem to report this.
+  - PENDING - Queued or still running. Kokoro does not report this correctly,
+    so this is limited to the few GitHub Actions jobs.
+
+## Appearance
+
+- All times are always in USA Pacific time.
+- The dashboard is a static page, and is re-generated roughly every 15 minutes.
+- The "cl/..." badge on each commit links to Google's internal code review
+  system and is unavailable to external users. This is the same as the
+  "PiperOrigin-RevId" Git trailer in each commit message.
 - "Public" build results should be visible to external users. "Internal" build
   results are only visible to Googlers.
-- Each "diff" links to the diff between this commit and the previous commit for
-  that job. GitHub occasionally reports that there is actually no diff. Take a
-  screenshot and let us know if that happens.
+- Each "diff" badge links to the diff between this commit and the previous
+  commit for that job. GitHub occasionally reports that there is actually no
+  diff. Take a screenshot and let us know if that happens.
+
+## Surprises
+
+- Most nightly jobs run on the same commit, but some don't.
+- Jobs that run more than once on the same commit have different status
+  dots but get doubled-up in the commit overview. This isn't very common.
 - Jobs which ran on a PR that was cleanly merged also appear on this dashboard.
   These commits do not show CLs for internal users. For example,
   `import/copybara` is a pull-request job whose status also appears on its
