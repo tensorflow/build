@@ -47,5 +47,3 @@ categories:
 show_failures:
   - TF Official Continuous
   - TF Official Nightly
-docs:
-  "Code Check - Full": Runs static code checks, like for license accuracy.

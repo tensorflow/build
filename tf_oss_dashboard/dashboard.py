@@ -89,7 +89,6 @@ for name, jobs in by_name.items():
   new_jobs.append(jobs[-1])
   new_jobs[0]["first_non_pending_status"] = first_non_pending_status
   new_jobs[0]["is_public"] = is_public
-  new_jobs[0]["job_description"] = yaml_config["docs"].get(new_jobs[1]["name"], None)
   new_jobs[0]["is_pending"] = new_jobs[1]["state"] in ["PENDING", "IN_PROGRESS", "QUEUED"]
   new_jobs[0]["card_class"] = " ".join([first_non_pending_status, "CARD_PENDING" if new_jobs[0]["is_pending"] else "CARD_NOT_PENDING"])
   by_name[name] = new_jobs
