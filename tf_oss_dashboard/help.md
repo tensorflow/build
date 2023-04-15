@@ -9,7 +9,7 @@ process.
 
 Here are some tips and notes about the dashboard:
 
-## Basic Usage
+#### Basic Usage
 
 - Click on a status dot to see all statuses for that commit. The job you
   clicked is highlighted.
@@ -29,7 +29,7 @@ Here are some tips and notes about the dashboard:
   - PENDING - Queued or still running. Kokoro does not report this correctly,
     so this is limited to the few GitHub Actions jobs.
 
-## Appearance
+#### Appearance
 
 - All times are always in USA Pacific time.
 - The dashboard is a static page, and is re-generated roughly every 15 minutes.
@@ -42,7 +42,7 @@ Here are some tips and notes about the dashboard:
   commit for that job. GitHub occasionally reports that there is actually no
   diff. Take a screenshot and let us know if that happens.
 
-## Surprises
+#### Surprises
 
 - Most nightly jobs run on the same commit, but some don't.
 - Jobs that run more than once on the same commit have different status
