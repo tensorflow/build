@@ -2,7 +2,7 @@ body {
   background-color: #113;
 }
 
-h4 {
+h5 {
   color: #161616;
 }
 
@@ -124,7 +124,7 @@ table td.text {
 .ERROR {
   background-color: #202020;
 }
-.ERROR h4 {
+.ERROR h5 {
   color: lightgray;
 }
 .failures-section {
