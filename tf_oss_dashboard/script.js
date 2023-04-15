@@ -1,3 +1,6 @@
+//////////////////////////////////////////////////////////////////////////////
+// FAVORITES REORDER HANDLING
+//////////////////////////////////////////////////////////////////////////////
 function reorder() {
   let favorites = JSON.parse(localStorage.getItem('favorites') || '{}')
   $('.favorites-section .card-section').empty()
@@ -39,6 +42,9 @@ $('.favorite').each(function() {
 })
 reorder()
 
+//////////////////////////////////////////////////////////////////////////////
+// MODAL CLICKED-JOB HANDLING
+//////////////////////////////////////////////////////////////////////////////
 let modal_is_open = false;
 
 $(".commit-modal").on('show.bs.modal', function(e) {
@@ -59,6 +65,11 @@ $(".commit-modal").on('hidden.bs.modal', function(e) {
   }).closest("tr").toggleClass("tf-table-highlight")
 })
 
+
+
+//////////////////////////////////////////////////////////////////////////////
+// AUTO REFRESH AND TIMESTAMP HANDLING
+//////////////////////////////////////////////////////////////////////////////
 let autorefreshready = false
 function humanizeTimestamp() {
   if (!modal_is_open && autorefreshready) {
@@ -73,6 +84,11 @@ function autoRefreshIsReady() {
 setInterval(autoRefreshIsReady, 300000) // Every 5 mins, refresh unless modal is open
 setInterval(humanizeTimestamp, 60500) // Every 1 min, update the timestamp
 humanizeTimestamp()
+
+//////////////////////////////////////////////////////////////////////////////
+// HTML BODY STYLE TOGGLES
+// See extra script tag in template.html.pug just under the navbar.
+//////////////////////////////////////////////////////////////////////////////
 $("#colorblind").change(function(e) {
   localStorage.setItem('cb', $(this).prop('checked'))
   $("body").toggleClass("colorblind")
