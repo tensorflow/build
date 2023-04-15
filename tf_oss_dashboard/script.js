@@ -21,7 +21,6 @@ function reorder() {
 }
 
 $('.favorite').on('click', function() {
-  console.log("clicked")
   let current = $(this).closest('.card').attr("data-name")
   let favorites = JSON.parse(localStorage.getItem('favorites') || '{}')
   if (favorites[current] !== null) {
