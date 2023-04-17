@@ -140,6 +140,8 @@ def extract_events(data_blob: storage.Blob):
       for line in file:
         data = json.loads(line)
         line_id = data["id"]
+        if "started" in line_id:
+          build = data["started"]["uuid"]
         if "targetCompleted" in line_id:
           if "testSummary" not in data["children"]:
             obj = {}
@@ -149,6 +151,7 @@ def extract_events(data_blob: storage.Blob):
             else:
               obj["STATUS"] = "FAILED"
             obj["isTest"] = False
+            obj["BUILD_ID"] = build
             all_events.append(obj)
         elif "testSummary" in line_id:
           obj = {}
@@ -161,6 +164,7 @@ def extract_events(data_blob: storage.Blob):
           run_duration = summary["totalRunDuration"]
           obj["TOTAL_RUN_DURATION"] = float(run_duration[:-1])
           obj["ATTEMPT_COUNT"] = summary["attemptCount"]
+          obj["BUILD_ID"] = build
           all_events.append(obj)
   except Exception as exc:
     raise IncorrectFileTypeError() from exc
