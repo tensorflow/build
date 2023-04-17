@@ -54,6 +54,8 @@ $(".commit-modal").on('show.bs.modal', function(e) {
     return $(this).text() === name
   }).closest("tr").toggleClass("tf-table-highlight")
   $(this).attr("data-tf-trigger", name)
+  // Set the window location hash to this commit ID without corrupting history
+  history.replaceState(undefined, undefined, "#" + $(this).attr("id"))
 })
 
 $(".commit-modal").on('hidden.bs.modal', function(e) {
@@ -62,8 +64,29 @@ $(".commit-modal").on('hidden.bs.modal', function(e) {
   $(this).find("td span").filter(function() {
     return $(this).text() === name
   }).closest("tr").toggleClass("tf-table-highlight")
+  // Set the window location hash to nothing (remove the #...)
+  history.replaceState(null, null, ' ');
 })
 
+// When the page loads, if there is a commit ID in the location hash, show
+// the matching modal -- that is, if you load dashboard#commit, show the modal
+// for that commit.
+if (window.location.hash.length <= 1) {
+  // Nothing to do
+} else if (window.location.hash.length == 41) {
+  new bootstrap.Modal(window.location.hash).show()
+// And if it's not a commit sha (which is always 40 chars + a hash symbol),
+// try matching against PR number...
+} else if (window.location.hash.length < 10) {
+  let pr = $(".modal p:first-child").filter(function() {
+    return $(this).text().indexOf("Merge pull request " + window.location.hash) >= 0;
+  })
+  new bootstrap.Modal("#" + pr.closest(".modal").attr('id')).show()
+// And if it's a CL, try and find a modal matching that CL number
+} else {
+  let cl = $(".modal[data-cl=" + window.location.hash.substring(1) + "]")
+  new bootstrap.Modal("#" + cl.attr('id')).show()
+}
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -96,3 +119,4 @@ $("#showfailures").change(function(e) {
   localStorage.setItem('showfailures', $(this).prop('checked'))
   $("body").toggleClass("showfailures")
 })
+
