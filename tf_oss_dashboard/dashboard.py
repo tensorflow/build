@@ -130,12 +130,6 @@ for category, items in yaml_config["categories"].items():
 for name, jobs in sorted(by_name.items(), key=lambda x: x[0]):
   by_group[category_map.get(name, "Everything Else")][name] = jobs
 
-with open("style.css", "r") as f:
-  css = f.read()
-
-with open("script.js", "r") as f:
-  js = f.read()
-
 with open("help.md", "r") as f:
   helptext = cmarkgfm.github_flavored_markdown_to_html(f.read())
 
@@ -146,4 +140,4 @@ env = Environment(
 template = env.get_template('template.html.pug')
 now = arrow.now().to('US/Pacific').format("ddd, MMM D [at] h:mma ZZZ")
 isonow = arrow.now().to('US/Pacific').isoformat() 
-print(template.render(records=by_name, by_group=by_group, by_commit=by_commit, css=css, js=js, helptext=helptext, now=now, isonow=isonow, yaml=yaml_config))
+print(template.render(records=by_name, by_group=by_group, by_commit=by_commit, helptext=helptext, now=now, isonow=isonow, yaml=yaml_config))
