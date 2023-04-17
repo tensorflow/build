@@ -88,7 +88,7 @@ html(lang="en")
 
 
     each commit, jobs in by_commit.items()
-      .modal.modal-lg.fade.commit-modal(tabindex='-1' aria-labelledby=commit id=commit aria-hidden='true')
+      .modal.modal-lg.fade.commit-modal(tabindex='-1' aria-labelledby=commit id=commit data-cl=jobs[0].get("cl", "none") aria-hidden='true')
         .modal-dialog.modal-dialog-centered
           .modal-content
             .modal-body

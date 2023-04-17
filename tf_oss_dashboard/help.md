@@ -3,7 +3,7 @@ GitHub statuses for the TensorFlow repository that are published to GitHub.
 The source for the dashboard is on [TensorFlow SIG Build](https://github.com/tensorflow/build/tree/master/tf_oss_dashboard).
 
 Many of these jobs use Google's internal continuous integration systems, and may
-not report their results publically. We're trying to make more of our important
+not report their results publicly. We're trying to make more of our important
 jobs visible to external developers, but security concerns make this a slow
 process.
 
@@ -19,6 +19,11 @@ Here are some tips and notes about the dashboard:
 - You can zoom out to fit more jobs on the page at once.
 - Click on a star to favorite that job. Favorites are displayed in the
   "Favorites" section at the top, in the same order as they are on the page.
+- You can copy the URL while a commit modal is open to share that commit.
+  - Add `#<commit-id>` to the dashboard URL to find a specific commit.
+  - Add `#<cl-number>` to the dashboard URL to find a specific CL (this is one
+    easy way to check if your CL has landed on GitHub, on Nightlies, etc).
+  - Add `#<pr-number>` to the dashboard URL to find a specific merged PR.
 - This page refreshes roughly every 5 minutes to check for updates.
 - Statuses:
   - SUCCESS - all good

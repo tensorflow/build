@@ -184,6 +184,10 @@ table td.text {
   }
 }
 
+.help-modal * {
+  line-height: 1.1em;
+}
+
 .help-modal .modal-body li {
   margin-bottom: 0.5em;
 }
