@@ -17,6 +17,6 @@ else
   mv new.json merged.json
 fi
 echo "::group::Dashboard Generator Output"
-cat merged.json | ./dashboard.py | tee dashboard.html
+cat merged.json | ./dashboard.py | tee index.html
 echo "::endgroup::"
 mv merged.json old.json
