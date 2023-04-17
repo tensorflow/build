@@ -99,6 +99,9 @@ def main(cloud_event: any):
     return
   logger.log_text("Build profile found", severity="INFO")
   r = re.search("/[0-9].*", file_name)
+  if not r:
+    logger.log_text("Job name is not valid", severity="WARNING)
+    return
   index = r.span()[0]
   job = file_name[0:index]
   try:
