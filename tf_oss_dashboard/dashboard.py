@@ -71,7 +71,7 @@ by_name = defaultdict(list)
 for record in records:
   by_name[record["name"]].append(record)
 
-nightlies = by_name["Nightly - Code Check - Linux"].reverse()
+nightlies = reversed(by_name["Nightly - Code Check - Linux"])
 for name, jobs in by_name.items():
   for job in jobs:
     for nightly in nightlies:
