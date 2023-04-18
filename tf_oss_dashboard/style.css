@@ -124,7 +124,7 @@ table td.text {
 .ERROR {
   background-color: #343434;
 }
-.ERROR h5, .ERROR .badge {
+.ERROR h5 {
   color: lightgray;
 }
 .failures-section {
