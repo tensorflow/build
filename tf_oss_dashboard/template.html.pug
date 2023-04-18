@@ -89,9 +89,15 @@ html(lang="en")
                 .badge.me-1.tf-fulldate= jobs[0]["date_human"]
                 a.badge.me-1.tf-hash(href=jobs[0]["commit_url"])= jobs[0]["short_commit"]
                 if "cl" in jobs[0]:
-                  a.badge.tf-cl(href=jobs[0]["cl_url"]) cl/#{jobs[0]["cl"]}
+                  a.badge.me-1.tf-cl(href=jobs[0]["cl_url"]) cl/#{jobs[0]["cl"]}
                 else
-                  span.badge.tf-nocl No CL Attached
+                  span.badge.me-1.tf-nocl No CL Attached
+                if "first_nightly_sha" not in jobs[0]:
+                  .badge.me-1.bg-primary No Nightly Yet
+                elif jobs[0]["first_nightly_sha"] == jobs[0]["commit_id"]:
+                  .badge.me-1.bg-primary This is Nightly
+                else
+                  a.badge.me-1.bg-primary(target="_blank" href=jobs[0]["first_nightly_sha"])= jobs[0]["first_nightly"]
               .d-flex.flex-column.text-wrap.container.lh-sm.pt-4
                 !{jobs[0]["commit_message"]}
               hr

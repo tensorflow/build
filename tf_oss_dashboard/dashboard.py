@@ -71,6 +71,16 @@ by_name = defaultdict(list)
 for record in records:
   by_name[record["name"]].append(record)
 
+nightlies = by_name["Nightly - Code Check - Linux"]
+for name, jobs in by_name.items():
+  for job in jobs:
+    for nightly in nightlies:
+      if job["date"] <= nightly["date"]:
+        job["first_nightly"] = "In Nightly Since: " + nightly["date_human"]
+        job["first_nightly_sha"] = nightly["commit_id"]
+        break
+
+
 for name, jobs in by_name.items():
   new_jobs = []
   new_jobs.append({"date_tag": jobs[0]["date"].strftime("%a %b %d")})
