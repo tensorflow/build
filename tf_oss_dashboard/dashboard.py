@@ -130,8 +130,8 @@ for name, jobs in by_name.items():
     if "commit" not in job:
       continue
     not_seen.discard(job["commit"])
-for commit in not_seen:
-  del by_commit[commit]
+#for commit in not_seen:
+#  del by_commit[commit]
 
 by_group = defaultdict(dict)
 for category, items in yaml_config["categories"].items():
