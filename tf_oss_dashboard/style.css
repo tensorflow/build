@@ -91,7 +91,7 @@ table td.text {
 .card {
   flex-basis: 20em;
   max-width: 33em;
-  background-image: linear-gradient(rgb(0 0 0/40%) 0 0);
+  background-image: linear-gradient(rgb(0 0 0/32%) 0 0);
 }
 
 .CARD_PENDING {
@@ -122,9 +122,9 @@ table td.text {
   background-color: orange;
 }
 .ERROR {
-  background-color: #303030;
+  background-color: #343434;
 }
-.ERROR h5 {
+.ERROR h5, .ERROR .badge {
   color: lightgray;
 }
 .failures-section {
@@ -160,7 +160,10 @@ table td.text {
   background-color: #333;
 }
 .NEUTRAL {
-  background-color: slategray;
+  background-color: gainsboro;
+}
+a.NEUTRAL {
+  color: #333;
 }
 
 @property --tfpercentage {
