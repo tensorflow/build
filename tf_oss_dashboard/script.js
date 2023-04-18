@@ -40,59 +40,59 @@ setInterval(humanizeTimestamp, 60500) // Every 1 min, update the timestamp
 humanizeTimestamp()
 
 //////////////////////////////////////////////////////////////////////////////
-// FAVORITES HANDLING
-//////////////////////////////////////////////////////////////////////////////
-function reorder() {
-  let favorites = JSON.parse(localStorage.getItem('favorites') || '{}')
-  $('.favorites-section .card-section').empty()
-  $('.favorite').each(function() {
-    let current = $(this).closest('.card').attr("data-name")
-    if (favorites[current]) {
-      $(this).addClass("favorited")
-      $(this).closest('.card').clone(true).appendTo('.favorites-section .card-section')
-    } else {
-      $(this).removeClass("favorited")
-    }
-  })
-  if ($('.favorites-section .card-section').children().length > 0) {
-    $('.favorites-section').removeClass("d-none")
-  } else {
-    $('.favorites-section').addClass("d-none")
-  }
-}
-
-$('.favorite').on('click', function() {
-  let current = $(this).closest('.card').attr("data-name")
-  let favorites = JSON.parse(localStorage.getItem('favorites') || '{}')
-  if (favorites[current] !== null) {
-    favorites[current] = !favorites[current]
-  } else {
-    favorites[current] = true
-  }
-  localStorage.setItem('favorites', JSON.stringify(favorites))
-  reorder()
-})
-
-let favorites = JSON.parse(localStorage.getItem('favorites') || '{}')
-$('.favorite').each(function() {
-  let current = $(this).closest('.card').attr("data-name")
-  if (favorites[current]) {
-    $(this).toggleClass("favorited")
-  }
-})
-reorder()
-
-//////////////////////////////////////////////////////////////////////////////
 // MODAL HANDLING
 // NOTE: These all go into jQuery's $(function() {}), which executes the content
 // only after the whole page has loaded and the DOM is ready. This allows us
 // to have all of the scripts in one file: since the script is loaded just
 // after the navbar is placed, the code above can modify the page for styles
-// and card placement before the rest of the modals (which take up most of the
+// and card placement before the cards and modals (which take up most of the
 // page size) are loaded. This means there's generally no flashing when the page
-// loads.
+// loads, except to reload the favorites, which seems unavoidable.
 //////////////////////////////////////////////////////////////////////////////
 $(function() {
+
+  //////////////////////////////////////////////////////////////////////////////
+  // FAVORITES HANDLING
+  //////////////////////////////////////////////////////////////////////////////
+  function reorder() {
+    let favorites = JSON.parse(localStorage.getItem('favorites') || '{}')
+    $('.favorites-section .card-section').empty()
+    $('.favorite').each(function() {
+      let current = $(this).closest('.card').attr("data-name")
+      if (favorites[current]) {
+        $(this).addClass("favorited")
+        $(this).closest('.card').clone(true).appendTo('.favorites-section .card-section')
+      } else {
+        $(this).removeClass("favorited")
+      }
+    })
+    if ($('.favorites-section .card-section').children().length > 0) {
+      $('.favorites-section').removeClass("d-none")
+    } else {
+      $('.favorites-section').addClass("d-none")
+    }
+  }
+
+  $('.favorite').on('click', function() {
+    let current = $(this).closest('.card').attr("data-name")
+    let favorites = JSON.parse(localStorage.getItem('favorites') || '{}')
+    if (favorites[current] !== null) {
+      favorites[current] = !favorites[current]
+    } else {
+      favorites[current] = true
+    }
+    localStorage.setItem('favorites', JSON.stringify(favorites))
+    reorder()
+  })
+
+  let favorites = JSON.parse(localStorage.getItem('favorites') || '{}')
+  $('.favorite').each(function() {
+    let current = $(this).closest('.card').attr("data-name")
+    if (favorites[current]) {
+      $(this).toggleClass("favorited")
+    }
+  })
+  reorder()
 
   // Highlight the clicked job when a modal appears (doesn't work when a commit
   // is linked directly).
