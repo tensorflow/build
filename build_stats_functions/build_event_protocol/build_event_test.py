@@ -34,16 +34,16 @@ def test_check_path():
   assert r3 is None
 
 def test_extract_events():
-  file_name = '//build/build_stats_functions/testing_files/example.json'
+  file_name = '../testing_files/example.json'
   r1 = build_event.extract_events(file_name)
   assert r1 is not None
-  file_no_test = '//build/build_stats_functions/testing_files//no_test_label.json'
+  file_no_test = '../testing_files//no_test_label.json'
   with pytest.raises(build_event.IncorrectFileFormatError):
     build_event.extract_events(file_no_test)
-  file_not_json = '//build/build_stats_functions/testing_files/not_json.json'
+  file_not_json = '../testing_files/not_json.json'
   with pytest.raises(build_event.IncorrectFileTypeError):
     build_event.extract_events(file_not_json)
-  empty_file = '//build/build_stats_functions/testing_files/empty.json'
+  empty_file = '../testing_files/empty.json'
   with pytest.raises(build_event.EmptyFileError):
     build_event.extract_events(empty_file)
 
