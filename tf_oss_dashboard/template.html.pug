@@ -31,6 +31,9 @@ html(lang="en")
           li.nav-item
             a.nav-link(href="https://github.com/tensorflow/build/issues/142") Suggestions
 
+    //- putting this here means there's usually no flash when the page reloads
+    script(src="script.js")
+
     .d-flex.flex-column.gap-1.m-1
       .favorites-section.d-none
         .fw-bold.ps-4
@@ -76,9 +79,6 @@ html(lang="en")
                       .badge.p-2.tf-dot.tf-date= test["date_tag"]
                     else
                       a.badge.p-2(title="#{test['date_human']} - #{test['commit_summary']}" class=test["state"] data-bs-toggle='modal' data-bs-target=test["commit_id"])
-
-    //- putting this here means there's usually no flash when the page reloads
-    script(src="script.js")
 
     each commit, jobs in by_commit.items()
       .modal.modal-lg.fade.commit-modal(tabindex='-1' aria-labelledby=commit id=commit data-cl=jobs[0].get("cl", "none") aria-hidden='true')
