@@ -91,7 +91,7 @@ table td.text {
 .card {
   flex-basis: 20em;
   max-width: 33em;
-  background-image: linear-gradient(rgb(0 0 0/35%) 0 0);
+  background-image: linear-gradient(rgb(0 0 0/40%) 0 0);
 }
 
 .CARD_PENDING {
@@ -116,7 +116,7 @@ table td.text {
 /* See https://www.w3schools.com/cssref/css_colors.php */
 /* See https://htmlcolorcodes.com/color-names/ */
 .FAILURE {
-  background-color: brown;
+  background-color: firebrick;
 }
 .TIMED_OUT {
   background-color: orange;
