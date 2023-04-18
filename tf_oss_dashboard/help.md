@@ -52,6 +52,10 @@ Here are some tips and notes about the dashboard:
 #### Surprises
 
 - Most nightly jobs run on the same commit, but some don't.
+- The date on nightly jobs is the date of the final commit that was included in
+  that job. The TF team sometimes refers to these in a different way: the
+  "Nightly for today" usually refers to the Nightly jobs whose final commits
+  were *yesterday*. So if today is Feb 11, you want the Nightly labeled Feb 10.
 - Jobs that run more than once on the same commit have different status
   dots but get doubled-up in the commit overview. This isn't very common.
 - Jobs which ran on a PR that was cleanly merged also appear on this dashboard.
