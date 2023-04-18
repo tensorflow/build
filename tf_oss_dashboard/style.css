@@ -195,6 +195,10 @@ a.NEUTRAL {
   margin-bottom: 0.5em;
 }
 
+.help-modal .modal-body li ul li:first-child {
+  margin-top: 0.5em;
+}
+
 .tf-table-highlight {
   background-color: #FF6F0099;
 }
