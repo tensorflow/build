@@ -21,7 +21,7 @@ html(lang="en")
             .tf-mytimer(title="The page auto-refreshes every 5 minutes (delayed if a modal is open) to check and see if the dashboard has been updated.")
         ul.navbar-nav
           .form-check.form-switch.m-auto
-            input.form-check-input(title="Toggle failure section" type="checkbox" role="switch" id="showfailures")
+            input.form-check-input(title="Toggle failure section" type="checkbox" role="switch" id="showbuildcop")
           .form-check.form-switch.m-auto
             input.form-check-input(title="Toggle colorblind view" type="checkbox" role="switch" id="colorblind")
           li.nav-item
@@ -44,7 +44,7 @@ html(lang="en")
           span.text-light Build Cop Failures
         .d-flex.flex-row.flex-wrap.gap-1.m-1.card-section.tf-is-listed
           each category, everythin in by_group.items()
-            if category in yaml["show_failures"]
+            if category in yaml["show_in_buildcop_if_failing"]
               each name, tests in everythin.items()
                 if tests[0]["card_class"].split(" ")[0] in ["FAILURE", "ERROR", "TIMEOUT"]
                   .card.flex-shrink-1.flex-grow-1(class=tests[0]["card_class"] data-name=name)

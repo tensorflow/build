@@ -124,19 +124,6 @@ for name, jobs in by_name.items():
 for name, jobs in by_commit.items():
   jobs.sort(key=lambda k: k["name"])
 
-# TODO(angerson) Evaluate whether this is needed. Deleting the unseen stuff
-# may not be important because GitHub gzips the result, which is really small
-# and not that big of a problem.
-# --
-# not_seen = set(by_commit.keys())
-# for name, jobs in by_name.items():
-#   for job in jobs:
-#     if "commit" not in job:
-#       continue
-#     not_seen.discard(job["commit"])
-# for commit in not_seen:
-#   del by_commit[commit]
-
 by_group = defaultdict(dict)
 for category, items in yaml_config["categories"].items():
   by_group[category] = {}

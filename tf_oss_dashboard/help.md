@@ -17,10 +17,6 @@ Here are some tips and notes about the dashboard:
   that contains all "important" jobs that the TF build cop team monitors.
 - Click the right toggle switch in the navbar to swap to colorblind mode.
 - You can zoom out to fit more jobs on the page at once.
-- Click on a star to favorite that job. Favorites are displayed in the
-  "Favorites" section at the top, in the same order as they are on the page.
-  You can't favorite anything from the Build Cop Failures section -- find it in
-  its regular place instead to favorite it.
 - You can copy the URL while a commit modal is open to share that commit.
   - Add `#<commit-id>` to the dashboard URL to find a specific commit.
   - Add `#<cl-number>` to the dashboard URL to find a specific CL (this is one
