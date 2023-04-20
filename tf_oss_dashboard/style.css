@@ -130,7 +130,7 @@ table td.text {
 .failures-section {
   display: none;
 }
-.showfailures .failures-section {
+.showbuildcop .failures-section {
   display: block;
 }
 

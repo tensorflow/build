@@ -12,31 +12,31 @@ categories:
     - Nightly - Libtensorflow - Ubuntu CPU
     - Nightly - Libtensorflow - Ubuntu GPU
     - Nightly - Libtensorflow - Windows
-    - Nightly - Py+CPP Test Suite - MacOS, Python 3.10
-    - Nightly - Py+CPP Test Suite - MacOS, Python 3.11
     - Nightly - Py+CPP Test Suite - MacOS, Python 3.8
     - Nightly - Py+CPP Test Suite - MacOS, Python 3.9
-    - Nightly - Py+CPP Test Suite - Ubuntu CPU, Python 3.10
-    - Nightly - Py+CPP Test Suite - Ubuntu CPU, Python 3.11
+    - Nightly - Py+CPP Test Suite - MacOS, Python 3.10
+    - Nightly - Py+CPP Test Suite - MacOS, Python 3.11
     - Nightly - Py+CPP Test Suite - Ubuntu CPU, Python 3.8
     - Nightly - Py+CPP Test Suite - Ubuntu CPU, Python 3.9
-    - Nightly - Py+CPP Test Suite - Ubuntu GPU, Python 3.10
-    - Nightly - Py+CPP Test Suite - Ubuntu GPU, Python 3.11
+    - Nightly - Py+CPP Test Suite - Ubuntu CPU, Python 3.10
+    - Nightly - Py+CPP Test Suite - Ubuntu CPU, Python 3.11
     - Nightly - Py+CPP Test Suite - Ubuntu GPU, Python 3.8
     - Nightly - Py+CPP Test Suite - Ubuntu GPU, Python 3.9
-    - Nightly - Py+CPP Test Suite - Windows, Python 3.10
+    - Nightly - Py+CPP Test Suite - Ubuntu GPU, Python 3.10
+    - Nightly - Py+CPP Test Suite - Ubuntu GPU, Python 3.11
     - Nightly - Py+CPP Test Suite - Windows, Python 3.8
     - Nightly - Py+CPP Test Suite - Windows, Python 3.9
+    - Nightly - Py+CPP Test Suite - Windows, Python 3.10
   TF Nightly Clang:
     - Nightly Clang - Libtensorflow - Ubuntu GPU
-    - Nightly Clang - Py+CPP Test Suite - Ubuntu CPU, Python 3.10
-    - Nightly Clang - Py+CPP Test Suite - Ubuntu CPU, Python 3.11
     - Nightly Clang - Py+CPP Test Suite - Ubuntu CPU, Python 3.8
     - Nightly Clang - Py+CPP Test Suite - Ubuntu CPU, Python 3.9
-    - Nightly Clang - Py+CPP Test Suite - Ubuntu GPU, Python 3.10
-    - Nightly Clang - Py+CPP Test Suite - Ubuntu GPU, Python 3.11
+    - Nightly Clang - Py+CPP Test Suite - Ubuntu CPU, Python 3.10
+    - Nightly Clang - Py+CPP Test Suite - Ubuntu CPU, Python 3.11
     - Nightly Clang - Py+CPP Test Suite - Ubuntu GPU, Python 3.8
     - Nightly Clang - Py+CPP Test Suite - Ubuntu GPU, Python 3.9
+    - Nightly Clang - Py+CPP Test Suite - Ubuntu GPU, Python 3.10
+    - Nightly Clang - Py+CPP Test Suite - Ubuntu GPU, Python 3.11
   Everything Else:
     - Default
   Ignorable:
@@ -44,6 +44,6 @@ categories:
     - "? / Scorecard"
     - import/copybara
     - kokoro
-show_failures:
+show_in_buildcop_if_failing:
   - TF Official Continuous
   - TF Official Nightly
