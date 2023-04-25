@@ -1,120 +1,130 @@
+/* =============================== */
+/* GENERAL */
+/* =============================== */
 body {
   background-color: #113;
 }
 
-h5 {
-  color: #161616;
+#tf-help-modal * {
+  line-height: 1.1em;
+}
+#tf-help-modal .modal-body li {
+  margin-bottom: 0.5em;
+}
+#tf-help-modal .modal-body li ul li:first-child {
+  margin-top: 0.5em;
 }
 
+
+/* =============================== */
+/* NAVBAR AND TOGGLE FEATURES */
+/* =============================== */
 .navbar {
   background-color: #002 !important;
 }
 
-.tf-dot {
-  line-height: 0;
-  color: rgba(0,0,0,0.7);
+/* Failures section starts off hidden, but appears if the body tag gets */
+/* the .tf-show-buildcop class from JS. */
+.tf-failures-section {
+  display: none;
+}
+.tf-show-buildcop .tf-failures-section {
+  display: block;
 }
 
-.tf-date {
-  background-color: rgba(255, 255, 255, 0.1);
+/* Cyclical auto-refresh timer */
+/* Works in tandem with javascript. The 300s CSS animation aligns with the */
+/* auto-refresh timer in script.js. */
+@property --timer-percentage {
+  initial-value: 100%;
+  inherits: false;
+  syntax: "<percentage>";
 }
 
-.tf-public {
-  background-color: rgba(255, 255, 255, 0.2);
+.tf-refresh-timer {
+  background: conic-gradient(white var(--timer-percentage), rgba(0,0,0,0) 0);
+  border-radius: 50%;
+  width: 0.75em;
+  height: 0.75em;
+  animation: tf-refresh-timer 300s 1 linear forwards;
+  display: inline-block;
 }
 
-.tf-internal {
-  background-color: rgba(0, 0, 0, 0.3);
-  color: rgba(255,255,255,0.7);
+@keyframes tf-refresh-timer {
+  to {
+    --timer-percentage: 0%;
+  }
 }
 
-.tf-fulldate {
-  background-color: darkgoldenrod;
+/* =============================== */
+/* JOB CARDS */
+/* Note that we're layering this config on top of bootstrap's card class */
+/* =============================== */
+.card h5 {
+  color: #161616;
 }
 
-table td {
-  line-height: 0;
+.card {
+  /* Pretty decent configuration to fit a good number of cards on the screen
+  /* at once while supporting zooming and wrapping and stuff. Could probably */
+  /* be better. */
+  flex-basis: 20em;
+  max-width: 33em;
+  /* Darkens the background color of all cards so that the dots are visible */
+  background-image: linear-gradient(rgb(0 0 0/32%) 0 0);
 }
 
+/* Needed to overwrite default bootstrap badge styling for empty badges */
 .card .badge:empty {
-  display:inline-block;
+  display: inline-block;
   cursor: pointer;
 }
 .card .badge:empty:hover {
   filter: brightness(150%);
 }
 
-table td.text {
-  vertical-align: bottom;
-  line-height: 1.2;
+/* Configure the little dots */
+.card .badge {
+  line-height: 0;
+  color: rgba(0,0,0,0.7);
 }
-
-.tf-cl {
-  background-color: green;
+.card .badge.tf-date {
+  background-color: rgba(255, 255, 255, 0.1);
 }
-
-.tf-nocl {
-  background-color: darkslategray;
-}
-
-.favorite {
+.card .badge.tf-public {
   background-color: rgba(255, 255, 255, 0.2);
-  cursor: pointer;
+}
+.card .badge.tf-internal {
+  background-color: rgba(0, 0, 0, 0.3);
+  color: rgba(255,255,255,0.7);
 }
 
-.favorited {
-  background-color: goldenrod;
-  color: white;
-  cursor: pointer;
-}
-
-.tf-hash {
-  background-color: darkolivegreen;
-}
-
-.tf-diff {
-  background-color: saddlebrown;
-}
-
-.tf-nodiff {
-  background-color: gray;
-}
-
-.tf-ispublic {
-  background-color: darkslategray;
-}
-
-.tf-isinternal {
-  background-color: gray;
-}
-
-.card {
-  flex-basis: 20em;
-  max-width: 33em;
-  background-image: linear-gradient(rgb(0 0 0/32%) 0 0);
-}
-
-.CARD_PENDING {
-  background-image:
-    repeating-linear-gradient(
-      -45deg,
-      #0006,
-      #0006 .5rem,
-      #0004 .5rem,
-      #0004 1rem
-    );
-  background-size: 200% 200%;
-  animation: barberpole 100s linear infinite;
-}
-
-@keyframes barberpole {
-  100% {
-    background-position: 100% 100%;
-  }
-}
+/* =============================== */
+/* RECORD STATUSES */
+/* Note that these apply to job cards, commit dots, and commit modals */
+/* These statuses match the status enums that the github API can return. */
+/* They are automatically populated as classes from the dashboard generator. */
 
 /* See https://www.w3schools.com/cssref/css_colors.php */
 /* See https://htmlcolorcodes.com/color-names/ */
+/* =============================== */
+.EXPECTED, .PENDING, .QUEUED, .IN_PROGRESS {
+  background-color: rebeccapurple;
+}
+.SUCCESS {
+  background-color: forestgreen;
+}
+/* If the body tag gets .tf-colorblind, then use different colors */
+.tf-colorblind .SUCCESS {
+  background-color: steelblue;
+}
+.CANCELLED {
+  background-color: #333;
+}
+.NEUTRAL {
+  background-color: gainsboro;
+  color: #333;
+}
 .FAILURE {
   background-color: firebrick;
 }
@@ -127,78 +137,43 @@ table td.text {
 .ERROR h5 {
   color: lightgray;
 }
-.failures-section {
-  display: none;
-}
-.showbuildcop .failures-section {
-  display: block;
-}
 
-.EXPECTED, .PENDING, .QUEUED, .IN_PROGRESS {
-  animation: pending 2s linear infinite;
-}
 
-@keyframes pending {
-  0% {
-    background-color: lightskyblue;
-  }
-  50% {
-    background-color: dodgerblue;
-  }
-  100% {
-    background-color: lightskyblue;
-  }
+/* =============================== */
+/* Commit modals */
+/* =============================== */
+.tf-commit-modal .tf-date {
+  background-color: darkgoldenrod;
 }
-
-.SUCCESS {
-  background-color: forestgreen;
+.tf-commit-modal .tf-cl {
+  background-color: green;
 }
-.colorblind .SUCCESS {
-  background-color: steelblue;
+.tf-commit-modal .tf-nocl {
+  background-color: darkslategray;
 }
-.CANCELLED {
-  background-color: #333;
+.tf-commit-modal .tf-hash {
+  background-color: darkolivegreen;
 }
-.NEUTRAL {
-  background-color: gainsboro;
+.tf-commit-modal .tf-diff {
+  background-color: saddlebrown;
 }
-a.NEUTRAL {
-  color: #333;
+.tf-commit-modal .tf-nodiff {
+  background-color: gray;
 }
-
-@property --tfpercentage {
-  initial-value: 100%;
-  inherits: false;
-  syntax: "<percentage>";
+.tf-commit-modal .tf-public {
+  background-color: darkslategray;
 }
-
-.tf-mytimer {
-  background: conic-gradient(white var(--tfpercentage), rgba(0,0,0,0) 0);
-  border-radius: 50%;
-  width: 0.75em;
-  height: 0.75em;
-  animation: mytimer 300s 1 linear forwards;
-  display: inline-block;
+.tf-commit-modal .tf-internal {
+  background-color: gray;
 }
-
-@keyframes mytimer {
-  to {
-    --tfpercentage: 0%;
-  }
-}
-
-.help-modal * {
-  line-height: 1.1em;
-}
-
-.help-modal .modal-body li {
-  margin-bottom: 0.5em;
-}
-
-.help-modal .modal-body li ul li:first-child {
-  margin-top: 0.5em;
-}
-
-.tf-table-highlight {
+.tf-commit-modal .tf-selected-row {
+  /* TensorFlow orange, partially transparent */
   background-color: #FF6F0099;
+}
+.tf-commit-modal table td {
+  line-height: 0;
+}
+.tf-commit-modal table td:last-child {
+  vertical-align: bottom;
+  line-height: 1.2;
 }

@@ -57,9 +57,8 @@ Here are some tips and notes about the dashboard:
 - Jobs which ran on a PR that was cleanly merged also appear on this dashboard.
   These commits do not show CLs for internal users. For example,
   `import/copybara` is a pull-request job whose status also appears on its
-  merge commit, if Copybara (the Google system that merges PRs or pulls them
-  into our internal code review system) decides to merge the PR directly. It's
-  if this actually applies all PRs, rather than just some.
+  merge commit, if Copybara decides to merge the PR directly. It's unknown
+  whether this happens to all PRs or not.
 - Kokoro, Google's CI system that powers most of these jobs, does not report
   "in progress" jobs, so there is no way to see how many Kokoro jobs are
   pending.

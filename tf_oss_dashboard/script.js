@@ -3,21 +3,21 @@
 // class on the HTML <body> tag that controls those features (colorblind or
 // show-the-build-cop-section support).
 if (localStorage.getItem('tf-colorblind') == 'true') {
-  $('#colorblind').prop('checked', true)
-  $('body').toggleClass('colorblind')
+  $('#tf-colorblind').prop('checked', true)
+  $('body').toggleClass('tf-colorblind')
 }
-if (localStorage.getItem('tf-showbuildcop') == 'true') {
-  $('#showbuildcop').prop('checked', true)
-  $('body').toggleClass('showbuildcop')
+if (localStorage.getItem('tf-show-buildcop') == 'true') {
+  $('#tf-show-buildcop').prop('checked', true)
+  $('body').toggleClass('tf-show-buildcop')
 }
 // Note: $(this) in jQuery yields the element upon which this event is called
-$('#colorblind').change(function () {
+$('#tf-colorblind').change(function () {
   localStorage.setItem('tf-colorblind', $(this).prop('checked'))
   $('body').toggleClass('colorblind')
 })
-$('#showbuildcop').change(function () {
-  localStorage.setItem('showbuildcop', $(this).prop('checked'))
-  $('body').toggleClass('showbuildcop')
+$('#tf-show-buildcop').change(function () {
+  localStorage.setItem('tf-show-buildcop', $(this).prop('checked'))
+  $('body').toggleClass('tf-show-buildcop')
 })
 
 // Update the human-readable timestamp once per minute and when the page loads
@@ -66,13 +66,13 @@ setInterval(function () { autoRefreshASAP = true }, 300000)
 $(function () {
   // Highlight the clicked job when a modal appears (doesn't work when a commit
   // is linked directly).
-  $('.commit-modal').on('show.bs.modal', function (e) {
+  $('.tf-commit-modal').on('show.bs.modal', function (e) {
     modalIsOpen = true
     const clicked_square = e.relatedTarget
     job_name = $(clicked_square).closest('.card').attr('data-name')
     $(this).find('td span').filter(function () {
       return $(this).text() === job_name
-    }).closest('tr').toggleClass('tf-table-highlight')
+    }).closest('tr').toggleClass('tf-selected-row')
     $(this).attr('data-tf-job-name', job_name)
 
     // Set the window location hash to this commit ID without corrupting history
@@ -80,12 +80,12 @@ $(function () {
   })
 
   // Undo the previous when the modal is hidden
-  $('.commit-modal').on('hidden.bs.modal', function (e) {
+  $('.tf-commit-modal').on('hidden.bs.modal', function (e) {
     modalIsOpen = false
     const job_name = $(this).attr('data-tf-job-name')
     $(this).find('td span').filter(function () {
       return $(this).text() === job_name
-    }).closest('tr').toggleClass('tf-table-highlight')
+    }).closest('tr').toggleClass('tf-selected-row')
     // Set the window location hash to nothing (remove the #...) without
     // corrupting history
     history.replaceState(null, null, ' ')

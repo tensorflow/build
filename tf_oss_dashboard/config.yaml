@@ -37,13 +37,17 @@ categories:
     - Nightly Clang - Py+CPP Test Suite - Ubuntu GPU, Python 3.9
     - Nightly Clang - Py+CPP Test Suite - Ubuntu GPU, Python 3.10
     - Nightly Clang - Py+CPP Test Suite - Ubuntu GPU, Python 3.11
-  Everything Else:
-    - Default
+  Everything Else: []
   Ignorable:
     - "? / cla/google"
     - "? / Scorecard"
     - import/copybara
     - kokoro
-show_in_buildcop_if_failing:
+buildcop:
   - TF Official Continuous
   - TF Official Nightly
+short_sha_length: 7
+default_category: Everything Else
+nightly_job_basis: Nightly - Code Check - Linux
+# A date tag is size 3, and a status dot is size 1
+maximum_card_size: 100
