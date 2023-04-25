@@ -79,10 +79,10 @@ body {
   display: inline-block;
   cursor: pointer;
   filter: brightness(100%);
-  transition: filter 2s linear;
+  transition: filter 1s linear;
 }
 .card .badge:empty:hover {
-  transition: filter 0.1s linear;
+  transition: filter 0s linear;
   filter: brightness(200%);
 }
 

@@ -23,6 +23,8 @@ Here are some tips and notes about the dashboard:
     easy way to check if your CL has landed on GitHub, on Nightlies, etc).
   - Add `#<pr-number>` to the dashboard URL to find a specific merged PR.
 - This page refreshes roughly every 5 minutes to check for updates.
+- After a modal closes, the last status you clicked on will light up for 30
+  seconds.
 - Statuses:
   - SUCCESS - all good
   - FAILURE - a test failed
