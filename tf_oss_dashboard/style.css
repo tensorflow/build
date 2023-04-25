@@ -78,9 +78,12 @@ body {
 .card .badge:empty {
   display: inline-block;
   cursor: pointer;
+  filter: brightness(100%);
+  transition: filter 2s linear;
 }
 .card .badge:empty:hover {
-  filter: brightness(150%);
+  transition: filter 0.1s linear;
+  filter: brightness(200%);
 }
 
 /* Configure the little dots */
@@ -97,6 +100,23 @@ body {
 .card .badge.tf-internal {
   background-color: rgba(0, 0, 0, 0.3);
   color: rgba(255,255,255,0.7);
+}
+.tf-dot-clicked {
+  animation: tf-dot-clicked 30s normal forwards;
+}
+@keyframes tf-dot-clicked {
+  10% {
+    filter: brightness(300%);
+    box-shadow: 0 0 40px 10px #fff6;
+  }
+  90% {
+    filter: brightness(300%);
+    box-shadow: 0 0 40px 10px #fff6;
+  }
+  100% {
+    filter: brightness(100%);
+    box-shadow: none;
+  }
 }
 
 /* =============================== */
