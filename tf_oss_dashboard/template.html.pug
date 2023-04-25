@@ -18,14 +18,14 @@ html(lang="en")
             a(title="Check the dashboard deployment GitHub Actions workflow" href="https://github.com/tensorflow/build/actions/workflows/dashboard.yml") #{now}
             |  
             a#tf-ago
-            .tf-mytimer(title="The page auto-refreshes every 5 minutes (delayed if a modal is open) to check and see if the dashboard has been updated.")
+            .tf-refresh-timer(title="The page auto-refreshes every 5 minutes (delayed if a modal is open) to check and see if the dashboard has been updated.")
         ul.navbar-nav
           .form-check.form-switch.m-auto
-            input.form-check-input(title="Toggle failure section" type="checkbox" role="switch" id="showbuildcop")
+            input.form-check-input(title="Toggle failure section" type="checkbox" role="switch" id="tf-show-buildcop")
           .form-check.form-switch.m-auto
-            input.form-check-input(title="Toggle colorblind view" type="checkbox" role="switch" id="colorblind")
+            input.form-check-input(title="Toggle colorblind view" type="checkbox" role="switch" id="tf-colorblind")
           li.nav-item
-            a.nav-link(role="button" data-bs-toggle="modal" data-bs-target="#help-modal") Help
+            a.nav-link(role="button" data-bs-toggle="modal" data-bs-target="#tf-help-modal") Help
           li.nav-item
             a.nav-link(href="https://github.com/tensorflow/tensorflow/commits/master") Commits
           li.nav-item
@@ -35,29 +35,25 @@ html(lang="en")
     script(src="script.js")
 
     .d-flex.flex-column.gap-1.m-1
-      .favorites-section.d-none
-        .fw-bold.ps-4
-          span.text-light Favorites
-        .d-flex.flex-row.flex-wrap.gap-1.m-1.card-section
       .failures-section
         .fw-bold.ps-4
           span.text-light Build Cop Failures
         .d-flex.flex-row.flex-wrap.gap-1.m-1.card-section.tf-is-listed
           each category, everythin in by_group.items()
-            if category in yaml["show_in_buildcop_if_failing"]
+            if category in yaml["buildcop"]
               each name, tests in everythin.items()
-                if tests[0]["card_class"].split(" ")[0] in ["FAILURE", "ERROR", "TIMEOUT"]
-                  .card.flex-shrink-1.flex-grow-1(class=tests[0]["card_class"] data-name=name)
+                if tests[0]["css_classes"] in ["FAILURE", "ERROR", "TIMEOUT"]
+                  .card.flex-shrink-1.flex-grow-1(class=tests[0]["css_classes"] data-name=name)
                     .card-body
                       h5.text-center.fw-bold= name
                       .d-flex.flex-row.flex-wrap.gap-1
                         if tests[0]["is_public"]
-                          .badge.p-2.tf-dot.tf-public(title="This job has publicly-visible results pages.") Public
+                          .badge.p-2.tf-public(title="This job has publicly-visible results pages.") Public
                         else
-                          .badge.p-2.tf-dot.tf-internal(title="This job only has private, Googler-restricted results pages.") Internal
+                          .badge.p-2.tf-internal(title="This job only has private, Googler-restricted results pages.") Internal
                         each test in tests
                           if "date_tag" in test:
-                            .badge.p-2.tf-dot.tf-date= test["date_tag"]
+                            .badge.p-2.tf-date= test["date_tag"]
                           else
                             a.badge.p-2(title="#{test['date_human']} - #{test['commit_summary']}" class=test["state"] data-bs-toggle='modal' data-bs-target=test["commit_id"])
       each category, everythin in by_group.items() 
@@ -65,28 +61,27 @@ html(lang="en")
           span.text-light= category
         .d-flex.flex-row.flex-wrap.gap-1.m-1.card-section.tf-is-listed
           each name, tests in everythin.items()
-            .card.flex-shrink-1.flex-grow-1(class=tests[0]["card_class"] data-name=name)
+            .card.flex-shrink-1.flex-grow-1(class=tests[0]["css_classes"] data-name=name)
               .card-body
                 h5.text-center.fw-bold= name
                 .d-flex.flex-row.flex-wrap.gap-1
-                  .badge.tf-dot.p-2.pe-1.ps-1.favorite ★
                   if tests[0]["is_public"]
-                    .badge.p-2.tf-dot.tf-public(title="This job has publicly-visible results pages.") Public
+                    .badge.p-2.tf-public(title="This job has publicly-visible results pages.") Public
                   else
-                    .badge.p-2.tf-dot.tf-internal(title="This job only has private, Googler-restricted results pages.") Internal
+                    .badge.p-2.tf-internal(title="This job only has private, Googler-restricted results pages.") Internal
                   each test in tests
                     if "date_tag" in test:
-                      .badge.p-2.tf-dot.tf-date= test["date_tag"]
+                      .badge.p-2.tf-date= test["date_tag"]
                     else
                       a.badge.p-2(title="#{test['date_human']} - #{test['commit_summary']}" class=test["state"] data-bs-toggle='modal' data-bs-target=test["commit_id"])
 
     each commit, jobs in by_commit.items()
-      .modal.modal-lg.fade.commit-modal(tabindex='-1' aria-labelledby=commit id=commit data-cl=jobs[0].get("cl", "none") aria-hidden='true')
+      .modal.modal-lg.fade.tf-commit-modal(tabindex='-1' aria-labelledby=commit id=commit data-cl=jobs[0].get("cl", "none") aria-hidden='true')
         .modal-dialog.modal-dialog-centered
           .modal-content
             .modal-body
               .d-flex.flex-row
-                .badge.me-1.tf-fulldate= jobs[0]["date_human"]
+                .badge.me-1.tf-date= jobs[0]["date_human"]
                 a.badge.me-1.tf-hash(href=jobs[0]["commit_url"])= jobs[0]["short_commit"]
                 if "cl" in jobs[0]:
                   a.badge.me-1.tf-cl(href=jobs[0]["cl_url"]) cl/#{jobs[0]["cl"]}
@@ -106,9 +101,9 @@ html(lang="en")
                   tr
                     td.text-center.py-1.px-1.m-0.align-middle
                       if job["is_public"]
-                        span.badge.tf-ispublic Public
+                        span.badge.tf-public Public
                       else
-                        span.badge.tf-isinternal Internal
+                        span.badge.tf-internal Internal
                     td.text-center.py-1.px-1.m-0.align-middle
                       if job["result_url"]
                         a.badge.tf-state(href=job["result_url"] class=job["state"])= job["state"]
@@ -119,9 +114,9 @@ html(lang="en")
                         a.badge.text-center.tf-diff(href=job["previous_diff_url"]) Diff
                       else
                         span.badge.tf-nodiff No Diff
-                    td.py-1.px-1.m-0.text
+                    td.py-1.px-1.m-0
                       span= job["name"]
-    .modal.help-modal.modal-lg.fade(tabindex='-1' aria-labelledby="help-modal" id="help-modal" aria-hidden='true')
+    .modal.modal-lg.fade(tabindex='-1' aria-labelledby="tf-help-modal" id="tf-help-modal" aria-hidden='true')
       .modal-dialog.modal-dialog-centered
         .modal-content
           .modal-header.fw-bold Dashboard Help
