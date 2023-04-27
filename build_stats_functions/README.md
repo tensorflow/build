@@ -10,7 +10,9 @@ Python Google Cloud Functions that use EventArc triggers to grab and then parse 
 
 ## Testing Locally:
 
-- Download any missing requirements from `requirements.txt`
+- Download any missing requirements from `requirements.txt` with `pip3 install`. Make sure Python 3.10 is currently installed before doing so.
+- To check the current downloaded versions of the requirements do `pip3 show` and the name of the requirement.
+- If an older version of a requirement is already installed locally do `pip3 uninstall` and then reinstall it in order to get the newest version.
 - Clone the `tensorflow/build` Github repository on your local device
 - `cd` into `build/build_stats_functions` and into each of the `build_profile` and `build_event_protocol` directories
 - In each directory do `pytest` and the name of the `_test.py` file to run the tests
