@@ -63,14 +63,19 @@ setInterval(function () { autoRefreshASAP = true }, 300000)
 // and card placement before the cards and modals (which take up most of the
 // page size) are loaded. This means there's generally no flashing when the page
 // loads.
-modalOrigin = null
+lastClicked = null
 $(function () {
   // Highlight the clicked job when a modal appears (doesn't work when a commit
   // is linked directly).
   $('.tf-commit-modal').on('show.bs.modal', function (e) {
     modalIsOpen = true
-    modalOrigin = $(e.relatedTarget)
-    job_name = $(modalOrigin).closest('.card').attr('data-name')
+    // Outline the last-clicked dot so you can see which you looked at last
+    if (lastClicked !== null) {
+      lastClicked.removeClass("tf-last-clicked")
+    }
+    lastClicked = $(e.relatedTarget)
+    lastClicked.addClass("tf-last-clicked")
+    job_name = $(lastClicked).closest('.card').attr('data-name')
     $(this).find('td span').filter(function () {
       return $(this).text() === job_name
     }).closest('tr').toggleClass('tf-selected-row')
@@ -83,14 +88,6 @@ $(function () {
   // Undo the previous when the modal is hidden
   $('.tf-commit-modal').on('hidden.bs.modal', function () {
     modalIsOpen = false
-    // Make the last-clicked dot glow for a little while
-    if (modalOrigin !== null && !modalOrigin.hasClass("tf-dot-clicked")) {
-      let mine = modalOrigin  // Make a shallow copy, modalOrigin may change
-      mine.addClass("tf-dot-clicked")
-      setTimeout(function() {
-        mine.removeClass("tf-dot-clicked")
-      }, 30005)
-    }
     const job_name = $(this).attr('data-tf-job-name')
     $(this).find('td span').filter(function () {
       return $(this).text() === job_name
@@ -116,4 +113,13 @@ $(function () {
     const modal_id = '#' + $(`.modal[data-cl=${cl}]`).attr('id')
     new bootstrap.Modal(modal_id).show()
   }
+
+  let revealed = null
+  $(".tf-reveal").click(function() {
+    if (revealed !== null) {
+      $(".badge[data-bs-target='" + revealed + "']").removeClass("tf-revealed")
+    }
+    revealed = $(this).attr("data-tf-reveal")
+    $(".badge[data-bs-target='" + revealed + "']").removeClass("tf-last-clicked").addClass("tf-revealed")
+  })
 })
