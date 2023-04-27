@@ -100,6 +100,8 @@ for commit in JSON_DATA["data"]["repository"]["defaultBranchRef"]["target"]["his
       clone["state"] = check["conclusion"] or check["status"]
       clone["result_url"] = check["url"]
       clone["is_public"] = True
+    if clone["name"] in YAML_CONFIG["hidden"]:
+      continue
     all_records.append(clone)
 
 # Order every record by date, DESCENDING, so that the MOST RECENT RECORDS

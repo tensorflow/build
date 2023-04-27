@@ -27,27 +27,30 @@ categories:
     - Nightly - Py+CPP Test Suite - Windows, Python 3.8
     - Nightly - Py+CPP Test Suite - Windows, Python 3.9
     - Nightly - Py+CPP Test Suite - Windows, Python 3.10
-  TF Nightly Clang:
-    - Nightly Clang - Libtensorflow - Ubuntu GPU
-    - Nightly Clang - Py+CPP Test Suite - Ubuntu CPU, Python 3.8
-    - Nightly Clang - Py+CPP Test Suite - Ubuntu CPU, Python 3.9
-    - Nightly Clang - Py+CPP Test Suite - Ubuntu CPU, Python 3.10
-    - Nightly Clang - Py+CPP Test Suite - Ubuntu CPU, Python 3.11
-    - Nightly Clang - Py+CPP Test Suite - Ubuntu GPU, Python 3.8
-    - Nightly Clang - Py+CPP Test Suite - Ubuntu GPU, Python 3.9
-    - Nightly Clang - Py+CPP Test Suite - Ubuntu GPU, Python 3.10
-    - Nightly Clang - Py+CPP Test Suite - Ubuntu GPU, Python 3.11
   Everything Else: []
   Ignorable:
     - "? / cla/google"
     - "? / Scorecard"
     - import/copybara
     - kokoro
+# Don't show these at all. E.g. for jobs that have been deleted
+hidden:
+  - Nightly Clang - Libtensorflow - Ubuntu GPU
+  - Nightly Clang - Py+CPP Test Suite - Ubuntu CPU, Python 3.8
+  - Nightly Clang - Py+CPP Test Suite - Ubuntu CPU, Python 3.9
+  - Nightly Clang - Py+CPP Test Suite - Ubuntu CPU, Python 3.10
+  - Nightly Clang - Py+CPP Test Suite - Ubuntu CPU, Python 3.11
+  - Nightly Clang - Py+CPP Test Suite - Ubuntu GPU, Python 3.8
+  - Nightly Clang - Py+CPP Test Suite - Ubuntu GPU, Python 3.9
+  - Nightly Clang - Py+CPP Test Suite - Ubuntu GPU, Python 3.10
+  - Nightly Clang - Py+CPP Test Suite - Ubuntu GPU, Python 3.11
 buildcop:
   - TF Official Continuous
   - TF Official Nightly
 short_sha_length: 7
 default_category: Everything Else
+# Use this to determine which commits are the Nightly ones when comparing
 nightly_job_basis: Nightly - Code Check - Linux
-# A date tag is size 3, and a status dot is size 1
+# Configures how large a job card can grow (that is, how many dots will appear
+# on it). A date tag is size 3, and a status dot is size 1.
 maximum_card_size: 100
