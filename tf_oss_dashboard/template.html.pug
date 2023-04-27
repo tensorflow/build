@@ -93,6 +93,7 @@ html(lang="en")
                   .badge.me-1.bg-primary This is Nightly
                 else
                   a.badge.me-1.bg-primary(target="_blank" href=jobs[0]["first_nightly_sha"])= jobs[0]["first_nightly"]
+                a.badge.me-1.tf-reveal(data-tf-reveal=jobs[0]["commit_id"] title="Highlight all instances of this commit on the page") Reveal All
               .d-flex.flex-column.text-wrap.container.lh-sm.pt-4
                 !{jobs[0]["commit_message"]}
               hr

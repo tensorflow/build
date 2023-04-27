@@ -101,22 +101,11 @@ body {
   background-color: rgba(0, 0, 0, 0.3);
   color: rgba(255,255,255,0.7);
 }
-.tf-dot-clicked {
-  animation: tf-dot-clicked 30s normal forwards;
+.card .badge.tf-revealed {
+  outline: 3px solid #fffA;
 }
-@keyframes tf-dot-clicked {
-  10% {
-    filter: brightness(300%);
-    box-shadow: 0 0 40px 10px #fff6;
-  }
-  90% {
-    filter: brightness(300%);
-    box-shadow: 0 0 40px 10px #fff6;
-  }
-  100% {
-    filter: brightness(100%);
-    box-shadow: none;
-  }
+.card .badge.tf-last-clicked {
+  outline: 3px solid #111A;
 }
 
 /* =============================== */
@@ -196,4 +185,8 @@ body {
 .tf-commit-modal table td:last-child {
   vertical-align: bottom;
   line-height: 1.2;
+}
+.tf-commit-modal .tf-reveal {
+  background-color: #25231d;
+  cursor: pointer;
 }

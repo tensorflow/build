@@ -23,8 +23,11 @@ Here are some tips and notes about the dashboard:
     easy way to check if your CL has landed on GitHub, on Nightlies, etc).
   - Add `#<pr-number>` to the dashboard URL to find a specific merged PR.
 - This page refreshes roughly every 5 minutes to check for updates.
-- After a modal closes, the last status you clicked on will light up for 30
-  seconds.
+- The last dot you clicked on is outlined in black. It goes away after refresh.
+- Click the "Reveal All" button in a modal to highlight every dot for that
+  commit. This is useful for e.g. seeing all commits after a nightly release.
+  You can clear the selection by refreshing the page. Only one commit is shown
+  at a time.
 - Statuses:
   - SUCCESS - all good
   - FAILURE - a test failed
