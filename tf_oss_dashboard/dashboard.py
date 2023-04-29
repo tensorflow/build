@@ -64,7 +64,7 @@ for commit in JSON_DATA["data"]["repository"]["defaultBranchRef"]["target"]["his
     record["cl"] = commit_has_cl.group(1)
     record["cl_url"] = f"http://cl/{record['cl']}"
     # Remove the last two lines, which is where the PiperOrigin-RevID trailer is
-    commit["message"] = commit["message"].rsplit("\n", 3)[0]
+    commit["message"] = commit["message"].rstrip().rsplit("\n", 2)[0]
   record["commit_message"] = cmarkgfm.github_flavored_markdown_to_html(commit["message"])
 
   record["date_human"] = record["date"].to('US/Pacific').format("ddd, MMM D [at] h:mma ZZZ")
