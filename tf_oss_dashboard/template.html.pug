@@ -80,42 +80,42 @@ html(lang="en")
         .modal-dialog.modal-dialog-centered
           .modal-content
             .modal-body
-              .d-flex.flex-row
-                .badge.me-1.tf-date= jobs[0]["date_human"]
-                a.badge.me-1.tf-hash(href=jobs[0]["commit_url"])= jobs[0]["short_commit"]
+              .d-flex.flex-row.flex-wrap.gap-1
+                .badge.tf-date= jobs[0]["date_human"]
+                a.badge.tf-hash(href=jobs[0]["commit_url"])= jobs[0]["short_commit"]
                 if "cl" in jobs[0]:
-                  a.badge.me-1.tf-cl(href=jobs[0]["cl_url"]) cl/#{jobs[0]["cl"]}
+                  a.badge.tf-cl(href=jobs[0]["cl_url"]) cl/#{jobs[0]["cl"]}
                 else
-                  span.badge.me-1.tf-nocl No CL Attached
+                  span.badge.tf-nocl No CL Attached
                 if "first_nightly_sha" not in jobs[0]:
-                  .badge.me-1.bg-primary No Nightly Yet
+                  .badge.bg-primary No Nightly Yet
                 elif jobs[0]["first_nightly_sha"] == jobs[0]["commit_id"]:
-                  .badge.me-1.bg-primary This is Nightly
+                  .badge.bg-primary This is Nightly
                 else
-                  a.badge.me-1.bg-primary(target="_blank" href=jobs[0]["first_nightly_sha"])= jobs[0]["first_nightly"]
-                a.badge.me-1.tf-reveal(data-tf-reveal=jobs[0]["commit_id"] title="Highlight all instances of this commit on the page") Reveal All
+                  a.badge.bg-primary(target="_blank" href=jobs[0]["first_nightly_sha"])= jobs[0]["first_nightly"]
+                a.badge.tf-reveal(data-tf-reveal=jobs[0]["commit_id"] title="Highlight all instances of this commit on the page") Reveal All
               .d-flex.flex-column.text-wrap.container.lh-sm.pt-4
                 !{jobs[0]["commit_message"]}
               hr
               table.table.table-sm.table-striped
                 each job in jobs
-                  tr
-                    td.text-center.py-1.px-1.m-0.align-middle
+                  tr.py-1.px-1.m-0.text-center.align-middle
+                    td
                       if job["is_public"]
                         span.badge.tf-public Public
                       else
                         span.badge.tf-internal Internal
-                    td.text-center.py-1.px-1.m-0.align-middle
+                    td
                       if job["result_url"]
                         a.badge.tf-state(href=job["result_url"] class=job["state"])= job["state"]
                       else:
-                        .badge.tf-state(title="This job has no result page. Strange!" class=job["state"])= job["state"]
-                    td.text-center.py-1.px-1.m-0.align-middle
+                        .badge.tf-state(title="This job has no result page!" class=job["state"])= job["state"]
+                    td
                       if "previous_diff_url" in job:
-                        a.badge.text-center.tf-diff(href=job["previous_diff_url"]) Diff
+                        a.badge.tf-diff(href=job["previous_diff_url"]) Diff
                       else
                         span.badge.tf-nodiff No Diff
-                    td.py-1.px-1.m-0
+                    td.text-start
                       span= job["name"]
     .modal.modal-lg.fade(tabindex='-1' aria-labelledby="tf-help-modal" id="tf-help-modal" aria-hidden='true')
       .modal-dialog.modal-dialog-centered
