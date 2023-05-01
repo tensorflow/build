@@ -106,7 +106,16 @@ $(function () {
   // just show that modal.
   } else if (window.location.hash.length == 41) {
     new bootstrap.Modal(window.location.hash).show()
-  // And if it's not a commit sha, it's a CL, so try and find a modal
+  // And if it's not a commit sha, it's either a PR or a CL, so try and find a
+  // modal matching that PR number if the length is short (CLs will always
+  // be nine or more characters)
+  } else if (window.location.hash.length < 10) {
+    let pr = $(".modal p:first-child").filter(function() {
+      return $(this).text().indexOf("Merge pull request " + window.location.hash) >= 0;
+    })
+    const modal_id = "#" + pr.closest(".modal").attr('id')
+    new bootstrap.Modal(modal_id).show()
+  // And if it's neither, it's a CL, so try and find a modal
   // matching that CL number
   } else {
     const cl = window.location.hash.substring(1)
