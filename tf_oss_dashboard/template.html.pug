@@ -122,3 +122,18 @@ html(lang="en")
         .modal-content
           .modal-header.fw-bold Dashboard Help
           .modal-body !{helptext}
+    .modal.modal-lg.fade(tabindex='-1' aria-labelledby="tf-no-cl-modal" id="tf-no-cl-modal" aria-hidden='true')
+      .modal-dialog.modal-dialog-centered
+        .modal-content
+          .modal-header.fw-bold CL Not Found
+          .modal-body Sorry, that CL isn't on the dashboard. If new, it may not be on GitHub yet, or may not have any CI results yet. If it's an older CL, it may be old enough that the data window no longer includes it. The dashboard only displays the last one thousand TF commits, which is usually about two weeks of commits.
+    .modal.modal-lg.fade(tabindex='-1' aria-labelledby="tf-no-commit-modal" id="tf-no-commit-modal" aria-hidden='true')
+      .modal-dialog.modal-dialog-centered
+        .modal-content
+          .modal-header.fw-bold Commit Not Found
+          .modal-body Sorry, that commit isn't on the dashboard. If new, it may not have any CI results yet. If it's an older commit, it may be old enough that the data window no longer includes it. The dashboard only displays the last one thousand TF commits, which is usually about two weeks of commits.
+    .modal.modal-lg.fade(tabindex='-1' aria-labelledby="tf-no-pr-modal" id="tf-no-pr-modal" aria-hidden='true')
+      .modal-dialog.modal-dialog-centered
+        .modal-content
+          .modal-header.fw-bold PR Not Found
+          .modal-body Sorry, that PR isn't on the dashboard. If new, it may not have any CI results yet, or may not be merged yet. If it's an older PR, it may be old enough that the data window no longer includes it. The dashboard only displays the last one thousand TF commits, which is usually about two weeks of commits.
