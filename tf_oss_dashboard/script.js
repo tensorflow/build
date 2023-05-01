@@ -105,7 +105,11 @@ $(function () {
   // If the hash is exactly 41 chars (hash sign # plus a 40-char sha hash),
   // just show that modal.
   } else if (window.location.hash.length == 41) {
-    new bootstrap.Modal(window.location.hash).show()
+    if ($(window.location.hash).length) {
+      new bootstrap.Modal(window.location.hash).show()
+    } else {
+      new bootstrap.Modal("#tf-no-commit-modal").show()
+    }
   // And if it's not a commit sha, it's either a PR or a CL, so try and find a
   // modal matching that PR number if the length is short (CLs will always
   // be nine or more characters)
@@ -114,13 +118,21 @@ $(function () {
       return $(this).text().indexOf("Merge pull request " + window.location.hash) >= 0;
     })
     const modal_id = "#" + pr.closest(".modal").attr('id')
-    new bootstrap.Modal(modal_id).show()
+    if ($(modal_id).length) {
+      new bootstrap.Modal(modal_id).show()
+    } else {
+      new bootstrap.Modal("#tf-no-pr-modal").show()
+    }
   // And if it's neither, it's a CL, so try and find a modal
   // matching that CL number
   } else {
     const cl = window.location.hash.substring(1).replace("cl/", "")
     const modal_id = '#' + $(`.modal[data-cl=${cl}]`).attr('id')
-    new bootstrap.Modal(modal_id).show()
+    if ($(modal_id).length) {
+      new bootstrap.Modal(modal_id).show()
+    } else {
+      new bootstrap.Modal("#tf-no-cl-modal").show()
+    }
   }
 
   let revealed = null
