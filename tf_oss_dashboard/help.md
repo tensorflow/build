@@ -20,7 +20,8 @@ Here are some tips and notes about the dashboard:
 - You can copy the URL while a commit modal is open to share that commit.
   - Add `#<commit-id>` to the dashboard URL to find a specific commit.
   - Add `#<cl-number>` to the dashboard URL to find a specific CL (this is one
-    easy way to check if your CL has landed on GitHub, on Nightlies, etc).
+    easy way to check if your CL has landed on GitHub, on Nightlies, etc). You
+    can include the "cl/" too if you're copy-pasting.
   - Add `#<pr-number>` to the dashboard URL to find a specific merged PR.
 - This page refreshes roughly every 5 minutes to check for updates.
 - The last dot you clicked on is outlined in black. It goes away after refresh.
