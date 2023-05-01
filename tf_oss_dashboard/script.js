@@ -118,7 +118,7 @@ $(function () {
   // And if it's neither, it's a CL, so try and find a modal
   // matching that CL number
   } else {
-    const cl = window.location.hash.substring(1)
+    const cl = window.location.hash.substring(1).replace("cl/", "")
     const modal_id = '#' + $(`.modal[data-cl=${cl}]`).attr('id')
     new bootstrap.Modal(modal_id).show()
   }
