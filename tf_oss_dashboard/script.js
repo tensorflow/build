@@ -100,10 +100,15 @@ $(function () {
   // When the page loads, if there is a commit ID in the location hash, show
   // the matching modal -- that is, if you load dashboard#commit, show the modal
   // for that commit. Also, show the matching modal if a CL is provided instead.
+  unescaped = decodeURIComponent(window.location.hash).replace("#", "").replace("+", "")
+  // Nothing to do if no hash in the URL
   if (window.location.hash.length <= 1) {
-    // Nothing to do if no hash in the URL
-  } else if ($("span[id='" + window.location.hash + "']".length)) {
-    // Nothing to do if we're able to find a span, which is a section header
+     // Empty!
+  // If the hash matches a span on the page, then scroll to it (a header)
+  } else if ($("span[id='" + unescaped + "']".length)) {
+    document.getElementById(unescaped).scrollIntoView({
+      behavior: 'smooth'
+    });
   // If the hash is exactly 41 chars (hash sign # plus a 40-char sha hash),
   // just show that modal.
   } else if (window.location.hash.length == 41) {
