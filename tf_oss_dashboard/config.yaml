@@ -54,3 +54,5 @@ nightly_job_basis: Nightly - Code Check - Linux
 # Configures how large a job card can grow (that is, how many dots will appear
 # on it). A date tag is size 3, and a status dot is size 1.
 maximum_card_size: 100
+# Set to Google Analytics "Measurement ID" to enable, or disable w/ "false"
+gtag: G-JTD613F3TX

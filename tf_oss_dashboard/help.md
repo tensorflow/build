@@ -2,6 +2,9 @@ This is TensorFlow's open-source build status dashboard. It tracks all
 GitHub statuses for the TensorFlow repository that are published to GitHub.
 The source for the dashboard is on [TensorFlow SIG Build](https://github.com/tensorflow/build/tree/master/tf_oss_dashboard).
 
+We use Google Analytics to help figure out how many people are using the
+dashboard, but we don't track anything else.
+
 Many of these jobs use Google's internal continuous integration systems, and may
 not report their results publicly. We're trying to make more of our important
 jobs visible to external developers, but security concerns make this a slow

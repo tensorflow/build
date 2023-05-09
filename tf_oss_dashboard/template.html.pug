@@ -9,6 +9,14 @@ html(lang="en")
     script(src="https://code.jquery.com/jquery-3.6.4.slim.min.js" integrity="sha256-a2yjHM4jnF9f54xUQakjZGaqYs/V1CYvWpoqZzC2/Bw=" crossorigin="anonymous")
     script(src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.3/moment.min.js" crossorigin="anonymous" referrerpolicy="no-referrer")
     link(rel="stylesheet" href="style.css")
+    //- Google Analytics. Conditionally enabled if "gtag" is set in config.yaml
+    if yaml["gtag"]:
+      script(async src="https://www.googletagmanager.com/gtag/js?id=#{yaml['gtag']}")
+      script.
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', "#{yaml['gtag']}");
   body
     nav.navbar.navbar-dark.navbar-expand-lg.py-0.mb-2
       .container-fluid.py-0
