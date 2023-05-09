@@ -106,10 +106,18 @@ $(function () {
      // Empty!
   // If the hash matches a Category on the page, then scroll to it once the
   // window gets focus (this handles e.g. if opened in the background)
-  } else if (document.getElementById(unescaped)) {
-    console.log("Scrolling to", unescaped)
-    document.getElementById(unescaped).scrollIntoView({
-      behavior: 'smooth'
+  } else if ($("span[id='" + unescaped + "']").length) {
+    let scrolled = false
+    console.log("ID detected")
+    $(window).focus(function() {
+      console.log("Running window focus handler")
+      if (!scrolled) {
+        console.log("Scrolling in the window focus handler")
+        document.getElementById(unescaped).scrollIntoView({
+          behavior: 'smooth'
+        });
+        scrolled = true
+      }
     });
   // If the hash is exactly 41 chars (hash sign # plus a 40-char sha hash),
   // just show that modal.
