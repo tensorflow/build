@@ -107,9 +107,7 @@ $(function () {
   // If the hash matches a Category on the page, then scroll to it
   } else if ($("span[id='" + unescaped + "']").length) {
     setTimeout(function () {
-      document.getElementById(unescaped).scrollIntoView({
-        block: "start",
-      });
+      document.getElementById(unescaped).scrollIntoView();
     }, 100);
   // If the hash is exactly 41 chars (hash sign # plus a 40-char sha hash),
   // just show that modal.
