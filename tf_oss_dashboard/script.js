@@ -97,15 +97,19 @@ $(function () {
     history.replaceState(null, null, ' ')
   })
 
-  // When the page loads, if there is a commit ID in the location hash, show
-  // the matching modal -- that is, if you load dashboard#commit, show the modal
-  // for that commit. Also, show the matching modal if a CL is provided instead.
+  // When the page loads, check the location hash, and...
+  // - If there's a matching category on the page, scroll to it
+  // - If there is a commit ID in the location hash, show that commit
+  // - If there is a CL in the location hash, show that CL's commit
+  // - If there is a PR in the location hash, show that PR's commit
   unescaped = decodeURIComponent(window.location.hash).replace("#", "").replace("+", "")
-  // Nothing to do if no hash in the URL
   if (window.location.hash.length <= 1) {
-     // Empty!
-  // If the hash matches a Category on the page, then scroll to it
+    // Nothing to do if no hash in the URL
+  // If the hash matches a Category on the page, then scroll to it.
   } else if (document.getElementById(unescaped)) {
+    // Google Chrome, at least, does not scroll if the tab is opened in the
+    // background, so we try and scroll a moment after the first time the tab
+    // gets focus, or immediately if it has focus already.
     if (document.hasFocus()) {
       document.getElementById(unescaped).scrollIntoView();
     } else {
