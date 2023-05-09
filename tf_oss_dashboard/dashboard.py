@@ -241,7 +241,7 @@ for category in YAML_CONFIG["badges"]:
   total = len(by_group[category])
   passed = sum([jobs[0]["passing"] for name, jobs in by_group[category].items()])
   failed = total - passed
-  if failing == 0:
+  if failed == 0:
     url = f"https://img.shields.io/static/v1?label={category}&message={passed} passed, 0 failed&color=success"
   else:
     url = f"https://img.shields.io/static/v1?label={category}&message={passed} passed, {failed} failed&color=critical"
