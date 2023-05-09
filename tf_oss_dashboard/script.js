@@ -106,15 +106,19 @@ $(function () {
      // Empty!
   // If the hash matches a Category on the page, then scroll to it
   } else if (document.getElementById(unescaped)) {
-    let scrolled = false
-    $(window).focus(function() {
-      if (!scrolled) {
-        setTimeout(function () {
-          document.getElementById(unescaped).scrollIntoView();
-        }, 100);
-        scrolled = true
-      }
-    })
+    if (document.hasFocus()) {
+      document.getElementById(unescaped).scrollIntoView();
+    } else {
+      let scrolled = false
+      $(window).focus(function() {
+        if (!scrolled) {
+          setTimeout(function () {
+            document.getElementById(unescaped).scrollIntoView();
+          }, 100);
+          scrolled = true
+        }
+      })
+    }
   // If the hash is exactly 41 chars (hash sign # plus a 40-char sha hash),
   // just show that modal.
   } else if (window.location.hash.length == 41) {
