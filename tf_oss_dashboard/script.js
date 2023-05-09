@@ -108,7 +108,6 @@ $(function () {
   } else if ($("span[id='" + unescaped + "']").length) {
     setTimeout(function () {
       document.getElementById(unescaped).scrollIntoView({
-        behavior: "smooth",
         block: "start",
       });
     }, 100);
