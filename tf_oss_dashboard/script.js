@@ -107,7 +107,7 @@ $(function () {
   // If the hash matches a Category on the page, then scroll to it
   } else if ($("span[id='" + unescaped + "']").length) {
     setTimeout(function () {
-      document.getElementById.scrollIntoView({
+      document.getElementById(unescaped).scrollIntoView({
         behavior: "smooth",
         block: "start",
       });
