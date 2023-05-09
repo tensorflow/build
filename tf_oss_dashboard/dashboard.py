@@ -12,6 +12,7 @@ import json
 import cmarkgfm
 import pypugjs
 import re
+import subprocess
 import sys
 import yaml
 
@@ -172,7 +173,8 @@ for job_name, original_records in job_names_to_records.items():
     if record["state"] not in ["PENDING", "IN_PROGRESS", "QUEUED", "EXPECTED"]:
       meta["css_classes"] = record["state"]
       break
-    
+  meta["passing"] = meta["css_classes"] not in ["FAILURE", "ERROR", "TIMEOUT"]
+
   records.append(meta)
 
   # Cut off the records tracked for a card so that the cards don't grow too
@@ -232,3 +234,14 @@ print(template.render(
     now=now,
     isonow=isonow,
     yaml=YAML_CONFIG))
+
+# Generate SVG badges. wget prints to stderr so it doesn't corrupt HTML output.
+# Maybe the print statement above should be using an output file instead.
+for category in YAML_CONFIG["badges"]:
+  total = len(by_group[category])
+  failing = total - sum([jobs[0]["passing"] for name, jobs in by_group[category].items()])
+  if failing == 0:
+    url = f"https://img.shields.io/static/v1?label={category}&message=passing&color=success"
+  else:
+    url = f"https://img.shields.io/static/v1?label={category}&message={failing}/{total} failing&color=critical"
+  subprocess.run(["wget", url, "-O", f"{category}.svg"])

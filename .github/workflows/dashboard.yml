@@ -62,7 +62,7 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v3
 
-      - name: Move dashboard around
+      - name: Move dashboard around, include all generated files
         run: cd tf_oss_dashboard; mkdir .site; mv -t .site *
 
       - name: Upload pages artifact
