@@ -56,3 +56,9 @@ nightly_job_basis: Nightly - Code Check - Linux
 maximum_card_size: 100
 # Set to Google Analytics "Measurement ID" to enable, or disable w/ "false"
 gtag: G-JTD613F3TX
+# Generate SVG badges, each available at Category Name.svg, e.g.
+# tensorflow.github.io/build/TF Official Continuous.svg
+# They then should link to the specific section with #Category Name (spaces ok)
+badges:
+  - TF Official Continuous
+  - TF Official Nightly
