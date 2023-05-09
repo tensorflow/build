@@ -102,6 +102,8 @@ $(function () {
   // for that commit. Also, show the matching modal if a CL is provided instead.
   if (window.location.hash.length <= 1) {
     // Nothing to do if no hash in the URL
+  } else if ($("span[id='" + window.location.hash + "']".length)) {
+    // Nothing to do if we're able to find a span, which is a section header
   // If the hash is exactly 41 chars (hash sign # plus a 40-char sha hash),
   // just show that modal.
   } else if (window.location.hash.length == 41) {
