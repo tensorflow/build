@@ -107,6 +107,7 @@ $(function () {
   // If the hash matches a Category on the page, then scroll to it once the
   // window gets focus (this handles e.g. if opened in the background)
   } else if (document.getElementById(unescaped)) {
+    console.log("Scrolling to", unescaped)
     document.getElementById(unescaped).scrollIntoView({
       behavior: 'smooth'
     });
