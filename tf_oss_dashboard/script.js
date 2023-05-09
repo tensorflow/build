@@ -109,7 +109,7 @@ $(function () {
     console.log("Trying to scroll!")
     setTimeout(function () {
       document.getElementById(unescaped).scrollIntoView();
-    }, 100);
+    }, 1000);
   // If the hash is exactly 41 chars (hash sign # plus a 40-char sha hash),
   // just show that modal.
   } else if (window.location.hash.length == 41) {
