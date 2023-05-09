@@ -239,9 +239,10 @@ print(template.render(
 # Maybe the print statement above should be using an output file instead.
 for category in YAML_CONFIG["badges"]:
   total = len(by_group[category])
-  failing = total - sum([jobs[0]["passing"] for name, jobs in by_group[category].items()])
+  passed = sum([jobs[0]["passing"] for name, jobs in by_group[category].items()])
+  failed = total - passed
   if failing == 0:
-    url = f"https://img.shields.io/static/v1?label={category}&message=passing&color=success"
+    url = f"https://img.shields.io/static/v1?label={category}&message={passed} passed, 0 failed&color=success"
   else:
-    url = f"https://img.shields.io/static/v1?label={category}&message={failing}/{total} failing&color=critical"
+    url = f"https://img.shields.io/static/v1?label={category}&message={passed} passed, {failed} failed&color=critical"
   subprocess.run(["wget", url, "-O", f"{category}.svg"])
