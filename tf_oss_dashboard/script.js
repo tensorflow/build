@@ -171,7 +171,7 @@ $(function () {
   if (location.hostname !== "" && !Cookies.get("tf-cookies-accepted")) {
     $(".tf-cookie-warning").removeClass("d-none")
   }
-  $(".tf-cookie-warning").click(function() {
+  $("#tf-accept-cookies").click(function() {
     $(this).addClass("d-none")
     Cookies.set("tf-cookies-accepted", true)
   })
