@@ -156,6 +156,8 @@ $(function () {
     }
   }
 
+  // When a user clicks a "Reveal All" button in a commit view, reveal all
+  // badges on all job cards that refer to that same commit.
   let revealed = null
   $(".tf-reveal").click(function() {
     if (revealed !== null) {
@@ -163,5 +165,14 @@ $(function () {
     }
     revealed = $(this).attr("data-tf-reveal")
     $(".badge[data-bs-target='" + revealed + "']").removeClass("tf-last-clicked").addClass("tf-revealed")
+  })
+
+  // Display warning banner if use of analytics cookies hasn't been acknowledged
+  if (location.hostname !== "" && !Cookies.get("tf-cookies-accepted")) {
+    $(".tf-cookie-warning").removeClass("d-none")
+  }
+  $(".tf-cookie-warning").click(function() {
+    $(this).addClass("d-none")
+    Cookies.set("tf-cookies-accepted", true)
   })
 })
