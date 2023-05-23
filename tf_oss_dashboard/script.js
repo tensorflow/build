@@ -3,7 +3,7 @@ if (location.hostname !== "" && !Cookies.get("tf-cookies-accepted")) {
   $(".tf-cookie-warning").removeClass("d-none")
 }
 $("#tf-accept-cookies").click(function() {
-  $(this).addClass("d-none")
+  $(".tf-cookie-warning").addClass("d-none")
   Cookies.set("tf-cookies-accepted", true)
 })
 
