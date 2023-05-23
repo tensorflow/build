@@ -1,3 +1,12 @@
+// Display warning banner if use of analytics cookies hasn't been acknowledged
+if (location.hostname !== "" && !Cookies.get("tf-cookies-accepted")) {
+  $(".tf-cookie-warning").removeClass("d-none")
+}
+$("#tf-accept-cookies").click(function() {
+  $(this).addClass("d-none")
+  Cookies.set("tf-cookies-accepted", true)
+})
+
 // Navbar toggle switches
 // When the page loads or when the navbar toggles are switched, toggle the
 // class on the HTML <body> tag that controls those features (colorblind or
@@ -19,6 +28,7 @@ $('#tf-show-buildcop').change(function () {
   localStorage.setItem('tf-show-buildcop', $(this).prop('checked'))
   $('body').toggleClass('tf-show-buildcop')
 })
+
 
 // Update the human-readable timestamp once per minute and when the page loads
 // Uses moment.js, which is included in the top of the HTML page
@@ -165,14 +175,5 @@ $(function () {
     }
     revealed = $(this).attr("data-tf-reveal")
     $(".badge[data-bs-target='" + revealed + "']").removeClass("tf-last-clicked").addClass("tf-revealed")
-  })
-
-  // Display warning banner if use of analytics cookies hasn't been acknowledged
-  if (location.hostname !== "" && !Cookies.get("tf-cookies-accepted")) {
-    $(".tf-cookie-warning").removeClass("d-none")
-  }
-  $("#tf-accept-cookies").click(function() {
-    $(this).addClass("d-none")
-    Cookies.set("tf-cookies-accepted", true)
   })
 })
