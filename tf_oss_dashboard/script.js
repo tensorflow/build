@@ -4,7 +4,7 @@ if (location.hostname !== "" && !Cookies.get("tf-cookies-accepted")) {
 }
 $("#tf-accept-cookies").click(function() {
   $(".tf-cookie-warning").addClass("d-none")
-  Cookies.set("tf-cookies-accepted", true)
+  Cookies.set("tf-cookies-accepted", true, { expires: 365 })
 })
 
 // Navbar toggle switches
