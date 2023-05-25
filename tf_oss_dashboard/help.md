@@ -77,5 +77,7 @@ Here are some tips and notes about the dashboard:
 #### Cookies
 
 We use Google Analytics to help figure out how many people are using the
-dashboard, and that's it. [Learn more about Cookies
-here](https://policies.google.com/technologies/cookies).
+dashboard, and that's it. If you disable cookies on this site, it will still
+function correctly. [Learn more about Cookies
+here](https://policies.google.com/technologies/cookies). [Learn more about
+Google's privacy policy here](https://policies.google.com/privacy?hl=en-US).
