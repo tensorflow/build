@@ -1,16 +1,61 @@
 categories:
-  TF DevInfra:
+  TF Official Continuous:
     - Py+CPP Test Suite - Ubuntu GPU, Python 3.9
     - Py+CPP Test Suite - Ubuntu CPU, Python 3.9
     - Code Check - Full
     - MacOS CPU Python3.9 Shard 1/2
     - MacOS CPU Python3.9 Shard 2/2
-  Everything Else:
-    - Default
+  TF Official Nightly:
+    - Nightly - Android
+    - Nightly - Code Check - Linux
+    - Nightly - Libtensorflow - MacOS
+    - Nightly - Libtensorflow - Ubuntu CPU
+    - Nightly - Libtensorflow - Ubuntu GPU
+    - Nightly - Libtensorflow - Windows
+    - Nightly - Py+CPP Test Suite - MacOS, Python 3.8
+    - Nightly - Py+CPP Test Suite - MacOS, Python 3.9
+    - Nightly - Py+CPP Test Suite - MacOS, Python 3.10
+    - Nightly - Py+CPP Test Suite - MacOS, Python 3.11
+    - Nightly - Py+CPP Test Suite - Ubuntu CPU, Python 3.8
+    - Nightly - Py+CPP Test Suite - Ubuntu CPU, Python 3.9
+    - Nightly - Py+CPP Test Suite - Ubuntu CPU, Python 3.10
+    - Nightly - Py+CPP Test Suite - Ubuntu CPU, Python 3.11
+    - Nightly - Py+CPP Test Suite - Ubuntu GPU, Python 3.8
+    - Nightly - Py+CPP Test Suite - Ubuntu GPU, Python 3.9
+    - Nightly - Py+CPP Test Suite - Ubuntu GPU, Python 3.10
+    - Nightly - Py+CPP Test Suite - Ubuntu GPU, Python 3.11
+  Everything Else: []
   Ignorable:
     - "? / cla/google"
     - "? / Scorecard"
     - import/copybara
     - kokoro
-docs:
-  "Code Check - Full": Runs static code checks, like for license accuracy.
+# Don't show these at all. E.g. for jobs that have been deleted
+hidden:
+  - Nightly Clang - Libtensorflow - Ubuntu GPU
+  - Nightly Clang - Py+CPP Test Suite - Ubuntu CPU, Python 3.8
+  - Nightly Clang - Py+CPP Test Suite - Ubuntu CPU, Python 3.9
+  - Nightly Clang - Py+CPP Test Suite - Ubuntu CPU, Python 3.10
+  - Nightly Clang - Py+CPP Test Suite - Ubuntu CPU, Python 3.11
+  - Nightly Clang - Py+CPP Test Suite - Ubuntu GPU, Python 3.8
+  - Nightly Clang - Py+CPP Test Suite - Ubuntu GPU, Python 3.9
+  - Nightly Clang - Py+CPP Test Suite - Ubuntu GPU, Python 3.10
+  - Nightly Clang - Py+CPP Test Suite - Ubuntu GPU, Python 3.11
+buildcop:
+  - TF Official Continuous
+  - TF Official Nightly
+short_sha_length: 7
+default_category: Everything Else
+# Use this to determine which commits are the Nightly ones when comparing
+nightly_job_basis: Nightly - Code Check - Linux
+# Configures how large a job card can grow (that is, how many dots will appear
+# on it). A date tag is size 3, and a status dot is size 1.
+maximum_card_size: 100
+# Set to Google Analytics "Measurement ID" to enable, or disable w/ "false"
+gtag: G-JTD613F3TX
+# Generate SVG badges, each available at Category Name.svg, e.g.
+# tensorflow.github.io/build/TF Official Continuous.svg
+# They then should link to the specific section with #Category Name (spaces ok)
+badges:
+  - TF Official Continuous
+  - TF Official Nightly

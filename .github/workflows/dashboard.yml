@@ -59,23 +59,16 @@ jobs:
           path: tf_oss_dashboard/old.json
           retention-days: 5
 
-      - name: "Upload dashboard"
-        uses: actions/upload-artifact@83fd05a356d7e2593de66fc9913b3002723633cb # v3.1.1
-        with:
-          name: Dashboard
-          path: tf_oss_dashboard/dashboard.html
-          retention-days: 5
-
       - name: Setup Pages
         uses: actions/configure-pages@v3
 
-      - name: Move dashboard around
-        run: cd tf_oss_dashboard; mkdir _site; mv dashboard.html ./_site/index.html; mv favicon.png ./_site/favicon.png
+      - name: Move dashboard around, include all generated files
+        run: cd tf_oss_dashboard; mkdir .site; mv -t .site *
 
-      - name: Upload artifact
+      - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: './tf_oss_dashboard/_site'
+          path: './tf_oss_dashboard/.site'
 
       - name: Deploy to GitHub Pages
         id: deployment
