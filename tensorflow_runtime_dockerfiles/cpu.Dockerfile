@@ -24,7 +24,7 @@ RUN /setup.sources.sh
 RUN /setup.packages.sh /cpu.packages.txt
 
 
-ARG PYTHON_VERSION=python3.8
+ARG PYTHON_VERSION=python3.10
 ARG TENSORFLOW_PACKAGE=tf-nightly
 COPY setup.python.sh /setup.python.sh
 COPY cpu.requirements.txt /cpu.requirements.txt
