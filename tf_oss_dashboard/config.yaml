@@ -12,15 +12,12 @@ categories:
     - Nightly - Libtensorflow - Ubuntu CPU
     - Nightly - Libtensorflow - Ubuntu GPU
     - Nightly - Libtensorflow - Windows
-    - Nightly - Py+CPP Test Suite - MacOS, Python 3.8
     - Nightly - Py+CPP Test Suite - MacOS, Python 3.9
     - Nightly - Py+CPP Test Suite - MacOS, Python 3.10
     - Nightly - Py+CPP Test Suite - MacOS, Python 3.11
-    - Nightly - Py+CPP Test Suite - Ubuntu CPU, Python 3.8
     - Nightly - Py+CPP Test Suite - Ubuntu CPU, Python 3.9
     - Nightly - Py+CPP Test Suite - Ubuntu CPU, Python 3.10
     - Nightly - Py+CPP Test Suite - Ubuntu CPU, Python 3.11
-    - Nightly - Py+CPP Test Suite - Ubuntu GPU, Python 3.8
     - Nightly - Py+CPP Test Suite - Ubuntu GPU, Python 3.9
     - Nightly - Py+CPP Test Suite - Ubuntu GPU, Python 3.10
     - Nightly - Py+CPP Test Suite - Ubuntu GPU, Python 3.11
@@ -41,6 +38,9 @@ hidden:
   - Nightly Clang - Py+CPP Test Suite - Ubuntu GPU, Python 3.9
   - Nightly Clang - Py+CPP Test Suite - Ubuntu GPU, Python 3.10
   - Nightly Clang - Py+CPP Test Suite - Ubuntu GPU, Python 3.11
+  - Nightly - Py+CPP Test Suite - MacOS, Python 3.8
+  - Nightly - Py+CPP Test Suite - Ubuntu CPU, Python 3.8
+  - Nightly - Py+CPP Test Suite - Ubuntu GPU, Python 3.8
 buildcop:
   - TF Official Continuous
   - TF Official Nightly
