@@ -13,7 +13,7 @@
 # limitations under the License.
 # ============================================================================
 
-FROM ubuntu:22.04 as base
+FROM ubuntu:20.04 as base
 ENV DEBIAN_FRONTEND=noninteractive
 ENV LANG C.UTF-8
 
