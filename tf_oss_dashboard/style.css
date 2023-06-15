@@ -1,3 +1,18 @@
+/* Copyright 2023 The TensorFlow Authors. All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+============================================================================
+*/
 /* =============================== */
 /* GENERAL */
 /* =============================== */
@@ -30,30 +45,6 @@ body {
 }
 .tf-show-buildcop .tf-failures-section {
   display: block;
-}
-
-/* Cyclical auto-refresh timer */
-/* Works in tandem with javascript. The 300s CSS animation aligns with the */
-/* auto-refresh timer in script.js. */
-@property --timer-percentage {
-  initial-value: 100%;
-  inherits: false;
-  syntax: "<percentage>";
-}
-
-.tf-refresh-timer {
-  background: conic-gradient(white var(--timer-percentage), rgba(0,0,0,0) 0);
-  border-radius: 50%;
-  width: 0.75em;
-  height: 0.75em;
-  animation: tf-refresh-timer 300s 1 linear forwards;
-  display: inline-block;
-}
-
-@keyframes tf-refresh-timer {
-  to {
-    --timer-percentage: 0%;
-  }
 }
 
 /* =============================== */

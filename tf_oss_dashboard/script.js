@@ -1,3 +1,18 @@
+// Copyright 2023 The TensorFlow Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// ============================================================================
+//
 // Display warning banner if use of analytics cookies hasn't been acknowledged
 if (location.hostname !== "" && !Cookies.get("tf-cookies-accepted")) {
   $(".tf-cookie-warning").removeClass("d-none")
@@ -115,6 +130,14 @@ $(function () {
   unescaped = decodeURIComponent(window.location.hash).replace("#", "").replace("+", "")
   if (window.location.hash.length <= 1) {
     // Nothing to do if no hash in the URL
+  // If the hash is exactly 41 chars (hash sign # plus a 40-char sha hash),
+  // just show that modal.
+  } else if (window.location.hash.length == 41) {
+    if ($(window.location.hash).length) {
+      new bootstrap.Modal(window.location.hash).show()
+    } else {
+      new bootstrap.Modal("#tf-no-commit-modal").show()
+    }
   // If the hash matches a Category on the page, then scroll to it.
   } else if (document.getElementById(unescaped)) {
     // Google Chrome, at least, does not scroll if the tab is opened in the
@@ -132,14 +155,6 @@ $(function () {
           scrolled = true
         }
       })
-    }
-  // If the hash is exactly 41 chars (hash sign # plus a 40-char sha hash),
-  // just show that modal.
-  } else if (window.location.hash.length == 41) {
-    if ($(window.location.hash).length) {
-      new bootstrap.Modal(window.location.hash).show()
-    } else {
-      new bootstrap.Modal("#tf-no-commit-modal").show()
     }
   // And if it's not a commit sha, it's either a PR or a CL, so try and find a
   // modal matching that PR number if the length is short (CLs will always

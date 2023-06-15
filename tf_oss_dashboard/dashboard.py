@@ -1,22 +1,40 @@
 #!/usr/bin/env python3
+#
+# Copyright 2023 The TensorFlow Authors. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ============================================================================
+#
 # Generates the TF OSS dashboard.
-# Usage: ./query_api.sh | ./dashboard.py | tee dashboard.html
-#        You can also do ./query_api.sh > data.json and then do:
-#        cat data.json | ./dashboard.py | tee dashboard.html
+# Usage: ./query_api.sh config.yaml | ./dashboard.py config.yaml | tee dashboard.html
+#        You can also do ./query_api.sh config.yaml > data.json and then do:
+#        cat data.json | ./dashboard.py config.yaml | tee dashboard.html
 
 from collections import defaultdict
 from jinja2 import Environment, FileSystemLoader
 import arrow
+import cmarkgfm
 import itertools
 import json
-import cmarkgfm
+import os.path
 import pypugjs
 import re
 import subprocess
 import sys
 import yaml
 
-with open('config.yaml', 'r') as f:
+OUTDIR=sys.argv[1]
+with open(sys.argv[1] + ".yaml", 'r') as f:
   YAML_CONFIG = yaml.safe_load(f)
 JSON_DATA = json.load(sys.stdin)
 
@@ -46,7 +64,7 @@ JSON_DATA = json.load(sys.stdin)
 # plus all its associated commit metadata.
 all_records = []
 CHANGELIST_REGEX = re.compile(r"PiperOrigin-RevId: (\d+)")
-for commit in JSON_DATA["data"]["repository"]["defaultBranchRef"]["target"]["history"]["nodes"]:
+for commit in JSON_DATA["data"]["repository"]["ref"]["target"]["history"]["nodes"]:
   # Ignore commits with no statusCheckRollup, which can happen sometimes --
   # maybe when a commit has no results at all yet for any jobs?
   if commit["statusCheckRollup"] is None:
@@ -82,10 +100,7 @@ for commit in JSON_DATA["data"]["repository"]["defaultBranchRef"]["target"]["his
         clone["type"] = "status check"
         clone["state"] = check["state"]
         clone["result_url"] = check["targetUrl"]
-        # Right now we treat any URL that does not have "http://fusion" in it
-        # as a public URL: this is a Google-only URL target that points to an
-        # internal review system that outsiders can't see.
-        clone["is_public"] = "http://fusion" not in check["targetUrl"]
+        clone["is_public"] = not check["targetUrl"].startswith(tuple(YAML_CONFIG["internal_startswith"]))
     # GitHub Actions jobs are all other kinds of jobs.
     else:
       # Some GitHub Actions results don't have a workflow group name, so we
@@ -101,6 +116,8 @@ for commit in JSON_DATA["data"]["repository"]["defaultBranchRef"]["target"]["his
       clone["state"] = check["conclusion"] or check["status"]
       clone["result_url"] = check["url"]
       clone["is_public"] = True
+    if not YAML_CONFIG["internal_shown"] and not clone["is_public"]:
+      continue
     if clone["name"] in YAML_CONFIG["hidden"]:
       continue
     all_records.append(clone)
@@ -122,20 +139,25 @@ for record in all_records:
 # included in the nightly jobs if it was committed before a nightly job's
 # commit. This way we can quickly tell when a commit was first tested in a TF
 # Nightly test.
-nightlies = job_names_to_records[YAML_CONFIG["nightly_job_basis"]]
-for name, records in job_names_to_records.items():
-  for record in records:
-    for nightly in nightlies:
-      if record["date"] <= nightly["date"]:
-        record["first_nightly"] = "In Nightly Since: " + nightly["date_human"]
-        record["first_nightly_sha"] = nightly["commit_id"]
+if YAML_CONFIG["nightly_job_basis"]:
+  nightlies = job_names_to_records[YAML_CONFIG["nightly_job_basis"]]
+  for name, records in job_names_to_records.items():
+    for record in records:
+      for nightly in nightlies:
+        if record["date"] <= nightly["date"]:
+          record["first_nightly"] = "In Nightly Since: " + nightly["date_human"]
+          record["first_nightly_sha"] = nightly["commit_id"]
 
 # Populate GitHub diff URLs for every record within a job. Since records are
 # grouped by job and sorted by date, we can easily compute the diff between
 # two job results by comparing the commit hash between two neighboring records.
 for job_name, original_records in job_names_to_records.items():
   for later, earlier in itertools.pairwise(original_records):
-    later["previous_diff_url"] = f"https://github.com/tensorflow/tensorflow/compare/{earlier['commit']}...{later['commit']}"
+    later["previous_diff_url"] = "https://github.com/{}/{}/compare/{}...{}".format(
+        YAML_CONFIG["repo_owner"],
+        YAML_CONFIG["repo_name"],
+        earlier['commit'],
+        later['commit'])
 
 # Now that all the individual record preprocessing is done, every record has
 # everything it needs to be displayed individually as part of a commit record.
@@ -219,7 +241,7 @@ for category, job_names in YAML_CONFIG["categories"].items():
 
 # Finally, pass everything to the template and render it
 with open("help.md", "r") as f:
-  helptext = cmarkgfm.github_flavored_markdown_to_html(f.read())
+  helptext = cmarkgfm.github_flavored_markdown_to_html(YAML_CONFIG["help"] + "\n\n" + f.read())
 env = Environment(
     loader=FileSystemLoader('.'),
     extensions=['pypugjs.ext.jinja.PyPugJSExtension']
@@ -227,13 +249,14 @@ env = Environment(
 template = env.get_template('template.html.pug')
 now = arrow.now().to('US/Pacific').format("ddd, MMM D [at] h:mma ZZZ")
 isonow = arrow.now().to('US/Pacific').isoformat() 
-print(template.render(
-    by_group=by_group,
-    by_commit=commits_to_records,
-    helptext=helptext,
-    now=now,
-    isonow=isonow,
-    yaml=YAML_CONFIG))
+with open(os.path.join(OUTDIR, "index.html"), "w") as f:
+  f.write(template.render(
+      by_group=by_group,
+      by_commit=commits_to_records,
+      helptext=helptext,
+      now=now,
+      isonow=isonow,
+      yaml=YAML_CONFIG))
 
 # Generate SVG badges. wget prints to stderr so it doesn't corrupt HTML output.
 # Maybe the print statement above should be using an output file instead.
@@ -245,4 +268,4 @@ for category in YAML_CONFIG["badges"]:
     url = f"https://img.shields.io/static/v1?label={category}&message={passed} passed, 0 failed&color=success"
   else:
     url = f"https://img.shields.io/static/v1?label={category}&message={passed} passed, {failed} failed&color=critical"
-  subprocess.run(["wget", url, "-O", f"{category}.svg"])
+  subprocess.run(["wget", url, "-O", f"{OUTDIR}/{category}.svg"])
