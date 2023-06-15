@@ -20,11 +20,68 @@ on:
   schedule:
     - cron: '*/5 * * * *'
   workflow_dispatch:
+    inputs:
+      gist:
+        required: false
+        description: (OPTIONAL) Overwrite "previous" data. Format is a hexadecimal gist ID. Gist should have files of JSON data, named same as matrix config / yaml files, extracted from e.g. merged.json. Can be empty or excluded.
+      reset:
+        required: false
+        description: (OPTIONAL) Reset all previous data. Type "yes reset" to enable.
 
 jobs:
-  dashboard:
+  dashboards:
     if: github.repository == 'tensorflow/build' # Don't do this in forks
     name: Generate Dashboard
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        config: [ tensorflow ]
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
+        with:
+          persist-credentials: false
+
+      - name: Download previous workflow's data
+        if: "${{ github.event.inputs.reset != 'yes reset' }}"
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          path: tf_oss_dashboard
+          workflow_conclusion: success
+          if_no_artifact_found: warn
+
+      - name: Overwrite data, if provided
+        if: "${{ github.event.inputs.gist != '' }}"
+        run: |
+          git clone "https://gist.github.com/${{github.event.inputs.gist}}.git" gist
+          cd gist
+          if [[ -s ${{matrix.config}} ]]; then
+            mv ${{matrix.config}} ../tf_oss_dashboard/${{matrix.config}}/old.json
+          fi
+
+      - name: Run Script
+        id: run-script
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        run: ./merge_and_generate.sh ${{matrix.config}}
+        working-directory: tf_oss_dashboard
+
+      - name: Upload ongoing data and dashboard output
+        uses: actions/upload-artifact@83fd05a356d7e2593de66fc9913b3002723633cb # v3.1.1
+        with:
+          name: ${{matrix.config}}
+          path: tf_oss_dashboard/${{matrix.config}}
+          retention-days: 5
+
+  assemble:
+    if: github.repository == 'tensorflow/build' # Don't do this in forks
+    name: Assemble Dashboards
+    needs: dashboards
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -40,35 +97,24 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Download artifact
-        id: download-artifact
-        uses: dawidd6/action-download-artifact@v2
+      # Get all artifacts into current dir
+      - uses: actions/download-artifact@v3
         with:
-          workflow_conclusion: success
+          path: artifacts
 
-      - name: Run Script
-        id: run-script
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-        run: cd tf_oss_dashboard; ./script.sh
-
-      - name: "Upload merged data"
-        uses: actions/upload-artifact@83fd05a356d7e2593de66fc9913b3002723633cb # v3.1.1
-        with:
-          name: Merged Data
-          path: tf_oss_dashboard/old.json
-          retention-days: 5
+      - name: Move dashboard around, include all generated files
+        run: |
+          mv artifacts/tensorflow .site
+          mv -t .site tf_oss_dashboard/*
+          mv -t .site artifacts/*
 
       - name: Setup Pages
         uses: actions/configure-pages@v3
 
-      - name: Move dashboard around, include all generated files
-        run: cd tf_oss_dashboard; mkdir .site; mv -t .site *
-
       - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: './tf_oss_dashboard/.site'
+          path: '.site'
 
       - name: Deploy to GitHub Pages
         id: deployment

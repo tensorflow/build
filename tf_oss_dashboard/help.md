@@ -1,16 +1,10 @@
-This is TensorFlow's open-source build status dashboard. It tracks all
-GitHub statuses for the TensorFlow repository that are published to GitHub.
-The source for the dashboard is on [TensorFlow SIG Build](https://github.com/tensorflow/build/tree/master/tf_oss_dashboard).
-
-Many of these jobs use Google's internal continuous integration systems, and may
-not report their results publicly. We're trying to make more of our important
-jobs visible to external developers, but security concerns make this a slow
-process.
-
-Here are some tips and notes about the dashboard:
+The source for this dashboard is on [TensorFlow SIG
+Build](https://github.com/tensorflow/build/tree/master/tf_oss_dashboard). Here
+are some tips and notes about the dashboard:
 
 #### Basic Usage
 
+- This page refreshes roughly every 5 minutes to check for updates.
 - Click on a status dot to see all statuses for that commit. The job you
   clicked is highlighted.
 - Click the left toggle switch in the navbar to show a section at the top
@@ -23,7 +17,6 @@ Here are some tips and notes about the dashboard:
     easy way to check if your CL has landed on GitHub, on Nightlies, etc). You
     can include the "cl/" too if you're copy-pasting.
   - Add `#<pr-number>` to the dashboard URL to find a specific merged PR.
-- This page refreshes roughly every 5 minutes to check for updates.
 - The last dot you clicked on is outlined in black. It goes away after refresh.
 - Click the "Reveal All" button in a modal to highlight every dot for that
   commit. This is useful for e.g. seeing all commits after a nightly release.
@@ -50,21 +43,16 @@ Here are some tips and notes about the dashboard:
 - Each "diff" badge links to the diff between this commit and the previous
   commit for that job. GitHub occasionally reports that there is actually no
   diff. Take a screenshot and let us know if that happens.
-
-#### Surprises
-
+  
+#### Miscellaneous
+  
+- Jobs that run more than once on the same commit have different status
+  dots but get doubled-up in the commit overview. This isn't very common.
 - Most nightly jobs run on the same commit, but some don't.
 - The date on nightly jobs is the date of the final commit that was included in
   that job. The TF team sometimes refers to these in a different way: the
   "Nightly for today" usually refers to the Nightly jobs whose final commits
   were *yesterday*. So if today is Feb 11, you want the Nightly labeled Feb 10.
-- Jobs that run more than once on the same commit have different status
-  dots but get doubled-up in the commit overview. This isn't very common.
-- Jobs which ran on a PR that was cleanly merged also appear on this dashboard.
-  These commits do not show CLs for internal users. For example,
-  `import/copybara` is a pull-request job whose status also appears on its
-  merge commit, if Copybara decides to merge the PR directly. It's unknown
-  whether this happens to all PRs or not.
 - Kokoro, Google's CI system that powers most of these jobs, does not report
   "in progress" jobs, so there is no way to see how many Kokoro jobs are
   pending.

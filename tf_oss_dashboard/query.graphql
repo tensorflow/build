@@ -1,6 +1,6 @@
-{
-  repository(name: "tensorflow", owner: "tensorflow") {
-    defaultBranchRef {
+query($name:String!, $owner:String!, $branch:String!) {
+  repository(name: $name, owner: $owner) {
+    ref(qualifiedName: $branch) {
       target {
         ... on Commit {
           history(first: 100) {
