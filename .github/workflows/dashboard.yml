@@ -107,7 +107,7 @@ jobs:
         run: |
           mv artifacts/tensorflow .site
           mv -t .site tf_oss_dashboard/*
-          mv -t .site artifacts/*
+          rmdir artifacts || mv -t .site artifacts/*
 
       - name: Setup Pages
         uses: actions/configure-pages@v3
