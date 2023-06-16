@@ -58,6 +58,7 @@ jobs:
       - name: Overwrite data, if provided
         if: "${{ github.event.inputs.gist != '' }}"
         run: |
+          mkdir -p ${{matrix.config}}
           git clone "https://gist.github.com/${{github.event.inputs.gist}}.git" gist
           cd gist
           if [[ -s ${{matrix.config}} ]]; then
