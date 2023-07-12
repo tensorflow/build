@@ -1,0 +1,52 @@
+# Copyright 2023 The TensorFlow Authors. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ============================================================================
+title: JAX GitHub CI Status
+repo_owner: google
+repo_name: jax
+repo_branch: main
+help: >-
+  This is Jax's open-source build status dashboard. It tracks all GitHub
+  Actions statuses for the Jax repository.
+categories:
+  JAX CI: []
+  Ignorable:
+    - '? / cla/google'
+# Don't show these at all. E.g. for jobs that have been deleted
+hidden: []
+buildcop: []
+short_sha_length: 7
+default_category: JAX CI
+# Use this to determine which commits are the Nightly ones when comparing.
+# Set it to false to disable all "Nightly" features (i.e. the "in nightly..."
+# or "this is nightly" badge in a commit)
+nightly_job_basis: false
+# Configures how large a job card can grow (that is, how many dots will appear
+# on it). A date tag is size 3, and a status dot is size 1.
+maximum_card_size: 100
+# How many commits to keep in the history
+history_size: 1000
+# Set to Google Analytics "Measurement ID" to enable, or disable w/ "false"
+gtag: G-JTD613F3TX
+# Generate SVG badges, each available at Category Name.svg, e.g.
+# tensorflow.github.io/build/TF Official Continuous.svg
+# They then should link to the specific section with #Category Name (spaces ok)
+badges:
+  - JAX CI
+# Internal jobs are those whose result URL starts with...
+internal_startswith:
+  - "http://fusion"
+  - "http://cl/"
+# Show internal-only jobs. If false, hides the public/private indicators
+internal_shown: false
