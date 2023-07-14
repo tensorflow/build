@@ -13,7 +13,7 @@
 # limitations under the License.
 # ============================================================================
 
-FROM nvidia/cuda:11.8.0-base-ubuntu20.04 as base
+FROM nvidia/cuda:11.8.0-base-ubuntu22.04 as base
 ENV DEBIAN_FRONTEND=noninteractive
 ENV LANG C.UTF-8
 
@@ -23,7 +23,7 @@ COPY gpu.packages.txt /gpu.packages.txt
 RUN /setup.sources.sh
 RUN /setup.packages.sh /gpu.packages.txt
 
-ARG PYTHON_VERSION=python3.8
+ARG PYTHON_VERSION=python3.11
 ARG TENSORFLOW_PACKAGE=tf-nightly
 COPY setup.python.sh /setup.python.sh
 COPY gpu.requirements.txt /gpu.requirements.txt
