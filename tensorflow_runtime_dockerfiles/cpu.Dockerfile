@@ -13,7 +13,7 @@
 # limitations under the License.
 # ============================================================================
 
-FROM ubuntu:20.04 as base
+FROM ubuntu:22.04 as base
 ENV DEBIAN_FRONTEND=noninteractive
 ENV LANG C.UTF-8
 
@@ -24,7 +24,7 @@ RUN /setup.sources.sh
 RUN /setup.packages.sh /cpu.packages.txt
 
 
-ARG PYTHON_VERSION=python3.8
+ARG PYTHON_VERSION=python3.11
 ARG TENSORFLOW_PACKAGE=tf-nightly
 COPY setup.python.sh /setup.python.sh
 COPY cpu.requirements.txt /cpu.requirements.txt

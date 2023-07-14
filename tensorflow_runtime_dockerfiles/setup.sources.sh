@@ -25,15 +25,9 @@ export DEBIAN_FRONTEND=noninteractive
 
 # Set up shared custom sources
 apt-get update
-apt-get install -y gnupg ca-certificates
+apt-get install -y gnupg ca-certificates wget
 
-# Explicitly request Nvidia repo keys
-# See: https://forums.developer.nvidia.com/t/invalid-public-key-for-cuda-apt-repository/212901/11
-apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
-apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64/7fa2af80.pub
-
-# Set up custom sources
-cat >/etc/apt/sources.list.d/custom.list <<SOURCES
-# Nvidia CUDA packages: 18.04 has more available than 20.04, and we use those
-deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64 /
-SOURCES
+# Install Nvidia repo keys
+# See: https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html#network-repo-installation-for-ubuntu
+wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb
+dpkg -i cuda-keyring_1.1-1_all.deb
