@@ -1,13 +1,11 @@
 name: Manual trigger
 on:
-  workflow_dispatch:
-    inputs:
-      name:
-        description: "Who to greet"
-        default: "World"
+  push:
+    paths:
+      - '.github/workflows/mac-testing.yml'
 jobs:
     hello:
         runs-on: [self-hosted, linux, ARM64]
         steps:
         - name: Hello Step
-          run: echo "Hello ${{ github.event.inputs.name }}"
+          run: echo "Hello world"
