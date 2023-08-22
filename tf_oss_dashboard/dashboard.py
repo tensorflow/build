@@ -100,7 +100,7 @@ for commit in JSON_DATA["data"]["repository"]["ref"]["target"]["history"]["nodes
         clone["type"] = "status check"
         clone["state"] = check["state"]
         clone["result_url"] = check["targetUrl"]
-        clone["is_public"] = not check["targetUrl"].startswith(tuple(YAML_CONFIG["internal_startswith"]))
+        clone["is_public"] = not (check["targetUrl"] or "").startswith(tuple(YAML_CONFIG["internal_startswith"]))
     # GitHub Actions jobs are all other kinds of jobs.
     else:
       # Some GitHub Actions results don't have a workflow group name, so we
