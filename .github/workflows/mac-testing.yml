@@ -8,4 +8,4 @@ jobs:
         runs-on: [self-hosted, macOS, ARM64]
         steps:
         - name: Hello Step
-          run: echo "Hello world!!!"
+          run: echo "Hello world!!"
