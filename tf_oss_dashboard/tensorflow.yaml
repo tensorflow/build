@@ -26,36 +26,40 @@ help: >-
   a slow process.
 categories:
   TF Official Continuous:
-    - Py+CPP Test Suite - Ubuntu GPU, Python 3.9
-    - Py+CPP Test Suite - Ubuntu CPU, Python 3.9
-    - Code Check - Full
-    - MacOS CPU Python3.9 Shard 1/2
-    - MacOS CPU Python3.9 Shard 2/2
+    - Continuous - Linux x86 CPU - Py+CPP Test Suite (maximum Python version)
+    - Continuous - Linux x86 CPU - Py+CPP Test Suite (minimum Python version)
+    - Continuous - Linux x86 CUDA - Py+CPP Test Suite (maximum Python version)
+    - Continuous - Linux x86 CUDA - Py+CPP Test Suite (minimum Python version)
+    - Continuous - MacOS x86 - Py+CPP Test Suite (maximum Python version)
+    - Continuous - MacOS x86 - Py+CPP Test Suite (minimum Python version)
   TF Official Nightly:
+    - Nightly - Code Check (Full)
+    - Nightly - Linux Arm64 CPU - Python 3.9 Wheel
+    - Nightly - Linux Arm64 CPU - Python 3.10 Wheel
+    - Nightly - Linux Arm64 CPU - Python 3.11 Wheel
+    - Nightly - Linux Arm64 CPU - Python 3.12 Wheel
+    - Nightly - Linux x86 CPU - Libtensorflow
+    - Nightly - Linux x86 CPU - Python 3.9 Wheel
+    - Nightly - Linux x86 CPU - Python 3.10 Wheel
+    - Nightly - Linux x86 CPU - Python 3.11 Wheel
+    - Nightly - Linux x86 CPU - Python 3.12 Wheel
+    - Nightly - Linux x86 CUDA - Libtensorflow
+    - Nightly - Linux x86 CUDA - Python 3.9 Wheel
+    - Nightly - Linux x86 CUDA - Python 3.10 Wheel
+    - Nightly - Linux x86 CUDA - Python 3.11 Wheel
+    - Nightly - Linux x86 CUDA - Python 3.12 Wheel
+    - Nightly - Linux x86 TPU - Python 3.9 Wheel
+    - Nightly - Linux x86 TPU - Python 3.10 Wheel
+    - Nightly - Linux x86 TPU - Python 3.11 Wheel
+    - Nightly - Linux x86 TPU - Python 3.12 Wheel
     - Nightly - Android
-    - Nightly - Code Check - Linux
-    - Nightly - Libtensorflow - MacOS
-    - Nightly - Libtensorflow - Ubuntu CPU
-    - Nightly - Libtensorflow - Ubuntu GPU
-    - Nightly - Libtensorflow - Windows
-    - Nightly - Py+CPP Test Suite - MacOS, Python 3.8
-    - Nightly - Py+CPP Test Suite - MacOS, Python 3.9
-    - Nightly - Py+CPP Test Suite - MacOS, Python 3.10
-    - Nightly - Py+CPP Test Suite - MacOS, Python 3.11
-    - Nightly - Py+CPP Test Suite - Ubuntu CPU, Python 3.8
-    - Nightly - Py+CPP Test Suite - Ubuntu CPU, Python 3.9
-    - Nightly - Py+CPP Test Suite - Ubuntu CPU, Python 3.10
-    - Nightly - Py+CPP Test Suite - Ubuntu CPU, Python 3.11
-    - Nightly - Py+CPP Test Suite - Ubuntu GPU, Python 3.8
-    - Nightly - Py+CPP Test Suite - Ubuntu GPU, Python 3.9
-    - Nightly - Py+CPP Test Suite - Ubuntu GPU, Python 3.10
-    - Nightly - Py+CPP Test Suite - Ubuntu GPU, Python 3.11
   Everything Else: []
   Ignorable:
     - "? / cla/google"
     - "? / Scorecard"
     - import/copybara
     - kokoro
+    - Generic Helper (Ignorable)
 # Don't show these at all. E.g. for jobs that have been deleted
 hidden:
   - Nightly Clang - Libtensorflow - Ubuntu GPU
@@ -67,6 +71,41 @@ hidden:
   - Nightly Clang - Py+CPP Test Suite - Ubuntu GPU, Python 3.9
   - Nightly Clang - Py+CPP Test Suite - Ubuntu GPU, Python 3.10
   - Nightly Clang - Py+CPP Test Suite - Ubuntu GPU, Python 3.11
+  # Old nightly jobs
+  - Nightly - Code Check - Linux
+  - Nightly - Libtensorflow - MacOS
+  - Nightly - Libtensorflow - Ubuntu CPU
+  - Nightly - Libtensorflow - Ubuntu GPU
+  - Nightly - Libtensorflow - Windows
+  - Nightly - Py+CPP Test Suite - MacOS, Python 3.9
+  - Nightly - Py+CPP Test Suite - MacOS, Python 3.10
+  - Nightly - Py+CPP Test Suite - MacOS, Python 3.11
+  - Nightly - Py+CPP Test Suite - Ubuntu CPU, Python 3.9
+  - Nightly - Py+CPP Test Suite - Ubuntu CPU, Python 3.10
+  - Nightly - Py+CPP Test Suite - Ubuntu CPU, Python 3.11
+  - Nightly - Py+CPP Test Suite - Ubuntu GPU, Python 3.9
+  - Nightly - Py+CPP Test Suite - Ubuntu GPU, Python 3.10
+  - Nightly - Py+CPP Test Suite - Ubuntu GPU, Python 3.11
+  # Previous name of current nightly jobs
+  - Experimental Code Check (Full)
+  - Experimental Nightly - Linux Arm64 CPU, Python 3.10
+  - Experimental Nightly - Linux Arm64 CPU, Python 3.11
+  - Experimental Nightly - Linux Arm64 CPU, Python 3.12
+  - Experimental Nightly - Linux Arm64 CPU, Python 3.9
+  - Experimental Nightly - Linux x86 CPU, Python 3.10
+  - Experimental Nightly - Linux x86 CPU, Python 3.11
+  - Experimental Nightly - Linux x86 CPU, Python 3.12
+  - Experimental Nightly - Linux x86 CPU, Python 3.9
+  - Experimental Nightly - Linux x86 CUDA, Python 3.10
+  - Experimental Nightly - Linux x86 CUDA, Python 3.11
+  - Experimental Nightly - Linux x86 CUDA, Python 3.12
+  - Experimental Nightly - Linux x86 CUDA, Python 3.9
+  - Experimental Nightly - Linux x86 TPU, Python 3.10
+  - Experimental Nightly - Linux x86 TPU, Python 3.11
+  - Experimental Nightly - Linux x86 TPU, Python 3.12
+  - Experimental Nightly - Linux x86 TPU, Python 3.9
+  - Experimental Py+CPP Test Suite - Linux ARM64 CPU Python Max
+  - Experimental Py+CPP Test Suite - Linux ARM64 CPU Python Min
 buildcop:
   - TF Official Continuous
   - TF Official Nightly
