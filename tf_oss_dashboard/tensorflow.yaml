@@ -37,21 +37,17 @@ categories:
     - Nightly - Linux Arm64 CPU - Python 3.9 Wheel
     - Nightly - Linux Arm64 CPU - Python 3.10 Wheel
     - Nightly - Linux Arm64 CPU - Python 3.11 Wheel
-    - Nightly - Linux Arm64 CPU - Python 3.12 Wheel
     - Nightly - Linux x86 CPU - Libtensorflow
     - Nightly - Linux x86 CPU - Python 3.9 Wheel
     - Nightly - Linux x86 CPU - Python 3.10 Wheel
     - Nightly - Linux x86 CPU - Python 3.11 Wheel
-    - Nightly - Linux x86 CPU - Python 3.12 Wheel
     - Nightly - Linux x86 CUDA - Libtensorflow
     - Nightly - Linux x86 CUDA - Python 3.9 Wheel
     - Nightly - Linux x86 CUDA - Python 3.10 Wheel
     - Nightly - Linux x86 CUDA - Python 3.11 Wheel
-    - Nightly - Linux x86 CUDA - Python 3.12 Wheel
     - Nightly - Linux x86 TPU - Python 3.9 Wheel
     - Nightly - Linux x86 TPU - Python 3.10 Wheel
     - Nightly - Linux x86 TPU - Python 3.11 Wheel
-    - Nightly - Linux x86 TPU - Python 3.12 Wheel
     - Nightly - Android
   Everything Else: []
   Ignorable:
