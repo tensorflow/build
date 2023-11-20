@@ -139,8 +139,8 @@ for record in all_records:
 # included in the nightly jobs if it was committed before a nightly job's
 # commit. This way we can quickly tell when a commit was first tested in a TF
 # Nightly test.
-if "nightly_job_basis" in YAML_CONFIG:
-  basis = YAML_CONFIG["nightly_job_basis"]
+basis = YAML_CONFIG.get("nightly_job_basis", False) 
+if basis:
   if basis not in job_names_to_records:
     exit(f"nightly_job_basis has been set to '{basis}', but those results are missing. Is the configuration correct?")
   nightlies = job_names_to_records[basis]
