@@ -110,7 +110,7 @@ default_category: Everything Else
 # Use this to determine which commits are the Nightly ones when comparing.
 # Set it to false to disable all "Nightly" features (i.e. the "in nightly..."
 # or "this is nightly" badge in a commit)
-nightly_job_basis: Nightly - Code Check - Linux
+nightly_job_basis: Nightly - Code Check (Full)
 # Configures how large a job card can grow (that is, how many dots will appear
 # on it). A date tag is size 3, and a status dot is size 1.
 maximum_card_size: 100
