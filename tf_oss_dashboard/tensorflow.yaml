@@ -30,6 +30,8 @@ categories:
     - Continuous - Linux x86 CPU - Py+CPP Test Suite (minimum Python version)
     - Continuous - Linux x86 CUDA - Py+CPP Test Suite (maximum Python version)
     - Continuous - Linux x86 CUDA - Py+CPP Test Suite (minimum Python version)
+    - Continuous - Linux arm64 CPU - Py+CPP Test Suite (maximum Python version)
+    - Continuous - Linux arm64 CPU - Py+CPP Test Suite (minimum Python version)
     - Continuous - MacOS x86 - Py+CPP Test Suite (maximum Python version)
     - Continuous - MacOS x86 - Py+CPP Test Suite (minimum Python version)
   TF Official Nightly:
