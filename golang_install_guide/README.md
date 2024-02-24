@@ -48,8 +48,8 @@ repo, and with one of the following import statements:
 
 | TensorFlow C API          | Graft                                                                                               |
 | :------------------------ | :-------------------------------------------------------------------------------------------------- |
-| TensorFlow Release 2.14.0 | [`go get github.com/wamuir/graft/tensorflow@v0.6.0`](https://github.com/wamuir/graft/tree/v0.6.0)   |
-| TensorFlow Release 2.13.1 | [`go get github.com/wamuir/graft/tensorflow@v0.5.1`](https://github.com/wamuir/graft/tree/v0.5.1)   |
+| TensorFlow Release 2.15.0 | [`go get github.com/wamuir/graft/tensorflow@v0.7.0`](https://github.com/wamuir/graft/tree/v0.7.0)   |
+| TensorFlow Release 2.14.1 | [`go get github.com/wamuir/graft/tensorflow@v0.6.1`](https://github.com/wamuir/graft/tree/v0.6.1)   |
 | TensorFlow Nightly        | [`go get github.com/wamuir/graft/tensorflow@nightly`](https://github.com/wamuir/graft/tree/nightly) |
 
 
@@ -58,7 +58,7 @@ repo, and with one of the following import statements:
 <details>
 <summary>Click to expand</summary>
 
-> Note: these build instructions are specific to TensorFlow 2.14.0
+> Note: these build instructions are specific to TensorFlow 2.15.0
 
 ### 1. Install the TensorFlow C Library
 
@@ -67,7 +67,7 @@ library is required for use of the TensorFlow Go package at runtime. For example
 on Linux (64-bit, x86):
 
   ```sh
-  $ curl -L https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-cpu-linux-x86_64-2.14.0.tar.gz | tar xz --directory /usr/local
+  $ curl -L https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-cpu-linux-x86_64-2.15.0.tar.gz | tar xz --directory /usr/local
   $ ldconfig
   ```
 
@@ -105,7 +105,7 @@ Instead, follow these instructions.***
   workspace for `/go` in the command below.
 
   ```sh
-  $ git clone --branch v2.14.0 https://github.com/tensorflow/tensorflow.git /go/src/github.com/tensorflow/tensorflow
+  $ git clone --branch v2.15.0 https://github.com/tensorflow/tensorflow.git /go/src/github.com/tensorflow/tensorflow
   ```
 
 - Change the working directory to the base of the cloned TensorFlow repository,
@@ -122,22 +122,37 @@ Instead, follow these instructions.***
    $ go mod init github.com/tensorflow/tensorflow
    ```
 
-- Patch protos to declare Go package.
+- Patch TensorFlow core protos to declare Go package.
 
    ```sh
    $ sed -i '4 i option go_package = "github.com\/tensorflow\/tensorflow\/tensorflow\/go\/core\/framework\/dataset_go_proto";' tensorflow/core/framework/dataset.proto
    $ sed -i '9 c option go_package = "github.com\/tensorflow\/tensorflow\/tensorflow\/go\/core\/framework\/graph_debug_info_go_proto";' tensorflow/core/framework/graph_debug_info.proto
    $ sed -i '4 i option go_package = "github.com\/tensorflow\/tensorflow\/tensorflow\/go\/core\/framework\/optimized_function_graph_go_proto";' tensorflow/core/framework/optimized_function_graph.proto
-   $ sed -i '4 i option go_package = "github.com\/google\/tsl\/tsl\/go\/core\/protobuf\/for_core_protos_go_proto";' tensorflow/tsl/protobuf/test_log.proto
-   $ sed -i '5d' tensorflow/core/protobuf/autotuning.proto
+   ```
+
+- Patch Tensor Standard Library (TSL) protos to declare Go package.
+
+   ```sh
+   $ sed -i '5 c option go_package = "github.com\/google\/tsl\/tsl\/go_proto";' third_party/xla/third_party/tsl/tsl/protobuf/bfc_memory_map.proto
+   $ sed -i '5 c option go_package = "github.com\/google\/tsl\/tsl\/go_proto";' third_party/xla/third_party/tsl/tsl/protobuf/coordination_config.proto
+   $ sed -i '7 c option go_package = "github.com\/google\/tsl\/tsl\/go_proto";' third_party/xla/third_party/tsl/tsl/protobuf/coordination_service.proto
+   $ sed -i '6 c option go_package = "github.com\/google\/tsl\/tsl\/go_proto";' third_party/xla/third_party/tsl/tsl/protobuf/distributed_runtime_payloads.proto
+   $ sed -i '8 c option go_package = "github.com\/google\/tsl\/tsl\/go_proto";' third_party/xla/third_party/tsl/tsl/protobuf/dnn.proto
+   $ sed -i '12 c option go_package = "github.com\/google\/tsl\/tsl\/go_proto";' third_party/xla/third_party/tsl/tsl/protobuf/error_codes.proto
+   $ sed -i '8 c option go_package = "github.com\/google\/tsl\/tsl\/go_proto";' third_party/xla/third_party/tsl/tsl/protobuf/histogram.proto
+   $ sed -i '5 c option go_package = "github.com\/google\/tsl\/tsl\/go_proto";' third_party/xla/third_party/tsl/tsl/protobuf/rpc_options.proto
+   $ sed -i '10 c option go_package = "github.com\/google\/tsl\/tsl\/go_proto";' third_party/xla/third_party/tsl/tsl/protobuf/status.proto
+   $ sed -i '13 i option go_package = "github.com\/google\/tsl\/tsl\/go_proto";' third_party/xla/third_party/tsl/tsl/protobuf/test_log.proto
    ```
 
 - Patch tensorflow/go/genop to generate TF and TSL protobufs.
 
    ```sh
    $ sed -i '71d;72d' tensorflow/go/genop/generate.sh
-   $ sed -i '71 i \    ${TF_DIR}\/tensorflow\/tsl\/protobuf\/*.proto \\' tensorflow/go/genop/generate.sh
-   $ sed -i '72 i \    ${TF_DIR}\/tensorflow\/compiler\/xla\/stream_executor\/dnn.proto; do' tensorflow/go/genop/generate.sh
+   $ sed -i '71 i \    ${TF_DIR}\/third_party\/xla\/xla\/autotuning.proto \\' tensorflow/go/genop/generate.sh
+   $ sed -i '72 i \    ${TF_DIR}\/third_party\/xla\/third_party\/tsl\/tsl\/protobuf\/*.proto; do \\' tensorflow/go/genop/generate.sh
+   $ sed -i '74 i \    -I ${TF_DIR}/third_party/xla/third_party/tsl \\' tensorflow/go/genop/generate.sh
+   $ sed -i '75 i \    -I ${TF_DIR}/third_party/xla \\' tensorflow/go/genop/generate.sh
    ```
 
 - Generate wrappers and protocol buffers.
@@ -184,7 +199,7 @@ workspace for `/go` in the command below:
 ```sh
 $ go mod init hello-world
 $ go mod edit -require github.com/google/tsl@v0.0.0+incompatible
-$ go mod edit -require github.com/tensorflow/tensorflow@v2.14.0+incompatible
+$ go mod edit -require github.com/tensorflow/tensorflow@v2.15.0+incompatible
 $ go mod edit -replace github.com/google/tsl=/go/src/github.com/google/tsl
 $ go mod edit -replace github.com/tensorflow/tensorflow=/go/src/github.com/tensorflow/tensorflow
 $ go mod tidy
@@ -232,7 +247,7 @@ func main() {
 ```sh
 $ go mod init app
 $ go mod edit -require github.com/google/tsl@v0.0.0+incompatible
-$ go mod edit -require github.com/tensorflow/tensorflow@v2.14.0+incompatible
+$ go mod edit -require github.com/tensorflow/tensorflow@v2.15.0+incompatible
 $ go mod edit -replace github.com/google/tsl=/go/src/github.com/google/tsl
 $ go mod edit -replace github.com/tensorflow/tensorflow=/go/src/github.com/tensorflow/tensorflow
 $ go mod tidy
