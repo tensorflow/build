@@ -1,0 +1,5 @@
+build-essential
+pkg-config
+curl
+software-properties-common
+unzip
