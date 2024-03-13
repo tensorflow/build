@@ -19,9 +19,9 @@ ENV LANG C.UTF-8
 
 COPY setup.sources.sh /setup.sources.sh
 COPY setup.packages.sh /setup.packages.sh
-COPY cpu.packages.txt /cpu.packages.txt
+COPY tpu.packages.txt /tpu.packages.txt
 RUN /setup.sources.sh
-RUN /setup.packages.sh /cpu.packages.txt
+RUN /setup.packages.sh /tpu.packages.txt
 
 
 ARG PYTHON_VERSION=python3.11
@@ -30,15 +30,6 @@ COPY setup.python.sh /setup.python.sh
 COPY cpu.requirements.txt /tpu.requirements.txt
 RUN /setup.python.sh $PYTHON_VERSION /tpu.requirements.txt
 RUN pip install --no-cache-dir ${TENSORFLOW_PACKAGE} -f https://storage.googleapis.com/libtpu-tf-releases/index.html 
-ENV NEXT_PLUGGABLE_DEVICE_USE_C_API=true
-ENV TF_PLUGGABLE_DEVICE_LIBRARY_PATH=""  # Initialize
-
-# Dynamically determine libtpu installation path
-RUN python -c "import libtpu; import os; print(os.path.join(os.path.dirname(libtpu.__file__), 'libtpu.so'))" \
-    | tee /out/.libtpu_path  # Capture the output
-
-# Set the environment variable
-ENV TF_PLUGGABLE_DEVICE_LIBRARY_PATH=$(cat /out/.libtpu_path)
 
 COPY bashrc /etc/bash.bashrc
 RUN chmod a+rwx /etc/bash.bashrc
