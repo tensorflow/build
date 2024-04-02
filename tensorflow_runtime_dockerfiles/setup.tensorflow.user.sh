@@ -20,6 +20,6 @@
 #
 
 echo "creating group ${TENSORFLOW_GROUP} with gid ${TENSORFLOW_GID} ..." && \
-groupadd --system --gid ${TENSORFLOW_GID} ${TF_GROUP} && \
+groupadd --system --gid ${TENSORFLOW_GID} ${TENSORFLOW_GROUP} && \
 echo "creating user ${TENSORFLOW_USER}:${TENSORFLOW_GROUP} (${TENSORFLOW_UID}:${TENSORFLOW_GID}) ..." && \
 useradd --system --uid ${TENSORFLOW_UID} --home-dir=/home/${TENSORFLOW_USER} --create-home --gid ${TENSORFLOW_GID} ${TENSORFLOW_USER}
