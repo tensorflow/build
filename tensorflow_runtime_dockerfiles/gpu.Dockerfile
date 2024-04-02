@@ -25,6 +25,8 @@ RUN /setup.packages.sh /gpu.packages.txt
 
 ARG PYTHON_VERSION=python3.11
 ARG TENSORFLOW_PACKAGE=tf-nightly
+ARG TENSORFLOW_NOTEBOOK_DIR=/home/tf_user/notebooks
+ENV TENSORFLOW_NOTEBOOK_DIR=${TENSORFLOW_NOTEBOOK_DIR}
 COPY setup.python.sh /setup.python.sh
 COPY gpu.requirements.txt /gpu.requirements.txt
 RUN /setup.python.sh $PYTHON_VERSION /gpu.requirements.txt
@@ -42,12 +44,12 @@ COPY jupyter.requirements.txt /jupyter.requirements.txt
 COPY setup.jupyter.sh /setup.jupyter.sh
 RUN python3 -m pip install --no-cache-dir -r /jupyter.requirements.txt -U
 RUN /setup.jupyter.sh
-COPY jupyter.readme.md /tf/tensorflow-tutorials/README.md
+COPY jupyter.readme.md ${TENSORFLOW_NOTEBOOK_DIR}/tensorflow-tutorials/README.md
 
-WORKDIR /tf
+WORKDIR ${TENSORFLOW_NOTEBOOK_DIR}
 EXPOSE 8888
 
-CMD ["bash", "-c", "source /etc/bash.bashrc && jupyter notebook --notebook-dir=/tf --ip 0.0.0.0 --no-browser --allow-root"]
+CMD ["bash", "-c", "source /etc/bash.bashrc && jupyter notebook --notebook-dir=${TENSORFLOW_NOTEBOOK_DIR} --ip 0.0.0.0 --no-browser --allow-root"]
 
 FROM base as test
 
