@@ -26,7 +26,15 @@ RUN /setup.packages.sh /cpu.packages.txt
 
 ARG PYTHON_VERSION=python3.11
 ARG TENSORFLOW_PACKAGE=tf-nightly
-ARG TENSORFLOW_NOTEBOOK_DIR=/home/tf_user/notebooks
+ARG TENSORFLOW_USER=tfuser
+ARG TENSORFLOW_GROUP=tensorflow
+ARG TENSORFLOW_UID=2234
+ARG TENSORFLOW_GID=5567
+ARG TENSORFLOW_NOTEBOOK_DIR=/home/${TENSORFLOW_USER}/notebooks
+ENV TENSORFLOW_USER=${TENSORFLOW_USER}
+ENV TENSORFLOW_GROUP=${TENSORFLOW_GROUP}
+ENV TENSORFLOW_UID=${TENSORFLOW_UID}
+ENV TENSORFLOW_GID=${TENSORFLOW_GID}
 ENV TENSORFLOW_NOTEBOOK_DIR=${TENSORFLOW_NOTEBOOK_DIR}
 COPY setup.python.sh /setup.python.sh
 COPY cpu.requirements.txt /cpu.requirements.txt
@@ -43,6 +51,10 @@ COPY setup.jupyter.sh /setup.jupyter.sh
 RUN python3 -m pip install --no-cache-dir -r /jupyter.requirements.txt -U
 RUN /setup.jupyter.sh
 COPY jupyter.readme.md ${TENSORFLOW_NOTEBOOK_DIR}/tensorflow-tutorials/README.md
+
+COPY setup.tensorflow.user.sh /setup.tensorflow.user.sh
+RUN /setup.tensorflow.user.sh
+RUN chown -R ${TENSORFLOW_USER}:${TENSORFLOW_GROUP} ${TENSORFLOW_NOTEBOOK_DIR} /home/${TENSORFLOW_USER}
 
 WORKDIR ${TENSORFLOW_NOTEBOOK_DIR}
 EXPOSE 8888
