@@ -20,7 +20,9 @@ ENV LANG C.UTF-8
 COPY setup.sources.sh /setup.sources.sh
 COPY setup.packages.sh /setup.packages.sh
 COPY cpu.packages.txt /cpu.packages.txt
+# set up apt sources (must be done as root):
 RUN /setup.sources.sh
+# install required packages (must be done as root):
 RUN /setup.packages.sh /cpu.packages.txt
 
 
@@ -38,6 +40,7 @@ ENV TENSORFLOW_GID=${TENSORFLOW_GID}
 ENV TENSORFLOW_NOTEBOOK_DIR=${TENSORFLOW_NOTEBOOK_DIR}
 COPY setup.python.sh /setup.python.sh
 COPY cpu.requirements.txt /cpu.requirements.txt
+# install python (must be done as root) and do some pip stuff (should possibly be done as TENSORFLOW_USER):
 RUN /setup.python.sh $PYTHON_VERSION /cpu.requirements.txt
 RUN pip install --no-cache-dir ${TENSORFLOW_PACKAGE} 
 
@@ -46,19 +49,23 @@ RUN chmod a+rwx /etc/bash.bashrc
 
 FROM base as jupyter
 
+# install and setup jupyter (should be done as TENSORFLOW_USER):
 COPY jupyter.requirements.txt /jupyter.requirements.txt
 COPY setup.jupyter.sh /setup.jupyter.sh
 RUN python3 -m pip install --no-cache-dir -r /jupyter.requirements.txt -U
 RUN /setup.jupyter.sh
 COPY jupyter.readme.md ${TENSORFLOW_NOTEBOOK_DIR}/tensorflow-tutorials/README.md
 
+# create and setup user ${TENSORFLOW_USER}:${TENSORFLOW_GROUP} (must be done as root):
 COPY setup.tensorflow.user.sh /setup.tensorflow.user.sh
 RUN /setup.tensorflow.user.sh
+# make sure TENSORFLOW_USER owns his home and TENSORFLOW_NOTEBOOK_DIR (must be done as root, shouldn't be neccassary):
 RUN chown -R ${TENSORFLOW_USER}:${TENSORFLOW_GROUP} ${TENSORFLOW_NOTEBOOK_DIR} /home/${TENSORFLOW_USER}
 
 WORKDIR ${TENSORFLOW_NOTEBOOK_DIR}
 EXPOSE 8888
 
+# finally start jupyter (this should be done as TENSORFLOW_USER):
 CMD ["bash", "-c", "source /etc/bash.bashrc && jupyter notebook --notebook-dir=${TENSORFLOW_NOTEBOOK_DIR} --ip 0.0.0.0 --no-browser --allow-root"]
 
 FROM base as test
