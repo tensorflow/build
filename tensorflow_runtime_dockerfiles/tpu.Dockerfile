@@ -20,7 +20,9 @@ ENV LANG C.UTF-8
 COPY setup.sources.sh /setup.sources.sh
 COPY setup.packages.sh /setup.packages.sh
 COPY tpu.packages.txt /tpu.packages.txt
+# set up apt sources (must be done as root):
 RUN /setup.sources.sh
+# install required packages (must be done as root):
 RUN /setup.packages.sh /tpu.packages.txt
 
 
@@ -38,23 +40,33 @@ ENV TENSORFLOW_GID=${TENSORFLOW_GID}
 ENV TENSORFLOW_NOTEBOOK_DIR=${TENSORFLOW_NOTEBOOK_DIR}
 COPY setup.python.sh /setup.python.sh
 COPY cpu.requirements.txt /tpu.requirements.txt
+# install python (must be done as root):
 RUN /setup.python.sh $PYTHON_VERSION /tpu.requirements.txt
-RUN pip install --no-cache-dir ${TENSORFLOW_PACKAGE} -f https://storage.googleapis.com/libtpu-tf-releases/index.html 
-
 COPY bashrc /etc/bash.bashrc
 RUN chmod a+rwx /etc/bash.bashrc
+# create and setup user ${TENSORFLOW_USER}:${TENSORFLOW_GROUP} (must be done as root):
+COPY setup.tensorflow.user.sh /setup.tensorflow.user.sh
+RUN /setup.tensorflow.user.sh && \
+    mkdir -p /home/${TENSORFLOW_USER}/.local && \
+    chown -R ${TENSORFLOW_USER}:${TENSORFLOW_GROUP} /home/${TENSORFLOW_USER}/.local
+ENV PATH="${PATH}:/home/${TENSORFLOW_USER}/.local/bin"
+
+# the rest of the commands is run by TENSORFLOW_USER
+USER ${TENSORFLOW_USER}
+
+RUN pip install --no-cache-dir ${TENSORFLOW_PACKAGE} -f https://storage.googleapis.com/libtpu-tf-releases/index.html 
 
 FROM base as jupyter
 
-COPY jupyter.requirements.txt /jupyter.requirements.txt
-COPY setup.jupyter.sh /setup.jupyter.sh
+USER ${TENSORFLOW_USER}
+# install and setup jupyter (should be done as TENSORFLOW_USER):
+COPY --chown=${TENSORFLOW_USER}:${TENSORFLOW_GROUP} jupyter.requirements.txt /jupyter.requirements.txt
+COPY --chown=${TENSORFLOW_USER}:${TENSORFLOW_GROUP} setup.jupyter.sh /setup.jupyter.sh
 RUN python3 -m pip install --no-cache-dir -r /jupyter.requirements.txt -U
 RUN /setup.jupyter.sh
-COPY jupyter.readme.md ${TENSORFLOW_NOTEBOOK_DIR}/tensorflow-tutorials/README.md
+COPY --chown=${TENSORFLOW_USER}:${TENSORFLOW_GROUP} jupyter.readme.md ${TENSORFLOW_NOTEBOOK_DIR}/tensorflow-tutorials/README.md
 
-COPY setup.tensorflow.user.sh /setup.tensorflow.user.sh
-RUN /setup.tensorflow.user.sh
-RUN chown -R ${TENSORFLOW_USER}:${TENSORFLOW_GROUP} ${TENSORFLOW_NOTEBOOK_DIR} /home/${TENSORFLOW_USER}
+
 
 WORKDIR ${TENSORFLOW_NOTEBOOK_DIR}
 EXPOSE 8888
@@ -63,5 +75,5 @@ CMD ["bash", "-c", "source /etc/bash.bashrc && jupyter notebook --notebook-dir=$
 
 FROM base as test
 
-COPY test.import_tpu.sh /test.import_tpu.sh
+COPY --chown=${TENSORFLOW_USER}:${TENSORFLOW_GROUP} test.import_tpu.sh /test.import_tpu.sh
 RUN /test.import_tpu.sh
