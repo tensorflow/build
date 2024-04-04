@@ -15,18 +15,11 @@
 # limitations under the License.
 # ==============================================================================
 #
-# setup.packages.sh: Given a list of Ubuntu packages, install them and clean up.
-# Usage: setup.packages.sh <package_list.txt>
-set -e
+# setup.tensorflow.user.sh: create an user account used to run tensorflow
+# Usage: set envrionment variables TENSORFLOW_USER, TENSORFLOW_GROUP, TENSORFLOW_UID, TENSORFLOW_GID and run script setup.tensorflow.user.sh
+#
 
-# Prevent "apt install tzinfo" from raising an interactive location prompt
-export DEBIAN_FRONTEND=noninteractive
-
-apt-get update
-apt-get install -y --no-install-recommends wget git
-
-# Remove commented lines and blank lines from the package list
-apt-get install -y --no-install-recommends $(sed -e '/^\s*#.*$/d' -e '/^\s*$/d' "$1" | sort -u)
-
-apt-get clean
-rm -rf /var/lib/apt/lists/*
+echo "creating group ${TENSORFLOW_GROUP} with gid ${TENSORFLOW_GID} ..." && \
+groupadd --system --gid ${TENSORFLOW_GID} ${TENSORFLOW_GROUP} && \
+echo "creating user ${TENSORFLOW_USER}:${TENSORFLOW_GROUP} (${TENSORFLOW_UID}:${TENSORFLOW_GID}) ..." && \
+useradd --system --uid ${TENSORFLOW_UID} --home-dir=/home/${TENSORFLOW_USER} --create-home --gid ${TENSORFLOW_GID} ${TENSORFLOW_USER}
