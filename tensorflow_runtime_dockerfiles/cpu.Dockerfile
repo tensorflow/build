@@ -77,5 +77,5 @@ CMD ["bash", "-c", "source /etc/bash.bashrc && jupyter notebook --notebook-dir=$
 
 FROM base as test
 
-COPY test.import_cpu.sh /test.import_cpu.sh
+COPY --chown=${TENSORFLOW_USER}:${TENSORFLOW_GROUP} test.import_cpu.sh /test.import_cpu.sh
 RUN /test.import_cpu.sh
