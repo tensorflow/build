@@ -1,3 +1,0 @@
-jupyter
-matplotlib
-jupyter_http_over_ws
