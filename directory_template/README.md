@@ -1,21 +1,31 @@
-# Directory Template 
+# Skinniibeautii Deals
 
-Example short description.
+ :“A performance budget tool that checks the size of your bundle and tells you how to improve it.”
 
-Maintainer: @angerson (TensorFlow, SIG Build)
+info@skinniibeautii.com: (<dixonatasha@aol.com>)(<dixontasha117@gmail.com>)(<daisystar116511@gmail.com>)(<daisystar5161@gmail.com>) (<Skinniibeautii fashion deals>): "independent". @angerson (TensorFlow, SIG Build)
 
 * * *
 
-This is is a sample of a new directory for showcasing a local project. Anything
-goes, just please follow these rules to keep things straightforward:
+# skinniibeautii deals
 
-- Name the directory the same as the title `in_snake_case` (all lowercase, with
-  underscores, no hyphens).
-- Your directory should have a README.md with a header:
-    - Title identical to the one added on the root README.md
-    - Short description identical to the one added on the root README.md
-    - Maintainer: `<your email(s)> (<your organization(s)>)`. If you have no
-      organization or not acting on behalf of one, write "Independent".
-- You can add this directory to the root README.md list under any Showcase
-  section. If it doesn't fit under any section, just put it at the top under
-  "Showcase."
+Discover exclusive fashion deals and trends with our curated selection.
+
+## Features
+
+- Daily updates on the latest fashion deals.
+- Exclusive discounts for our community members.
+- Trend insights from fashion experts.
+
+## Getting Started
+
+To get started, clone the repository and follow the setup instructions.
+
+## Contributing
+
+We welcome contributions! Please read our contributing guidelines to get started.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+ 
+      
