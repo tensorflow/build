@@ -14,11 +14,12 @@
 # ============================================================================
 
 
-FROM golang:1.21-bookworm
+FROM golang:1.22-bookworm
 
-# 1. Install the TensorFlow C Library (v2.15.0).
-RUN curl -L https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-cpu-linux-$(uname -m)-2.15.0.tar.gz \
+# 1. Install the TensorFlow C Library (v2.17.0).
+RUN curl -L https://storage.googleapis.com/tensorflow/versions/2.17.0/libtensorflow-cpu-linux-$(uname -m).tar.gz \
     | tar xz --directory /usr/local \
+    && ln -s external/local_tsl/tsl /usr/local/include/tsl \
     && ldconfig
 
 # 2. Install the Protocol Buffers Library and Compiler.
@@ -27,7 +28,7 @@ RUN apt-get update && apt-get -y install --no-install-recommends \
     protobuf-compiler
 
 # 3. Install and Setup the TensorFlow Go API.
-RUN git clone --branch=v2.15.0 https://github.com/tensorflow/tensorflow.git /go/src/github.com/tensorflow/tensorflow \
+RUN git clone --branch=v2.17.0 https://github.com/tensorflow/tensorflow.git /go/src/github.com/tensorflow/tensorflow \
     && cd /go/src/github.com/tensorflow/tensorflow \
     && go mod init github.com/tensorflow/tensorflow \
     && sed -i '4 i option go_package = "github.com\/tensorflow\/tensorflow\/tensorflow\/go\/core\/framework\/dataset_go_proto";' tensorflow/core/framework/dataset.proto \
@@ -60,7 +61,7 @@ WORKDIR /example-program
 COPY hello_tf.go .
 RUN go mod init app \
     && go mod edit -require github.com/google/tsl@v0.0.0+incompatible \
-    && go mod edit -require github.com/tensorflow/tensorflow@v2.15.0+incompatible \
+    && go mod edit -require github.com/tensorflow/tensorflow@v2.17.0+incompatible \
     && go mod edit -replace github.com/google/tsl=/go/src/github.com/google/tsl \
     && go mod edit -replace github.com/tensorflow/tensorflow=/go/src/github.com/tensorflow/tensorflow \
     && go mod tidy \
