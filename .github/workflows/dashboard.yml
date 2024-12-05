@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        config: [ tensorflow, jax ]
+        config: [ jax ] #[ tensorflow, jax ]
     permissions:
       contents: read
       pages: write
@@ -49,11 +49,9 @@ jobs:
 
       - name: Download previous workflow's data
         if: "${{ github.event.inputs.reset != 'yes reset' }}"
-        uses: dawidd6/action-download-artifact@v2
+        uses: actions/download-artifact@v4.1.7
         with:
           path: tf_oss_dashboard
-          workflow_conclusion: success
-          if_no_artifact_found: warn
 
       - name: Overwrite data, if provided
         if: "${{ github.event.inputs.gist != '' }}"
