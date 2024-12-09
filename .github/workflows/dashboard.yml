@@ -103,7 +103,8 @@ jobs:
 
       - name: Move dashboard around, include all generated files
         run: |
-          mv artifacts/tensorflow .site
+          ls artifacts
+          mv artifacts/jax .site
           mv -t .site tf_oss_dashboard/*
           rmdir artifacts || mv -t .site artifacts/*
 
