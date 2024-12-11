@@ -30,6 +30,7 @@ query($name:String!, $owner:String!, $branch:String!) {
                       checkSuite {
                         workflowRun {
                           workflow {
+                            id
                             name
                             resourcePath
                             state
