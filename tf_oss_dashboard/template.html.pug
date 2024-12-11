@@ -75,6 +75,25 @@ html(lang="en")
                             .badge.p-2.tf-date= test["date_tag"]
                           else
                             a.badge.p-2(title="#{test['date_human']} - #{test['commit_summary']}" class=test["state"] data-bs-toggle='modal' data-bs-target=test["commit_id"])
+      each workflow_id, workflow in by_workflow.items() 
+        .fw-bold.ps-4
+          span.text-light(id=workflow.name)= workflow.name
+        .d-flex.flex-row.flex-wrap.gap-1.m-1.card-section.tf-is-listed
+          each name, tests in workflow.jobs.items()
+            .card.flex-shrink-1.flex-grow-1(class=tests[0]["css_classes"] data-name=name)
+              .card-body
+                h5.text-center.fw-bold= name
+                .d-flex.flex-row.flex-wrap.gap-1
+                  if yaml["internal_shown"]
+                    if tests[0]["is_public"]
+                      .badge.p-2.tf-public(title="This job has publicly-visible results pages.") Public
+                    else
+                      .badge.p-2.tf-internal(title="This job only has private, Googler-restricted results pages.") Internal
+                  each test in tests
+                    if "date_tag" in test:
+                      .badge.p-2.tf-date= test["date_tag"]
+                    else
+                      a.badge.p-2(title="#{test['date_human']} - #{test['commit_summary']}" class=test["state"] data-bs-toggle='modal' data-bs-target=test["commit_id"])
       each category, everythin in by_group.items() 
         .fw-bold.ps-4
           span.text-light(id=category)= category
