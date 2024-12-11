@@ -24,21 +24,7 @@ html(lang="en")
     script(src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js")
     script(src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.3/moment.min.js" crossorigin="anonymous" referrerpolicy="no-referrer")
     link(rel="stylesheet" href="/style.css")
-    //- Google Analytics. Conditionally enabled if "gtag" is set in config.yaml
-    if yaml["gtag"]:
-      script(async src="https://www.googletagmanager.com/gtag/js?id=#{yaml['gtag']}")
-      script.
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', "#{yaml['gtag']}");
   body
-    if yaml["gtag"]
-      .tf-cookie-warning.p-2.bg-warning.navbar-text.d-none
-        .text-center The #{yaml["title"]} Dashboard uses cookies from Google to analyze traffic. 
-          a(href="https://policies.google.com/technologies/cookies") Learn more.
-          a.fw-bold.ps-4#tf-accept-cookies(role="button") Ok, got it. Hide this message.
-
     nav.navbar.navbar-dark.navbar-expand-lg.py-0.mb-2
       .container-fluid.py-0
         a(href=).navbar-brand= yaml["title"]
