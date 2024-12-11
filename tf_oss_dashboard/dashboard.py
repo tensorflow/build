@@ -114,14 +114,18 @@ for commit in JSON_DATA["data"]["repository"]["ref"]["target"]["history"]["nodes
           workflows[clone["workflow_id"]] = {
             "url": check["checkSuite"]["workflowRun"]["workflow"]["url"],
             "name": check["checkSuite"]["workflowRun"]["workflow"]["name"],
-            "jobs": defaultdict(list)
+            "jobs": defaultdict(object)
           }
 
+      clone["base_name"] = check["name"]
       clone["name"] = f"{name_first} / {check['name']}"
       clone["type"] = "github action"
 
       if check["checkSuite"]["workflowRun"] and clone["workflow_id"] in workflows and clone["name"] not in workflows[clone["workflow_id"]]["jobs"]:
-        workflows[clone["workflow_id"]]["jobs"][clone["name"]] = list()
+        workflows[clone["workflow_id"]]["jobs"][clone["name"]] = {
+          "displayName" : clone["base_name"], # When we add workflow runs we don't want the workflow name appended twice
+          "entries": list()
+        }
 
       # "conclusion" is only present and valuable if the Action has already
       # finished running. If it's not there, then we want "status", which will
@@ -246,7 +250,7 @@ for job_name, original_records in job_names_to_records.items():
 for workflow_id, workflow_record in workflows.items():
   for name in workflow_record["jobs"]:
     if name in job_names_to_records:
-      workflow_record["jobs"][name] = job_names_to_records[name]
+      workflow_record["jobs"][name]["entries"] = job_names_to_records[name]
       # TODO: probably delete the record from the main list
 
 
