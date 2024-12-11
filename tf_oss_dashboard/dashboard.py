@@ -120,7 +120,7 @@ for commit in JSON_DATA["data"]["repository"]["ref"]["target"]["history"]["nodes
       clone["name"] = f"{name_first} / {check['name']}"
       clone["type"] = "github action"
 
-      if clone["workflow_id"] in workflows and clone["name"] not in workflows[clone["workflow_id"]]["jobs"]:
+      if check["checkSuite"]["workflowRun"] and clone["workflow_id"] in workflows and clone["name"] not in workflows[clone["workflow_id"]]["jobs"]:
         workflows[clone["workflow_id"]]["jobs"][clone["name"]] = list()
 
       # "conclusion" is only present and valuable if the Action has already
@@ -243,7 +243,7 @@ for job_name, original_records in job_names_to_records.items():
 # In which their jobs are listed underneath them.  The workflow will also
 # have a link to the workflow file.
 # For each workflow claim each job name that it is associated with
-for workflow_id, workflow_record in workflows:
+for workflow_id, workflow_record in workflows.items():
   for name in workflow_record["jobs"]:
     if name in job_names_to_records:
       workflow_record["jobs"][name] = job_names_to_records[name]
@@ -281,6 +281,7 @@ isonow = arrow.now().to('US/Pacific').isoformat()
 with open(os.path.join(OUTDIR, "index.html"), "w") as f:
   f.write(template.render(
       by_group=by_group,
+      by_workflow=workflows,
       by_commit=commits_to_records,
       helptext=helptext,
       now=now,
