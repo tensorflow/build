@@ -31,6 +31,9 @@ query($name:String!, $owner:String!, $branch:String!) {
                         workflowRun {
                           workflow {
                             name
+                            resourcePath
+                            state
+                            url
                           }
                         }
                       }
