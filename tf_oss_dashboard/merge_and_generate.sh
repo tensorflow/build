@@ -38,6 +38,6 @@ else
   mv $NAME/new.json $NAME/merged.json
 fi
 echo "::group::Dashboard"
-# cat $NAME/merged.json | ./dashboard.py $NAME
+cat $NAME/merged.json | ./dashboard.py $NAME
 echo "::endgroup::"
 mv $NAME/merged.json $NAME/old.json
