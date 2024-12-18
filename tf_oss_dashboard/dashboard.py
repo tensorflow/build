@@ -117,13 +117,13 @@ for commit in JSON_DATA["data"]["repository"]["ref"]["target"]["history"]["nodes
             "jobs": defaultdict(object)
           }
 
-      clone["base_name"] = check["name"]
+      clone["base_name"] = f"{check["name"]}"
       clone["name"] = f"{name_first} / {check['name']}"
       clone["type"] = "github action"
 
       if check["checkSuite"]["workflowRun"] and clone["workflow_id"] in workflows and clone["name"] not in workflows[clone["workflow_id"]]["jobs"]:
         workflows[clone["workflow_id"]]["jobs"][clone["name"]] = {
-          "displayName" : clone["base_name"], # When we add workflow runs we don't want the workflow name appended twice
+          "display_name" : clone["base_name"], # When we add workflow runs we don't want the workflow name appended twice
           "entries": list()
         }
 

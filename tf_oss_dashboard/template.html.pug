@@ -80,9 +80,9 @@ html(lang="en")
           span.text-light(id=workflow.name)= workflow.name
         .d-flex.flex-row.flex-wrap.gap-1.m-1.card-section.tf-is-listed
           each full_name, job_data in workflow.jobs.items()
-              .card.flex-shrink-1.flex-grow-1(class=job_data.entries[0]["css_classes"] data-name=job_data.base_name)
+              .card.flex-shrink-1.flex-grow-1(class=job_data.entries[0]["css_classes"] data-name=job_data.display_name)
                 .card-body
-                  h5.text-center.fw-bold= job_data.base_name
+                  h5.text-center.fw-bold= job_data.display_name
                   .d-flex.flex-row.flex-wrap.gap-1
                     if yaml["internal_shown"]
                       if job_data.entries[0]["is_public"]
