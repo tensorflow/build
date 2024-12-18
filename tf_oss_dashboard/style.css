@@ -52,7 +52,9 @@ body {
 /* Note that we're layering this config on top of bootstrap's card class */
 /* =============================== */
 .card h5 {
-  color: #161616;
+  color: #e8eaed;
+  font-size: 1rem;
+  
 }
 
 .card {
@@ -80,7 +82,8 @@ body {
 /* Configure the little dots */
 .card .badge {
   line-height: 0;
-  color: rgba(0,0,0,0.7);
+  /* color: rgba(0,0,0,0.7); */
+  color: #e8eaed;
 }
 .card .badge.tf-date {
   background-color: rgba(255, 255, 255, 0.1);
