@@ -117,7 +117,7 @@ for commit in JSON_DATA["data"]["repository"]["ref"]["target"]["history"]["nodes
             "jobs": defaultdict(object)
           }
 
-      clone["base_name"] = f"{check["name"]}"
+      clone["base_name"] = check["name"]
       clone["name"] = f"{name_first} / {check['name']}"
       clone["type"] = "github action"
 
