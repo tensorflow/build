@@ -25,9 +25,13 @@ export DEBIAN_FRONTEND=noninteractive
 
 # Set up shared custom sources
 apt-get update
-apt-get install -y gnupg ca-certificates wget
+apt-get install -y gnupg ca-certificates wget software-properties-common
 
 # Install Nvidia repo keys
 # See: https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html#network-repo-installation-for-ubuntu
 wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb
 dpkg -i cuda-keyring_1.1-1_all.deb
+
+# Add ppa:deadsnakes/ppa for better Python support on older Ubuntu releases
+add-apt-repository ppa:deadsnakes/ppa -y
+apt-get update
