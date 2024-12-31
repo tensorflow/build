@@ -100,15 +100,12 @@ IBM | **Linux s390x CPU** Stable Release | [![Build Status](http://ibmz-ci.osuos
 Intel | **Linux CPU with Intel oneDNN** Stable Release 1.x | No Badge | Release [1.15](https://pypi.org/project/intel-tensorflow/1.15.2/)
 Intel | **Linux CPU with Intel oneDNN** Stable Release 2.x | No Badge | Release [2.x](https://pypi.org/project/intel-tensorflow/)
 Intel | **Windows CPU with Intel oneDNN** Stable Release 2.x | No Badge | Release [2.x](https://pypi.org/project/intel-tensorflow/)
-Linaro | **Linux aarch64 CPU** Nightly | [![Build Status](https://ci.linaro.org/jenkins/buildStatus/icon?job=ldcg-python-manylinux-tensorflow-nightly)](https://ci.linaro.org/jenkins/job/ldcg-python-manylinux-tensorflow-nightly/) | [Nightly](http://snapshots.linaro.org/ldcg/python/tensorflow-manylinux-nightly/latest/)
-Linaro | **Linux aarch64 CPU** Stable Release | [![Build Status](https://ci.linaro.org/jenkins/buildStatus/icon?job=ldcg-python-manylinux-tensorflow)](https://ci.linaro.org/jenkins/job/ldcg-python-manylinux-tensorflow/) | Release [1.x & 2.x](http://snapshots.linaro.org/ldcg/python/tensorflow-manylinux/)
 
 
 ### TensorFlow Containers
 
 Owner | Container Type | Status | Artifacts
 ---: | --- | :---: | :---
-Linaro | **TensorFlow aarch64 Neoverse-N1 CPU** Stable <br> Debian | Static | Release [2.3](https://hub.docker.com/r/linaro/tensorflow-arm-neoverse-n1)
 Arm | **TensorFlow AArch64 Neoverse-N1 CPU** Stable | Static | [Docker Hub](https://hub.docker.com/r/armswdev/tensorflow-arm-neoverse-n1)
 AMD| **Linux ROCm GPU** Stable | Static | [Docker Hub](https://hub.docker.com/r/rocm/tensorflow)
 Intel | **Linux CPU with Intel oneDNN** Stable | Static | [Docker Hub](https://hub.docker.com/r/intel/intel-optimized-tensorflow)

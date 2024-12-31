@@ -49,7 +49,7 @@ jobs:
 
       - name: Download previous workflow's data
         if: "${{ github.event.inputs.reset != 'yes reset' }}"
-        uses: dawidd6/action-download-artifact@v2
+        uses: dawidd6/action-download-artifact@v6
         with:
           path: tf_oss_dashboard
           workflow_conclusion: success
@@ -99,7 +99,7 @@ jobs:
           persist-credentials: false
 
       # Get all artifacts into current dir
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4.1.7
         with:
           path: artifacts
 
