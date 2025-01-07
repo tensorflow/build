@@ -46,11 +46,11 @@ use Graft exactly as you would use the Go bindings found in the main TensorFlow
 repo, and with one of the following import statements:
 
 
-| TensorFlow C API          | Graft                                                                                               |
-| :------------------------ | :-------------------------------------------------------------------------------------------------- |
-| TensorFlow Release 2.17.0 | [`go get github.com/wamuir/graft/tensorflow@v0.9.0`](https://github.com/wamuir/graft/tree/v0.9.0)   |
-| TensorFlow Release 2.16.2 | [`go get github.com/wamuir/graft/tensorflow@v0.8.2`](https://github.com/wamuir/graft/tree/v0.8.2)   |
-| TensorFlow Nightly        | [`go get github.com/wamuir/graft/tensorflow@nightly`](https://github.com/wamuir/graft/tree/nightly) |
+| TensorFlow C API          | Graft                                                                                                 |
+| :------------------------ | :---------------------------------------------------------------------------------------------------- |
+| TensorFlow Release 2.18.0 | [`go get github.com/wamuir/graft/tensorflow@v0.10.0`](https://github.com/wamuir/graft/tree/v0.10.0)   |
+| TensorFlow Release 2.17.1 | [`go get github.com/wamuir/graft/tensorflow@v0.9.1`](https://github.com/wamuir/graft/tree/v0.9.1)     |
+| TensorFlow Nightly        | [`go get github.com/wamuir/graft/tensorflow@nightly`](https://github.com/wamuir/graft/tree/nightly)   |
 
 
 ## Build from Source
@@ -58,7 +58,7 @@ repo, and with one of the following import statements:
 <details>
 <summary>Click to expand</summary>
 
-> Note: these build instructions are specific to TensorFlow 2.17.0
+> Note: these build instructions are specific to TensorFlow 2.18.0
 
 ### 1. Install the TensorFlow C Library
 
@@ -67,7 +67,7 @@ library is required for use of the TensorFlow Go package at runtime. For example
 on Linux (64-bit, x86):
 
   ```sh
-  $ curl -L https://storage.googleapis.com/tensorflow/versions/2.17.0/libtensorflow-cpu-linux-x86_64.tar.gz | tar xz --directory /usr/local
+  $ curl -L https://storage.googleapis.com/tensorflow/versions/2.18.0/libtensorflow-cpu-linux-x86_64.tar.gz | tar xz --directory /usr/local
   $ ln -s external/local_tsl/tsl /usr/local/include/tsl
   $ ldconfig
   ```
@@ -106,7 +106,7 @@ Instead, follow these instructions.***
   workspace for `/go` in the command below.
 
   ```sh
-  $ git clone --branch v2.17.0 https://github.com/tensorflow/tensorflow.git /go/src/github.com/tensorflow/tensorflow
+  $ git clone --branch v2.18.0 https://github.com/tensorflow/tensorflow.git /go/src/github.com/tensorflow/tensorflow
   ```
 
 - Change the working directory to the base of the cloned TensorFlow repository,
@@ -134,16 +134,17 @@ Instead, follow these instructions.***
 - Patch Tensor Standard Library (TSL) protos to declare Go package.
 
    ```sh
-   $ sed -i '5 c option go_package = "github.com\/google\/tsl\/tsl\/go_proto";' third_party/xla/third_party/tsl/tsl/protobuf/bfc_memory_map.proto
-   $ sed -i '5 c option go_package = "github.com\/google\/tsl\/tsl\/go_proto";' third_party/xla/third_party/tsl/tsl/protobuf/coordination_config.proto
-   $ sed -i '7 c option go_package = "github.com\/google\/tsl\/tsl\/go_proto";' third_party/xla/third_party/tsl/tsl/protobuf/coordination_service.proto
-   $ sed -i '6 c option go_package = "github.com\/google\/tsl\/tsl\/go_proto";' third_party/xla/third_party/tsl/tsl/protobuf/distributed_runtime_payloads.proto
-   $ sed -i '8 c option go_package = "github.com\/google\/tsl\/tsl\/go_proto";' third_party/xla/third_party/tsl/tsl/protobuf/dnn.proto
+   $ sed -i '5  c option go_package = "github.com\/google\/tsl\/tsl\/go_proto";' third_party/xla/third_party/tsl/tsl/protobuf/coordination_config.proto
+   $ sed -i '7  c option go_package = "github.com\/google\/tsl\/tsl\/go_proto";' third_party/xla/third_party/tsl/tsl/protobuf/coordination_service.proto
+   $ sed -i '6  c option go_package = "github.com\/google\/tsl\/tsl\/go_proto";' third_party/xla/third_party/tsl/tsl/protobuf/distributed_runtime_payloads.proto
+   $ sed -i '8  c option go_package = "github.com\/google\/tsl\/tsl\/go_proto";' third_party/xla/third_party/tsl/tsl/protobuf/dnn.proto
    $ sed -i '12 c option go_package = "github.com\/google\/tsl\/tsl\/go_proto";' third_party/xla/third_party/tsl/tsl/protobuf/error_codes.proto
-   $ sed -i '8 c option go_package = "github.com\/google\/tsl\/tsl\/go_proto";' third_party/xla/third_party/tsl/tsl/protobuf/histogram.proto
-   $ sed -i '5 c option go_package = "github.com\/google\/tsl\/tsl\/go_proto";' third_party/xla/third_party/tsl/tsl/protobuf/rpc_options.proto
+   $ sed -i '8  c option go_package = "github.com\/google\/tsl\/tsl\/go_proto";' third_party/xla/third_party/tsl/tsl/protobuf/histogram.proto
+   $ sed -i '5  c option go_package = "github.com\/google\/tsl\/tsl\/go_proto";' third_party/xla/third_party/tsl/tsl/protobuf/rpc_options.proto
    $ sed -i '10 c option go_package = "github.com\/google\/tsl\/tsl\/go_proto";' third_party/xla/third_party/tsl/tsl/protobuf/status.proto
-   $ sed -i '13 i option go_package = "github.com\/google\/tsl\/tsl\/go_proto";' third_party/xla/third_party/tsl/tsl/protobuf/test_log.proto
+   $ sed -i '9  i option go_package = "github.com\/google\/tsl\/tsl\/go_proto";' third_party/xla/xla/autotuning.proto
+   $ sed -i '5  c option go_package = "github.com\/google\/tsl\/tsl\/go_proto";' third_party/xla/xla/tsl/protobuf/bfc_memory_map.proto
+   $ sed -i '13 i option go_package = "github.com\/google\/tsl\/tsl\/go_proto";' third_party/xla/xla/tsl/protobuf/test_log.proto
    ```
 
 - Patch tensorflow/go/genop to generate TF and TSL protobufs.
@@ -151,9 +152,11 @@ Instead, follow these instructions.***
    ```sh
    $ sed -i '71d;72d' tensorflow/go/genop/generate.sh
    $ sed -i '71 i \    ${TF_DIR}\/third_party\/xla\/xla\/autotuning.proto \\' tensorflow/go/genop/generate.sh
-   $ sed -i '72 i \    ${TF_DIR}\/third_party\/xla\/third_party\/tsl\/tsl\/protobuf\/*.proto; do \\' tensorflow/go/genop/generate.sh
-   $ sed -i '74 i \    -I ${TF_DIR}/third_party/xla/third_party/tsl \\' tensorflow/go/genop/generate.sh
-   $ sed -i '75 i \    -I ${TF_DIR}/third_party/xla \\' tensorflow/go/genop/generate.sh
+   & sed -i '72 i \    ${TF_DIR}\/third_party\/xla\/xla\/tsl\/protobuf\/bfc_memory_map.proto \\' tensorflow/go/genop/generate.sh
+   $ sed -i '73 i \    ${TF_DIR}\/third_party\/xla\/third_party\/tsl\/tsl\/protobuf\/*.proto; do \\' tensorflow/go/genop/generate.sh
+   $ sed -i '75 i \    -I ${TF_DIR}/third_party/xla/third_party/tsl \\' tensorflow/go/genop/generate.sh
+   $ sed -i '76 i \    -I ${TF_DIR}/third_party/xla/xla/tsl/protobuf \\' tensorflow/go/genop/generate.sh
+   $ sed -i '77 i \    -I ${TF_DIR}/third_party/xla \\' tensorflow/go/genop/generate.sh
    ```
 
 - Generate wrappers and protocol buffers.
@@ -200,7 +203,7 @@ workspace for `/go` in the command below:
 ```sh
 $ go mod init hello-world
 $ go mod edit -require github.com/google/tsl@v0.0.0+incompatible
-$ go mod edit -require github.com/tensorflow/tensorflow@v2.17.0+incompatible
+$ go mod edit -require github.com/tensorflow/tensorflow@v2.18.0+incompatible
 $ go mod edit -replace github.com/google/tsl=/go/src/github.com/google/tsl
 $ go mod edit -replace github.com/tensorflow/tensorflow=/go/src/github.com/tensorflow/tensorflow
 $ go mod tidy
@@ -248,7 +251,7 @@ func main() {
 ```sh
 $ go mod init app
 $ go mod edit -require github.com/google/tsl@v0.0.0+incompatible
-$ go mod edit -require github.com/tensorflow/tensorflow@v2.17.0+incompatible
+$ go mod edit -require github.com/tensorflow/tensorflow@v2.18.0+incompatible
 $ go mod edit -replace github.com/google/tsl=/go/src/github.com/google/tsl
 $ go mod edit -replace github.com/tensorflow/tensorflow=/go/src/github.com/tensorflow/tensorflow
 $ go mod tidy
