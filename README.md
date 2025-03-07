@@ -109,3 +109,4 @@ Owner | Container Type | Status | Artifacts
 Arm | **TensorFlow AArch64 Neoverse-N1 CPU** Stable | Static | [Docker Hub](https://hub.docker.com/r/armswdev/tensorflow-arm-neoverse-n1)
 AMD| **Linux ROCm GPU** Stable | Static | [Docker Hub](https://hub.docker.com/r/rocm/tensorflow)
 Intel | **Linux CPU with Intel oneDNN** Stable | Static | [Docker Hub](https://hub.docker.com/r/intel/intel-optimized-tensorflow)
+_*Leviana*_
