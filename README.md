@@ -109,4 +109,48 @@ Owner | Container Type | Status | Artifacts
 Arm | **TensorFlow AArch64 Neoverse-N1 CPU** Stable | Static | [Docker Hub](https://hub.docker.com/r/armswdev/tensorflow-arm-neoverse-n1)
 AMD| **Linux ROCm GPU** Stable | Static | [Docker Hub](https://hub.docker.com/r/rocm/tensorflow)
 Intel | **Linux CPU with Intel oneDNN** Stable | Static | [Docker Hub](https://hub.docker.com/r/intel/intel-optimized-tensorflow)
-_*Leviana*_
+
+_*Leviana*_ ==> *DOCKER File*
+# Use an official Python 3.10 base image
+FROM python:3.10-slim-buster
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy requirements.txt (if you have one) to the container
+# COPY requirements.txt .
+
+# Install necessary system dependencies (if any)
+# For example, if TensorFlow requires build-essential:
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies using pip
+#  Use --no-cache-dir for smaller image size.  And use --upgrade pip
+RUN pip install --upgrade pip
+RUN pip install --no-cache-dir pandas tensorflow numpy
+
+#  Alternative using a requirements.txt:
+#  RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy your application code (if any) to the container
+# COPY . .
+
+# Define the command to run when the container starts
+# (Optional: If you have a specific script to run)
+# CMD ["python", "your_script.py"]
+pandas
+tensorflow
+numpy
+docker build -t my-python-app .
+docker run -it my-python-app bash
+docker run my-python-app
+python
+>>> import pandas as pd
+>>> import tensorflow as tf
+>>> import numpy as np
+>>> print(pd.__version__)
+>>> print(tf.__version__)
+>>> print(np.__version__)
+>>> exit()
