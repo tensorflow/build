@@ -110,7 +110,7 @@ Arm | **TensorFlow AArch64 Neoverse-N1 CPU** Stable | Static | [Docker Hub](http
 AMD| **Linux ROCm GPU** Stable | Static | [Docker Hub](https://hub.docker.com/r/rocm/tensorflow)
 Intel | **Linux CPU with Intel oneDNN** Stable | Static | [Docker Hub](https://hub.docker.com/r/intel/intel-optimized-tensorflow)
 
-_*Leviana*_ ==> *DOCKER File*
+_*Leviana*_  *DOCKER File*
 # Use an official Python 3.10 base image
 FROM python:3.10-slim-buster
 
