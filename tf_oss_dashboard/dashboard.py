@@ -63,6 +63,7 @@ JSON_DATA = json.load(sys.stdin)
 # So we end up with a big list of each single job invocation and its results
 # plus all its associated commit metadata.
 all_records = []
+workflows = defaultdict(object)
 CHANGELIST_REGEX = re.compile(r"PiperOrigin-RevId: (\d+)")
 for commit in JSON_DATA["data"]["repository"]["ref"]["target"]["history"]["nodes"]:
   # Ignore commits with no statusCheckRollup, which can happen sometimes --
@@ -108,14 +109,31 @@ for commit in JSON_DATA["data"]["repository"]["ref"]["target"]["history"]["nodes
       name_first = "?"
       if check["checkSuite"]["workflowRun"]:
         name_first = check["checkSuite"]["workflowRun"]["workflow"]["name"]
+        clone["workflow_id"] = check["checkSuite"]["workflowRun"]["workflow"]["id"]
+        if clone["workflow_id"] not in workflows:
+          workflows[clone["workflow_id"]] = {
+            "url": check["checkSuite"]["workflowRun"]["workflow"]["url"],
+            "name": check["checkSuite"]["workflowRun"]["workflow"]["name"],
+            "jobs": defaultdict(object)
+          }
+
+      clone["base_name"] = check["name"]
       clone["name"] = f"{name_first} / {check['name']}"
       clone["type"] = "github action"
+
+      if check["checkSuite"]["workflowRun"] and clone["workflow_id"] in workflows and clone["name"] not in workflows[clone["workflow_id"]]["jobs"]:
+        workflows[clone["workflow_id"]]["jobs"][clone["name"]] = {
+          "display_name" : clone["base_name"], # When we add workflow runs we don't want the workflow name appended twice
+          "entries": list()
+        }
+
       # "conclusion" is only present and valuable if the Action has already
       # finished running. If it's not there, then we want "status", which will
       # say e.g. PENDING or QUEUED.
       clone["state"] = check["conclusion"] or check["status"]
       clone["result_url"] = check["url"]
       clone["is_public"] = True
+      
     if not YAML_CONFIG["internal_shown"] and not clone["is_public"]:
       continue
     if clone["name"] in YAML_CONFIG["hidden"]:
@@ -224,6 +242,18 @@ for job_name, original_records in job_names_to_records.items():
 
   job_names_to_records[job_name] = records
 
+
+# If group by workflow is set, all GH Actions workflows will gain their own category
+# In which their jobs are listed underneath them.  The workflow will also
+# have a link to the workflow file.
+# For each workflow claim each job name that it is associated with
+for workflow_id, workflow_record in workflows.items():
+  for name in workflow_record["jobs"]:
+    if name in job_names_to_records:
+      workflow_record["jobs"][name]["entries"] = job_names_to_records[name]
+      # TODO: probably delete the record from the main list
+
+
 # Now we group all the jobs (which are records grouped by job name, sorted
 # by date) into their categories, as specified in config.yaml. We process
 # everything such that we get:
@@ -255,6 +285,7 @@ isonow = arrow.now().to('US/Pacific').isoformat()
 with open(os.path.join(OUTDIR, "index.html"), "w") as f:
   f.write(template.render(
       by_group=by_group,
+      by_workflow=workflows,
       by_commit=commits_to_records,
       helptext=helptext,
       now=now,
