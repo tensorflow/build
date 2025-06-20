@@ -1,8 +1,8 @@
 # Raspberry Pi Builds
 
-TensorFlow's old official docs for building on Raspberry Pi. Needs an owner.
+TensorFlow's old official docs for building on Raspberry Pi. [McCoy Louis Stevens 20/06/2025 owner]
 
-Maintainer: @angerson (TensorFlow, SIG Build)
+Maintainer: @cdwhq (TensorFlow, SIG Build)
 
 * * *
 
