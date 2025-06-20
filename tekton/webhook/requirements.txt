@@ -1,8 +1,8 @@
 Click==7.0
 Flask==2.3.2
-gunicorn==22.0.0
+gunicorn==23.0.0
 itsdangerous==1.1.0
-Jinja2==3.1.4
+Jinja2==3.1.6
 MarkupSafe==1.1.1
-Werkzeug==3.0.3
+Werkzeug==3.0.6
 
