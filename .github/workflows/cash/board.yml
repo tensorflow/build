@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        config: [ tensorflow, jax ]
+        config: [jax] #[ tensorflow, jax ]
     permissions:
       contents: read
       pages: write
@@ -43,17 +43,15 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # ratchet:actions/checkout@v4
         with:
           persist-credentials: false
 
       - name: Download previous workflow's data
         if: "${{ github.event.inputs.reset != 'yes reset' }}"
-        uses: dawidd6/action-download-artifact@v6
+        uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # ratchet:actions/download-artifact@v4.1.7
         with:
           path: tf_oss_dashboard
-          workflow_conclusion: success
-          if_no_artifact_found: warn
 
       - name: Overwrite data, if provided
         if: "${{ github.event.inputs.gist != '' }}"
@@ -73,10 +71,10 @@ jobs:
         working-directory: tf_oss_dashboard
 
       - name: Upload ongoing data and dashboard output
-        uses: actions/upload-artifact@83fd05a356d7e2593de66fc9913b3002723633cb # v3.1.1
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # ratchet:actions/upload-artifact@v4
         with:
           name: ${{matrix.config}}
-          path: tf_oss_dashboard/${{matrix.config}}
+          path: tf_oss_dashboard
           retention-days: 5
 
   assemble:
@@ -94,29 +92,30 @@ jobs:
 
     steps:
       - name: "Checkout code"
-        uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # ratchet:actions/checkout@v4
         with:
           persist-credentials: false
 
       # Get all artifacts into current dir
-      - uses: actions/download-artifact@v4.1.7
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # ratchet:actions/download-artifact@v4.1.7
         with:
           path: artifacts
 
       - name: Move dashboard around, include all generated files
         run: |
-          mv artifacts/tensorflow .site
+          ls artifacts
+          mv artifacts/jax .site
           mv -t .site tf_oss_dashboard/*
           rmdir artifacts || mv -t .site artifacts/*
 
       - name: Setup Pages
-        uses: actions/configure-pages@v3
+        uses: actions/configure-pages@b8130d9ab958b325bbde9786d62f2c97a9885a0e # ratchet:actions/configure-pages@v3
 
       - name: Upload pages artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@84bb4cd4b733d5c320c9c9cfbc354937524f4d64 # ratchet:actions/upload-pages-artifact@v1
         with:
           path: '.site'
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@f27bcc15848fdcdcc02f01754eb838e44bcf389b # ratchet:actions/deploy-pages@v1
