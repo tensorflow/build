@@ -2,24 +2,20 @@
 
 TensorFlow's old official docs for building on Raspberry Pi. Needs an owner.
 
-Maintainer: @angerson (TensorFlow, SIG Build)
+Maintainer: @cdwhq (TensorFlow, SIG Build)
 
 * * *
 
 **Important: TensorFlow for the Raspberry Pi is no longer supported by the
 TensorFlow team. (last tested on 2.3.0rc2). See the [Build TensorFlow Lite for
 Raspberry Pi](https://www.tensorflow.org/lite/guide/build_rpi) guide.**
-
 **This guide is a mirror of the old official documentation and may not work. If
 you'd like to own this and keep it up-to-date, please file a PR!**
-
 # Build from source for the Raspberry Pi
-
 This guide builds a TensorFlow package for a
 [Raspberry Pi](https://www.raspberrypi.org/) device running
 [Raspbian 9.0](https://www.raspberrypi.org/downloads/raspbian/).
-While the instructions might work for other Raspberry Pi variants, it is only
-tested and supported for this configuration.
+While the instructions might work for other Raspberry Pi variants, it is onlytested and supported for this configuration.
 
 We recommend *cross-compiling* the TensorFlow Raspbian package.
 Cross-compilation is using a different platform to build the package than deploy
@@ -27,16 +23,16 @@ to. Instead of using the Raspberry Pi's limited RAM and comparatively slow
 processor, it's easier to build TensorFlow on a more powerful host machine
 running Linux, macOS, or Windows.
 
-## Setup for host
+# Setup for localhost
 
-### Install Docker
+# Install Docker
 
 To simplify dependency management, the build script uses
 [Docker](https://docs.docker.com/install/) to create a virtual Linux development
 environment for compilation. Verify your Docker install by executing: `docker
 run --rm hello-world`
 
-### Download the TensorFlow source code
+# Download the TensorFlow source code
 
 Use [Git](https://git-scm.com/) to clone the
 [TensorFlow repository](https://github.com/tensorflow/tensorflow):
