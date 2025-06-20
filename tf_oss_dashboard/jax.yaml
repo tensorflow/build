@@ -20,9 +20,11 @@ help: >-
   This is Jax's open-source build status dashboard. It tracks all GitHub
   Actions statuses for the Jax repository.
 categories:
-  JAX CI: []
+  Continuous Jobs: []
+  Other Jobs: []
   Ignorable:
     - '? / cla/google'
+    - '? / CodeQL'
 # Don't show these at all. E.g. for jobs that have been deleted
 hidden: []
 buildcop: []
