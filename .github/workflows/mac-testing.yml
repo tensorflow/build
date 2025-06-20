@@ -1,15 +1,13 @@
 name: Manual trigger
 on:
-  push:
-    paths:
-      - '.github/workflows/mac-testing.yml'
+  workflow_dispatch:
+    inputs:
+      name:
+        description: "Who to greet"
+        default: "World"
 jobs:
     hello:
-        runs-on: [self-hosted, macOS, ARM64]
+        runs-on: [self-hosted, linux, ARM64]
         steps:
-        - name: Checkout TensorFlow IO
-          uses: actions/checkout@v3
-          with:
-            repository: tensorflow/io
         - name: Hello Step
-          run: echo "Hello world!"
+          run: echo "Hello ${{ github.event.inputs.name }}"
