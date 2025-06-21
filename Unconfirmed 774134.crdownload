@@ -1,0 +1,728 @@
+ #Requires -RunAsAdministrator
+[CmdletBinding()]
+Param(
+    [switch] $Force
+)
+# Start Region: Set user inputs
+
+$location = 'eastus'
+
+$applianceSubscriptionId = '8cfe3c02-b3cc-4e8d-ac4f-c6d202bd3214'
+$applianceResourceGroupName = 'myPostgresResourceGroupadad59'
+$applianceName = 'middle'
+
+$customLocationSubscriptionId = '8cfe3c02-b3cc-4e8d-ac4f-c6d202bd3214'
+$customLocationResourceGroupName = 'myPostgresResourceGroupadad59'
+$customLocationName = 'unknown'
+
+$vCenterSubscriptionId = '8cfe3c02-b3cc-4e8d-ac4f-c6d202bd3214'
+$vCenterResourceGroupName = 'myPostgresResourceGroupadad59'
+$vCenterName = 'vmiddle'
+
+$enableAKS = 'true'
+
+# End Region: Set user inputs
+
+function confirmationPrompt($msg) {
+    Write-Host -ForegroundColor Yellow $msg
+    while ($true) {
+        $inp = Read-Host "Yes(y)/No(n)?"
+        $inp = $inp.ToLower()
+        if ($inp -eq 'y' -or $inp -eq 'yes') {
+            return $true
+        }
+        elseif ($inp -eq 'n' -or $inp -eq 'no') {
+            return $false
+        }
+    }
+}
+
+$logFile = Join-Path $PSScriptRoot "arcvmware-output.log"
+
+# https://stackoverflow.com/a/40098904/7625884
+$PSDefaultParameterValues = @{ '*:Encoding' = 'utf8' }
+
+function getTimestamp {
+    $localTime = Get-Date -Format "yyyy-MM-ddTHH:mm:sszzz"
+    return "[$localTime]"
+}
+
+function logText($msg) {
+    $msgFull = "$(getTimestamp) $msg"
+    Write-Host "$msgFull"
+    Add-Content -Value "$msgFull" -Path $logFile
+}
+
+function logH1($msg) {
+    logText " "
+    $pattern = '0-' * 40
+    $spaces = ' ' * (40 - $msg.length / 2)
+    $nl = [Environment]::NewLine
+    $msgFull = "$nl $nl $pattern $nl $spaces $msg $nl $pattern $nl"
+    Write-Host -ForegroundColor Green $msgFull
+    Add-Content -Value "$msgFull" -Path $logFile
+}
+
+function logH2($msg) {
+    logText " "
+    $msgFull = "==> $msg"
+    Write-Host -ForegroundColor Magenta $msgFull
+    Add-Content -Value "$msgFull" -Path $logFile
+}
+
+function logWarn($msg) {
+    $msg = "$(getTimestamp) $msg"
+    Write-Host -ForegroundColor Yellow $msg
+    Add-Content -Value "$msg" -Path $logFile
+}
+
+function logError($msg) {
+    $msg = "$(getTimestamp) $msg"
+    Write-Host -ForegroundColor Red $msg
+    Add-Content -Value "$msg" -Path $logFile
+}
+
+function grepAzcliError() {
+    $azcliError = Select-String -Path $logFile -Pattern "msrest.exceptions" -Context 0, 5 | Select-Object -Last 1
+    return $azcliError
+}
+
+
+function createRG($subscriptionId, $rgName) {
+    $group = (az group show --subscription $subscriptionId -n $rgName)
+    if (!$group) {
+        logText "Resource Group $rgName does not exist in subscription $subscriptionId. Trying to create the resource group"
+        az group create --subscription $subscriptionId -l $location -n $rgName
+    }
+}
+function fail($msg) {
+    $msgFull = "$(getTimestamp) Script execution failed with error: $msg"
+    Write-Host -ForegroundColor Red $msgFull
+    Add-Content -Value "$msgFull" -Path $logFile
+    logText "The script will terminate shortly"
+    Start-Sleep -Seconds 5
+    exit 1
+}
+
+function evaluateForceFlag([bool]$force) {
+    $resource_config_file_path = Join-Path $PWD "$applianceName-resource.yaml"
+    $infra_config_file_path = Join-Path $PWD "$applianceName-infra.yaml"
+    $appliance_config_file_path = Join-Path $PWD "$applianceName-appliance.yaml"
+
+    $missingFiles = @()
+    if (!(Test-Path $resource_config_file_path)) {
+        $missingFiles += $resource_config_file_path
+    }
+    if (!(Test-Path $infra_config_file_path)) {
+        $missingFiles += $infra_config_file_path
+    }
+    if (!(Test-Path $appliance_config_file_path)) {
+        $missingFiles += $appliance_config_file_path
+    }
+
+    if ($missingFiles.Count -eq 0) {
+        # If all the config files are present and the appliance is not in running state,
+        # we always run with --force flag.
+        logText "Using --force flag as all the required config files are present."
+        return $true
+    }
+
+    if ($missingFiles.Count -eq 3) {
+        if ($force) {
+            # If no config files are found, it might indicate that the script hasn't been
+            # executed in the current directory to create the Azure resources before.
+            # We let 'az arcappliance run' command handle the force flag.
+            logText "Warning: None of the required config files are present."
+        }
+        return $force
+    }
+
+    if ($force) {
+        # Handle missing config files occuring due to createconfig failure.
+        $missingMsg = $missingFiles -join "`n"
+        logText "Ignoring --force flag as one or more of the required config files are missing."
+        $msg = "Missing configuration files:`n$missingMsg`n"
+        logText $msg
+    }
+    return $false
+}
+
+$vcFqdnKey = "vCenterFqdn"
+$vcPortKey = "vCenterPort"
+$vcAddressKey = "vCenterAddress"
+$vcUsernameKey = "vCenterUsername"
+$vcPasswordKey = "vCenterPassword"
+$avsIdKey = "avsId"
+$vcenterDetails = @{}
+function fetchVcenterDetailsInto($vcenterDetails) {
+    if (![string]::IsNullOrEmpty($vcenterDetails[$vcAddressKey]) -and
+        ![string]::IsNullOrEmpty($vcenterDetails[$vcUsernameKey]) -and
+        ![string]::IsNullOrEmpty($vcenterDetails[$vcPasswordKey])) {
+        return
+    }
+    while ($true) {
+        $vcenterDetailsMsg = "`nProvide vCenter details.`n" +
+        "Enter the FQDN or IP Address in the format `FQDN:PORT` or `IP:PORT`. If the port is not specified, the default port 443 will be used.`n" +
+        "`t* For example, if your vCenter URL is https://vcenter.contoso.com/ then enter vcenter.contoso.com`n" +
+        "`t* If your vCenter URL is http://10.11.12.13:9090/ then enter 10.11.12.13:9090`n" +
+        "Enter full vCenter username. If your username is associated with a domain, please use one of the following formats: domain\username or username@domain.`n"
+        logWarn $vcenterDetailsMsg
+        while ($true) {
+            if (![string]::IsNullOrEmpty($vcenterDetails[$vcAddressKey])) {
+                $address = $vcenterDetails[$vcAddressKey]
+                break
+            }
+            $address = Read-Host "Please enter vCenter FQDN or IP Address"
+            if ([string]::IsNullOrEmpty($address)) {
+                Write-Host "FQDN or IP Address cannot be empty. Please try again."
+                continue
+            }
+            # reprompt if https:// or http:// is present in the address or it ends with a slash
+            if ($address -imatch '^https?://' -or $address.EndsWith('/')) {
+                Write-Host "Please enter only the FQDN or IP Address. Do not include https:// or http:// in the address or end the address with a slash."
+                continue
+            }
+            # split the address into fqdn/ip and port, with the last colon as the separator
+            $addr_port = $address -split ":", -2
+            $fqdn = $addr_port[0]
+            $port = "443"
+            if ($addr_port.Length -eq 2) {
+                $port = $addr_port[1]
+            }
+            if (-not [int]::TryParse($port, [ref]$null)) {
+                Write-Host "Port must be a number. Please try again."
+                continue
+            }
+            break
+        }
+        while ($true) {
+            if (![string]::IsNullOrEmpty($vcenterDetails[$vcUsernameKey])) {
+                $username = $vcenterDetails[$vcUsernameKey]
+                break
+            }
+            $username = Read-Host "Please enter vCenter username"
+            if ([string]::IsNullOrEmpty($username)) {
+                Write-Host "Username cannot be empty. Please try again."
+                continue
+            }
+            break
+        }
+        while ($true) {
+            if (![string]::IsNullOrEmpty($vcenterDetails[$vcPasswordKey])) {
+                $password = $vcenterDetails[$vcPasswordKey]
+                break
+            }
+            $passwordSec = Read-Host "Please enter vCenter password" -AsSecureString
+            $confirmPasswordSec = Read-Host "Please confirm vCenter password" -AsSecureString
+            $password = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($passwordSec))
+            $confirmPassword = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($confirmPasswordSec))
+            if ($password.Length -eq 0) {
+                Write-Host "Password cannot be empty. Please try again."
+            }
+            elseif ($password -cne $confirmPassword) {
+                Write-Host "Passwords do not match. Please try again."
+            }
+            else {
+                break
+            }
+        }
+        $avsId = ""
+        if ($port -eq "443" -and ($fqdn -match '^10\.\d+\.\d+\.2$' -or $username -eq 'cloudadmin@vsphere.local' -or $fqdn.EndsWith('.avs.azure.com'))) {
+            while ($true) {
+                $avsMsg = "`nIf AVS is being Arc-enabled, please enter the ARM ID of the private cloud, else skip by pressing Enter.`n" +
+                "`tAVS SDDC ID has the pattern: /subscriptions/01234567-0123-0123-0123-0123456789ab/resourceGroups/contoso-rg/providers/Microsoft.AVS/privateClouds/contoso-sddc"
+                logWarn $avsMsg
+                $avsId = Read-Host "Please enter the ARM ID of the AVS private cloud, press Enter to skip"
+                if ([string]::IsNullOrEmpty($avsId)) {
+                    break
+                }
+                $resType = (az resource show --ids $avsId --query type -o tsv 2>> $logFile)
+                if ([string]::IsNullOrEmpty($resType)) {
+                    Write-Host "Could not find the AVS resource with the provided ARM ID. Please try again."
+                    continue
+                }
+                if ($resType -ne "Microsoft.AVS/privateClouds") {
+                    Write-Host "The provided ARM ID does not belong to an AVS private cloud. Please try again."
+                    continue
+                }
+                break
+            }
+        }
+        $confirm = Read-Host "Confirm vCenter details? [Y/n]"
+        if ([string]::IsNullOrEmpty($confirm) -or $confirm -imatch '^(yes|y)$') {
+            # Enquote username and password with double quotes,
+            # so that special characters are not interpreted by PowerShell.
+            $username = '"{0}"' -f $username.Replace('"', '""')
+            $password = '"{0}"' -f $password.Replace('"', '""')
+
+            $vcenterDetails[$vcAddressKey] = $address
+            $vcenterDetails[$vcFqdnKey] = $fqdn
+            $vcenterDetails[$vcPortKey] = $port
+            $vcenterDetails[$vcUsernameKey] = $username
+            $vcenterDetails[$vcPasswordKey] = $password
+            $vcenterDetails[$avsIdKey] = $avsId
+            break
+        }
+    }
+}
+
+if ((Get-Host).Name -match "ISE") {
+    fail "The script is not supported in PowerShell ISE window, please run it in a regular PowerShell window"
+}
+
+function getKvaLogfilePath() {
+    $osVersion = [System.Environment]::OSVersion
+    $platform = $osVersion.Platform
+    # if platform is Unix or MacOS, path is ~/.kva/kva.log else C:\ProgramData\kva\kva.log
+    if ($platform -eq "Unix" -or $platform -eq "MacOSX") {
+        $kvaLogfilePath = [IO.Path]::Combine($env:HOME, ".kva", "kva.log")
+    }
+    else {
+        $programData = $env:ProgramData
+        if (-not $env:ProgramData) {
+            $programData = "C:\ProgramData"
+        }
+        $kvaLogfilePath = [IO.Path]::Combine($programData, "kva", "kva.log")
+    }
+    # check if the file exists
+    if (-not (Test-Path $kvaLogfilePath)) {
+        logWarn "The kva.log file does not exist at the default location: $kvaLogfilePath"
+        $kvaLogfilePath = ""
+    }
+}
+
+$kvaLogfilePath = getKvaLogfilePath
+$supportMsg = "`nPlease reach out to arc-vmware-feedback@microsoft.com or create a support ticket for Arc enabled VMware vSphere in Azure portal. Please provide the log files '$logFile' and '$kvaLogfilePath' for further investigation."
+
+logH1 "Step 1/5: Setting up the current workstation"
+
+if (!$UseProxy -and (confirmationPrompt -msg "Is the current workstation machine behind a proxy?")) {
+    $UseProxy = $true
+}
+
+Write-Host "Setting the TLS Protocol for the current session to TLS 1.3 if supported, else TLS 1.2."
+# Ensure TLS 1.2 is accepted. Older PowerShell builds (sometimes) complain about the enum "Tls12" so we use the underlying value
+[Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor 3072
+# Ensure TLS 1.3 is accepted, if this .NET supports it (older versions don't)
+try { [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor 12288 } catch {}
+
+$proxyCA = ""
+
+if ($UseProxy) {
+    logH2 "Provide proxy details for this workstation machine"
+    while ($true) {
+        $proxyURL = Read-Host "Please enter Proxy URL (ex: http://10.1.2.3:3128 or http://proxy.contoso.com:8080)"
+
+        if ([string]::IsNullOrEmpty($proxyURL)) {
+            Write-Host -ForegroundColor Red "Proxy URL cannot be empty. Please try again."
+            continue
+        }
+
+        if ($proxyURL.StartsWith("http") -ne $true) {
+            $proxyURL = "http://$proxyURL"
+        }
+        break
+    }
+
+
+    $recommendedEntries = "localhost,127.0.0.1,.svc,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,::1"
+    $requiredEntries = @("localhost", "127.0.0.1", ".svc")
+
+    while ($true) {
+        $noProxy = Read-Host "`nNetwork connections to the local addresses, the vCenter, and the ESXi hosts should not typically go through the proxy server.`n`tPlease provide these entries as a comma separated list.`n`tFind more details here: https://aka.ms/arb-noproxy .`n`tSome recommended entries are: '$recommendedEntries'`n`tInclude the domain names for your vCenter and ESXi hosts with this list.`n`tFor example, add .contoso.com to exclude both vcenter.contoso.com and esxi-host-xyz.contoso.com .`n`tPlease enter NO_PROXY (comma separated)"
+
+        # strip any leading/trailing spaces
+        $noProxy = $noProxy.Trim()
+
+        # check for whitespace in the no_proxy list
+        if ($noProxy -match '\s') {
+            Write-Host -ForegroundColor Red "No Proxy list cannot contain spaces. Please try again."
+            continue
+        }
+
+        # verify that the required entries are present in the no_proxy list
+        $noproxyList = $noProxy.Split(",")
+        $missingEntries = @()
+        foreach ($entry in $requiredEntries) {
+            if ($noproxyList -notcontains $entry) {
+                $missingEntries += $entry
+            }
+        }
+
+        if ($missingEntries.Count -gt 0) {
+            if (-not (confirmationPrompt -msg "NOPROXY list does not have an entry to exempt '$($missingEntries -join ', ')'.`n`tOmitting these entries from the list can lead to unexpected network traffic being sent to the proxy server and to deployment failures.`n`tDo you want to continue?")) {
+                continue
+            }
+        }
+        break
+    }
+
+    $env:http_proxy = $proxyURL
+    $env:HTTP_PROXY = $proxyURL
+    $env:https_proxy = $proxyURL
+    $env:HTTPS_PROXY = $proxyURL
+    $env:no_proxy = $noProxy
+    $env:NO_PROXY = $noProxy
+
+    while ($true) {
+
+        $proxyCA = Read-Host "If your proxy server uses SSL and requires clients to trust a certificate, please enter the file path for the certificate in Base-64 encoded X.509 (.cer, .crt, .pem, etc.) format. Press Enter to skip"
+        if ($proxyCA -ne "") {
+            $proxyCA = Resolve-Path -Path $proxyCA
+            if ($null -eq $proxyCA) {
+                Write-Host -ForegroundColor Red "The file path provided is invalid. Please provide a valid certificate file path."
+                continue
+            }
+
+            if (Test-Path -Path $proxyCA -PathType Container) {
+                Write-Host -ForegroundColor Red "Provided value '$($proxyCA)' is path to a directory. Please provide a valid certificate file path."
+                continue
+            }
+        }
+        break
+    }
+
+    $credential = $null
+    $proxyAddr = $proxyURL
+
+    if ($proxyURL.Contains("@")) {
+        $x = $proxyURL.Split("//")
+        $proto = $x[0]
+        $x = $x[2].Split("@")
+        $userPass = $x[0]
+        $proxyAddr = $proto + "//" + $x[1]
+        $x = $userPass.Split(":")
+        $proxyUsername = $x[0]
+        $proxyPassword = $x[1]
+        $password = ConvertTo-SecureString -String $proxyPassword -AsPlainText -Force
+        $credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $proxyUsername, $password
+    }
+
+    [system.net.webrequest]::defaultwebproxy = new-object system.net.webproxy($proxyAddr)
+    [system.net.webrequest]::defaultwebproxy.credentials = $credential
+    [system.net.webrequest]::defaultwebproxy.BypassProxyOnLocal = $true
+}
+
+# Start Region: Install az cli
+
+$ProgressPreference = 'SilentlyContinue'
+
+function getLatestAzVersion() {
+    # https://github.com/Azure/azure-cli/blob/4e21baa4ff126ada2bc232dff74d6027fd1323be/src/azure-cli-core/azure/cli/core/util.py#L295
+    $gitUrl = "https://raw.githubusercontent.com/Azure/azure-cli/main/src/azure-cli/setup.py"
+    try {
+        $response = Invoke-WebRequest -UseBasicParsing -Uri $gitUrl -TimeoutSec 30
+    }
+    catch {
+        logWarn "Failed to get the latest version from '$gitUrl': $($_.Exception.Message)"
+        return $null
+    }
+    if ($response.StatusCode -ne 200) {
+        logWarn "Failed to fetch the latest version from '$gitUrl' with status code '$($response.StatusCode)' and reason '$($response.StatusDescription)'"
+        return $null
+    }
+    $content = $response.Content
+    foreach ($line in $content -split "`n") {
+        if ($line.StartsWith('VERSION')) {
+            $match = [System.Text.RegularExpressions.Regex]::Match($line, 'VERSION = "(.*)"')
+            if ($match.Success) {
+                return $match.Groups[1].Value
+            }
+        }
+    }
+    logWarn "Failed to extract the latest version from the content of '$gitUrl'"
+    return $null
+}
+
+function shouldInstallAzCli() {
+    # This function returns a boolean value, but any undirected / uncaptured stdout
+    # inside the function might be interpreted as true value by the caller.
+    # We can redirect using *>> to avoid this.
+    logH2 "Validating and installing 64-bit azure-cli"
+    $azCmd = (Get-Command az -ErrorAction SilentlyContinue)
+    if ($null -eq $azCmd) {
+        logText "Azure CLI is not installed. Installing..."
+        return $true
+    }
+
+    $currentAzVersion = az version --query '\"azure-cli\"' -o tsv 2>> $logFile
+    logText "Azure CLI version $currentAzVersion found in PATH at location: '$($azCmd.Source)'"
+    $azVersion = az --version *>&1;
+    $azVersionLines = $azVersion -split "`n"
+    # https://github.com/microsoft/knack/blob/e0c14114aea5e4416c70a77623e403773aba73a8/knack/cli.py#L126
+    $pyLoc = $azVersionLines | Where-Object { $_ -match "^Python location" }
+    if ($null -eq $pyLoc) {
+        logWarn "Warning: Python location could not be found from the output of az --version:`n$($azVersionLines -join "`n"))"
+        return $true
+    }
+    logText $pyLoc
+    $pythonExe = $pyLoc -replace "^Python location '(.+?)'$", '$1'
+    try {
+        logText "Determining the bitness of Python at '$pythonExe'"
+        $arch = & $pythonExe -c "import struct; print(struct.calcsize('P') * 8)";
+        if ($arch -lt 64) {
+            logText "Azure CLI is $arch-bit. Installing 64-bit version..."
+            return $true
+        }
+    }
+    catch {
+        logText "Warning: Python version could not be determined from the output of az --version:`n$($azVersionLines -join "`n"))"
+        return $true
+    }
+
+    logH2 "$arch-bit Azure CLI is already installed. Checking for updates..."
+    $latestAzVersion = getLatestAzVersion
+    if ($latestAzVersion -and ($latestAzVersion -ne $currentAzVersion)) {
+        logText "A newer version of Azure CLI ($latestAzVersion) is available, installing it..."
+        return $true
+    }
+    logText "Azure CLI is up to date."
+    return $false
+}
+
+function installAzCli64Bit() {
+    $azCliMsi = "https://aka.ms/installazurecliwindowsx64"
+    $azCliMsiPath = Join-Path $PSScriptRoot "AzureCLI.msi"
+    $msiInstallLogPath = Join-Path $env:Temp "azInstall.log"
+    logText "Downloading Azure CLI 64-bit MSI from $azCliMsi to $azCliMsiPath"
+    Invoke-WebRequest -UseBasicParsing -Uri $azCliMsi -OutFile $azCliMsiPath
+    logText "Azure CLI MSI installation log will be written to $msiInstallLogPath"
+    logH2 "Installing Azure CLI. This might take a while..."
+    $p = Start-Process msiexec.exe -Wait -Passthru -ArgumentList "/i `"$azCliMsiPath`" /quiet /qn /norestart /log `"$msiInstallLogPath`""
+    $exitCode = $p.ExitCode
+    if ($exitCode -ne 0) {
+        throw "Azure CLI installation failed with exit code $exitCode. See $msiInstallLogPath for additional details."
+    }
+    $azCmdDir = Join-Path $env:ProgramFiles "Microsoft SDKs\Azure\CLI2\wbin"
+    [System.Environment]::SetEnvironmentVariable('PATH', $azCmdDir + ';' + $Env:PATH)
+    logText "Azure CLI has been installed."
+}
+
+if (shouldInstallAzCli) {
+    installAzCli64Bit
+}
+
+$ProgressPreference = 'Continue'
+
+logText "Enabling long path support for python..."
+Start-Process powershell.exe -verb runas -ArgumentList "Set-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem -Name LongPathsEnabled -Value 1" -Wait
+
+# End Region: Install az cli
+
+try {
+    if ($proxyCA -ne "") {
+        $env:REQUESTS_CA_BUNDLE = $proxyCA
+    }
+
+    logH2 "Installing az cli extensions for Arc"
+    az config set extension.use_dynamic_install=no
+    az extension add --allow-preview false --upgrade --name arcappliance
+    az extension add --allow-preview false --upgrade --name k8s-extension
+    az extension add --allow-preview false --upgrade --name customlocation
+    az extension add --allow-preview false --upgrade --name connectedvmware
+
+    logH2 "az --version"
+    az --version
+    az --version >> $logFile
+
+    logH2 "Logging into azure"
+
+    $azLoginMsg = "Please login to Azure CLI.`n" +
+    "`t* If you're running the script for the first time, select yes.`n" +
+    "`t* If you've recently logged in to az while running the script, you can select no.`n" +
+    "Confirm login to azure cli?"
+    if (confirmationPrompt -msg $azLoginMsg) {
+        az login --use-device-code -o none
+    }
+
+    az account set -s $applianceSubscriptionId
+    if ($LASTEXITCODE) {
+        $Error[0] | Out-String >> $logFile
+        throw "The default subscription for the az cli context could not be set."
+    }
+
+    logH1 "Step 1/5: Workstation was set up successfully"
+
+    createRG "$applianceSubscriptionId" "$applianceResourceGroupName"
+
+    logH1 "Step 2/5: Creating the Arc resource bridge"
+
+    $applianceObj = (az arcappliance show --subscription $applianceSubscriptionId --resource-group $applianceResourceGroupName --name $applianceName 2>> $logFile | ConvertFrom-Json)
+    $applianceStatus = ""
+    if ($applianceObj) {
+        $applianceStatus = $applianceObj.status
+    }
+
+    $invokeApplianceRun = $true
+    if ($applianceStatus -eq "Running") {
+        $invokeApplianceRun = $false
+        if ($Force) {
+            $invokeApplianceRun = ConfirmationPrompt -msg "The resource bridge is already running. Running with --force flag will delete the existing resource bridge and create a new one. Do you want to continue?"
+        }
+    }
+    else {
+        $Force = evaluateForceFlag $Force
+        if (!$Force) {
+            $deleteAppl = $false
+            if ($applianceStatus -eq "WaitingForHeartbeat") {
+                $deleteAppl = $true
+            }
+            elseif (![string]::IsNullOrEmpty($applianceStatus)) {
+                $deleteAppl = (confirmationPrompt -msg "An existing Arc resource bridge is already present in Azure (status: $applianceStatus). Do you want to delete it?")
+            }
+            if ($deleteAppl) {
+                logText "Deleting the existing Arc Appliance resource from azure..."
+                az resource delete --ids $applianceObj.id --yes
+            }
+        }
+    }
+    if ($invokeApplianceRun) {
+        fetchVcenterDetailsInto $vcenterDetails
+        $forceParam = @()
+        if ($Force) {
+            $forceParam = @("--force")
+        }
+        az arcappliance run vmware --tags "" @forceParam --subscription $applianceSubscriptionId --resource-group $applianceResourceGroupName --name $applianceName --location $location --address $vcenterDetails[$vcAddressKey] --username $vcenterDetails[$vcUsernameKey] --password $vcenterDetails[$vcPasswordKey]
+    }
+    else {
+        logText "The Arc resource bridge is already running. Skipping the creation of resource bridge."
+    }
+
+    $applianceObj = (az arcappliance show --subscription $applianceSubscriptionId --resource-group $applianceResourceGroupName --name $applianceName 2>> $logFile | ConvertFrom-Json)
+    $applianceId = ""
+    $applianceStatus = ""
+    if ($applianceObj) {
+        $applianceId = $applianceObj.id
+        $applianceStatus = $applianceObj.status
+    }
+    if (!$applianceId) {
+        # Appliance ARM resource is now created before the appliance VM.
+        # So, this code path should not be hit.
+        throw "Appliance creation has failed. $supportMsg"
+    }
+    if ($applianceStatus -eq "WaitingForHeartbeat") {
+        logError "$($applianceObj | ConvertTo-Json -Depth 6)"
+        throw "Appliance VM creation failed. $supportMsg"
+    }
+    logText "Waiting for the appliance to be ready..."
+    for ($i = 1; $i -le 5; $i++) {
+        Start-Sleep -Seconds 60
+        $applianceStatus = (az resource show --ids "$applianceId" --query 'properties.status' -o tsv 2>> $logFile)
+        if ($applianceStatus -eq "Running") {
+            break
+        }
+        logText "Appliance is not ready yet, retrying... ($i/5)"
+    }
+    if ($applianceStatus -ne "Running") {
+        logError "$($applianceObj | ConvertTo-Json -Depth 6)"
+        throw "Appliance is not in running state. Current state: $applianceStatus. $supportMsg"
+    }
+
+    logH1 "Step 2/5: Arc resource bridge is up and running"
+    logH1 "Step 3/5: Installing cluster extension"
+
+    fetchVcenterDetailsInto $vcenterDetails
+    function validateCEState($ceName) {
+        $clusterExtensionId = (az k8s-extension show --subscription $applianceSubscriptionId --resource-group $applianceResourceGroupName --name $ceName --cluster-type appliances --cluster-name $applianceName --query id -o tsv 2>> $logFile)
+        if (!$clusterExtensionId) {
+            throw "Cluster extension installation failed."
+        }
+        $clusterExtensionState = (az resource show --ids "$clusterExtensionId" --query 'properties.provisioningState' -o tsv 2>> $logFile)
+        if ($clusterExtensionState -ne "Succeeded") {
+            $resJson = (az resource show --ids $clusterExtensionId 2>> $logFile)
+            logError "$resJson"
+            throw "Provisioning State of cluster extension is not succeeded. Current state: $clusterExtensionState. $supportMsg"
+        }
+        return $clusterExtensionId
+    }
+
+    $extensionType = "Microsoft.vmware"
+    if ($vcenterDetails[$avsIdKey]) {
+        $extensionType = "Microsoft.avs"
+    }
+    az k8s-extension create --subscription $applianceSubscriptionId --resource-group $applianceResourceGroupName --name azure-vmwareoperator --extension-type $extensionType --scope cluster --cluster-type appliances --cluster-name $applianceName --config Microsoft.CustomLocation.ServiceAccount=azure-vmwareoperator
+
+    $ceVmware = (validateCEState azure-vmwareoperator)
+
+    if ($enableAKS -eq 'true') {
+        logH2 "Installing Microsoft.HybridAKSOperator extension..."
+        az k8s-extension create --subscription $applianceSubscriptionId --resource-group $applianceResourceGroupName --name hybridaksopext --extension-type 'Microsoft.HybridAKSOperator' --release-train preview --version '0.4.5' --auto-upgrade-minor-version false --scope cluster --cluster-type appliances --cluster-name $applianceName --config Microsoft.CustomLocation.ServiceAccount='default'
+
+        $ceAks = (validateCEState hybridaksopext)
+    }
+
+    logH1 "Step 3/5: Cluster extension installed successfully"
+    logH1 "Step 4/5: Creating custom location"
+
+    createRG "$customLocationSubscriptionId" "$customLocationResourceGroupName"
+    function validateCLState($clName) {
+        $customLocationId = (az customlocation show --subscription $customLocationSubscriptionId --resource-group $customLocationResourceGroupName --name $clName --query id -o tsv 2>> $logFile)
+        if (!$customLocationId) {
+            throw "Custom location creation failed."
+        }
+        $customLocationState = (az resource show --ids $customLocationId --query 'properties.provisioningState' -o tsv 2>> $logFile)
+        if ($customLocationState -ne "Succeeded") {
+            $azcliError = grepAzcliError
+            $resJson = (az resource show --ids $customLocationId 2>> $logFile)
+            logError "$resJson"
+            if ($azcliError) {
+                logError "Error details: $azcliError"
+            }
+            if ($azcliError -match 'Unauthorized') {
+                logError "This can happen if there is clock skew in the appliance VM. Please ensure that NTP is correctly set in the ESXi host where the appliance is deployed. Once the clock skew is resolved, restart the appliance VM in the vCenter and re-run the script."
+            }
+            throw "Provisioning State of custom location is not succeeded. Current state: $customLocationState. $supportMsg"
+        }
+        return $customLocationId
+    }
+
+    function normalizeCLName($clName) {
+        return "$clName".ToLower() -replace '[^a-zA-Z0-9-]', ''
+    }
+
+    $customLocationNamespace = normalizeCLName $customLocationName
+
+    az customlocation create --debug --tags "" --subscription $customLocationSubscriptionId --resource-group $customLocationResourceGroupName --name $customLocationName --location $location --namespace $customLocationNamespace --host-resource-id $applianceId --cluster-extension-ids $ceVmware 2>> $logFile
+
+    $customLocationId = (validateCLState $customLocationName)
+
+    if ($enableAKS -eq 'true') {
+        logH2 "Creating custom location for AKS..."
+        $customLocationAksName = "AKS-$customLocationName"
+        $customLocationAksNamespace = "default"
+        az customlocation create --debug --tags "" --subscription $customLocationSubscriptionId --resource-group $customLocationResourceGroupName --name $customLocationAksName --location $location --namespace $customLocationAksNamespace --host-resource-id $applianceId --cluster-extension-ids $ceAks 2>> $logFile
+
+        $null = (validateCLState $customLocationAksName)
+    }
+
+    logH1 "Step 4/5: Custom location created successfully"
+    logH1 "Step 5/5: Connecting to vCenter"
+
+    createRG "$vCenterSubscriptionId" "$vCenterResourceGroupName"
+
+    az connectedvmware vcenter connect --tags "" --subscription $vCenterSubscriptionId --resource-group $vCenterResourceGroupName --name $vCenterName --custom-location $customLocationId --location $location --fqdn $vcenterDetails[$vcFqdnKey] --port $vcenterDetails[$vcPortKey] --username $vcenterDetails[$vcUsernameKey] --password $vcenterDetails[$vcPasswordKey]
+
+    $vcenterId = (az connectedvmware vcenter show --subscription $vCenterSubscriptionId --resource-group $vCenterResourceGroupName --name $vCenterName --query id -o tsv 2>> $logFile)
+    if (!$vcenterId) {
+        throw "Connect vCenter failed."
+    }
+    $vcenterState = (az resource show --ids "$vcenterId" --query 'properties.provisioningState' -o tsv 2>> $logFile)
+    if ($vcenterState -ne "Succeeded") {
+        $resJson = (az resource show --ids $vcenterId 2>> $logFile)
+        logError "$resJson"
+        throw "Provisioning State of vCenter is not succeeded. Current state: $vcenterState. $supportMsg"
+    }
+
+    if ($vcenterDetails[$avsIdKey]) {
+        $avsId = $vcenterDetails[$avsIdKey]
+        az rest --method put --url "$avsId/addons/arc?api-version=2022-05-01" --body "{'properties': {'addonType': 'Arc', 'vCenter': '$vcenterId'}}" 2>> $logFile
+    }
+
+    logH1 "Step 5/5: vCenter was connected successfully"
+    logH1 "Your vCenter has been successfully onboarded to Azure Arc!"
+    logText "To continue onboarding and to complete Arc enabling your vSphere resources, view your vCenter resource in Azure portal.`nhttps://portal.azure.com/#resource${vcenterId}/overview"
+}
+catch {
+    $err = $_.Exception | Out-String
+    fail $err
+}

@@ -1,0 +1,155 @@
+{
+	"id": "ad14a87e-dae1-4287-a98e-df1dc785eca6",
+	"deletedDateTime": null,
+	"appId": "346eecb7-3f27-44c9-88bf-fd23cd35f775",
+	"applicationTemplateId": "f2544b5a-8080-435e-b9bb-fd7226a6297d",
+	"disabledByMicrosoftStatus": null,
+	"createdDateTime": "2025-06-14T17:26:47Z",
+	"displayName": "Atlassian Cloud",
+	"description": null,
+	"groupMembershipClaims": null,
+	"identifierUris": [
+		"api://346eecb7-3f27-44c9-88bf-fd23cd35f775"
+	],
+	"isDeviceOnlyAuthSupported": null,
+	"isFallbackPublicClient": false,
+	"nativeAuthenticationApisEnabled": null,
+	"notes": null,
+	"publisherDomain": "MCLOUDLLCdbaGhirdra.onmicrosoft.com",
+	"serviceManagementReference": null,
+	"signInAudience": "AzureADMyOrg",
+	"tags": [
+		"apiConsumer",
+		"backgroundProcess",
+		"desktopApp",
+		"mobileApp"
+	],
+	"tokenEncryptionKeyId": null,
+	"samlMetadataUrl": null,
+	"defaultRedirectUri": null,
+	"certification": null,
+	"optionalClaims": null,
+	"servicePrincipalLockConfiguration": null,
+	"requestSignatureVerification": null,
+	"addIns": [],
+	"api": {
+		"acceptMappedClaims": null,
+		"knownClientApplications": [],
+		"requestedAccessTokenVersion": null,
+		"oauth2PermissionScopes": [
+			{
+				"adminConsentDescription": "read",
+				"adminConsentDisplayName": "read",
+				"id": "2b4429bb-0468-44a2-b86f-032197031a5d",
+				"isEnabled": true,
+				"type": "Admin",
+				"userConsentDescription": null,
+				"userConsentDisplayName": null,
+				"value": "read"
+			},
+			{
+				"adminConsentDescription": "Allow the application to access Atlassian Cloud on behalf of the signed-in user.",
+				"adminConsentDisplayName": "Access Atlassian Cloud",
+				"id": "40445053-31d7-43ba-bc77-f9733f4ed837",
+				"isEnabled": true,
+				"type": "User",
+				"userConsentDescription": "Allow the application to access Atlassian Cloud on your behalf.",
+				"userConsentDisplayName": "Access Atlassian Cloud",
+				"value": "user_impersonation"
+			}
+		],
+		"preAuthorizedApplications": []
+	},
+	"appRoles": [
+		{
+			"allowedMemberTypes": [
+				"Application"
+			],
+			"description": "run",
+			"displayName": "Writers",
+			"id": "55afe690-8140-4573-94f9-3bb7f16f0165",
+			"isEnabled": true,
+			"origin": "Application",
+			"value": "write"
+		},
+		{
+			"allowedMemberTypes": [
+				"User"
+			],
+			"description": "User",
+			"displayName": "User",
+			"id": "3ed3583c-731c-4f01-bb72-409c70ee42c3",
+			"isEnabled": true,
+			"origin": "Application",
+			"value": null
+		},
+		{
+			"allowedMemberTypes": [
+				"User"
+			],
+			"description": "msiam_access",
+			"displayName": "msiam_access",
+			"id": "2229d9f0-a1db-4e2a-bb3e-3d53414af619",
+			"isEnabled": true,
+			"origin": "Application",
+			"value": null
+		}
+	],
+	"info": {
+		"logoUrl": null,
+		"marketingUrl": null,
+		"privacyStatementUrl": null,
+		"supportUrl": null,
+		"termsOfServiceUrl": null
+	},
+	"keyCredentials": [],
+	"parentalControlSettings": {
+		"countriesBlockedForMinors": [],
+		"legalAgeGroupRule": "Allow"
+	},
+	"passwordCredentials": [
+		{
+			"customKeyIdentifier": null,
+			"displayName": "mobiledesk.co.kr",
+			"endDateTime": "2025-12-11T18:28:48.585Z",
+			"hint": "Rk2",
+			"keyId": "dd1b285b-d4f7-487c-98e8-3978220fe314",
+			"secretText": null,
+			"startDateTime": "2025-06-14T17:28:48.585Z"
+		}
+	],
+	"publicClient": {
+		"redirectUris": []
+	},
+	"requiredResourceAccess": [],
+	"verifiedPublisher": {
+		"displayName": null,
+		"verifiedPublisherId": null,
+		"addedDateTime": null
+	},
+	"web": {
+		"homePageUrl": "https://*.atlassian.net/*?metadata=atlassiancloud|ISV9.1|primary|z",
+		"logoutUrl": null,
+		"redirectUris": [
+			"https://id.atlassian.com/login/saml/acs",
+			"https://*.atlassian.net/*"
+		],
+		"implicitGrantSettings": {
+			"enableAccessTokenIssuance": false,
+			"enableIdTokenIssuance": true
+		},
+		"redirectUriSettings": [
+			{
+				"uri": "https://id.atlassian.com/login/saml/acs",
+				"index": null
+			},
+			{
+				"uri": "https://*.atlassian.net/*",
+				"index": null
+			}
+		]
+	},
+	"spa": {
+		"redirectUris": []
+	}
+}
