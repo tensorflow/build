@@ -1,0 +1,258 @@
+{
+	"id": "ad14a87e-dae1-4287-a98e-df1dc785eca6",
+	"deletedDateTime": null,
+	"appId": "346eecb7-3f27-44c9-88bf-fd23cd35f775",
+	"applicationTemplateId": "f2544b5a-8080-435e-b9bb-fd7226a6297d",
+	"disabledByMicrosoftStatus": null,
+	"createdDateTime": "2025-06-14T17:26:47Z",
+	"displayName": "Atlassian Cloud",
+	"description": null,
+	"groupMembershipClaims": null,
+	"identifierUris": [
+		"api://346eecb7-3f27-44c9-88bf-fd23cd35f775"
+	],
+	"isDeviceOnlyAuthSupported": null,
+	"isFallbackPublicClient": false,
+	"nativeAuthenticationApisEnabled": null,
+	"notes": null,
+	"publisherDomain": "MCLOUDLLCdbaGhirdra.onmicrosoft.com",
+	"serviceManagementReference": null,
+	"signInAudience": "AzureADMyOrg",
+	"tags": [
+		"apiConsumer",
+		"backgroundProcess",
+		"desktopApp",
+		"mobileApp"
+	],
+	"tokenEncryptionKeyId": null,
+	"samlMetadataUrl": null,
+	"defaultRedirectUri": null,
+	"certification": null,
+	"optionalClaims": null,
+	"servicePrincipalLockConfiguration": null,
+	"requestSignatureVerification": null,
+	"addIns": [],
+	"api": {
+		"acceptMappedClaims": null,
+		"knownClientApplications": [],
+		"requestedAccessTokenVersion": null,
+		"oauth2PermissionScopes": [
+			{
+				"adminConsentDescription": "read",
+				"adminConsentDisplayName": "read",
+				"id": "2b4429bb-0468-44a2-b86f-032197031a5d",
+				"isEnabled": true,
+				"type": "Admin",
+				"userConsentDescription": null,
+				"userConsentDisplayName": null,
+				"value": "read"
+			},
+			{
+				"adminConsentDescription": "Allow the application to access Atlassian Cloud on behalf of the signed-in user.",
+				"adminConsentDisplayName": "Access Atlassian Cloud",
+				"id": "40445053-31d7-43ba-bc77-f9733f4ed837",
+				"isEnabled": true,
+				"type": "User",
+				"userConsentDescription": "Allow the application to access Atlassian Cloud on your behalf.",
+				"userConsentDisplayName": "Access Atlassian Cloud",
+				"value": "user_impersonation"
+			}
+		],
+		"preAuthorizedApplications": []
+	},
+	"appRoles": [
+		{
+			"allowedMemberTypes": [
+				"Application"
+			],
+			"description": "run",
+			"displayName": "Writers",
+			"id": "55afe690-8140-4573-94f9-3bb7f16f0165",
+			"isEnabled": true,
+			"origin": "Application",
+			"value": "write"
+		},
+		{
+			"allowedMemberTypes": [
+				"User"
+			],
+			"description": "User",
+			"displayName": "User",
+			"id": "3ed3583c-731c-4f01-bb72-409c70ee42c3",
+			"isEnabled": true,
+			"origin": "Application",
+			"value": null
+		},
+		{
+			"allowedMemberTypes": [
+				"User"
+			],
+			"description": "msiam_access",
+			"displayName": "msiam_access",
+			"id": "2229d9f0-a1db-4e2a-bb3e-3d53414af619",
+			"isEnabled": true,
+			"origin": "Application",
+			"value": null
+		}
+	],
+	"info": {
+		"logoUrl": null,
+		"marketingUrl": null,
+		"privacyStatementUrl": null,
+		"supportUrl": null,
+		"termsOfServiceUrl": null
+	},
+	"keyCredentials": [],
+	"parentalControlSettings": {
+		"countriesBlockedForMinors": [],
+		"legalAgeGroupRule": "Allow"
+	},
+	"passwordCredentials": [
+		{
+			"customKeyIdentifier": null,
+			"displayName": "mobiledesk.co.kr",
+			"endDateTime": "2025-12-11T18:28:48.585Z",
+			"hint": "Rk2",
+			"keyId": "dd1b285b-d4f7-487c-98e8-3978220fe314",
+			"secretText": null,
+			"startDateTime": "2025-06-14T17:28:48.585Z"
+		}
+	],
+	"publicClient": {
+		"redirectUris": []
+	},
+	"requiredResourceAccess": [],
+	"verifiedPublisher": {
+		"displayName": null,
+		"verifiedPublisherId": null,
+		"addedDateTime": null
+	},
+	"web": {
+		"homePageUrl": "https://*.atlassian.net/*?metadata=atlassiancloud|ISV9.1|primary|z",
+		"logoutUrl": null,
+		"redirectUris": [
+			"https://id.atlassian.com/login/saml/acs",
+			"https://*.atlassian.net/*"
+		],
+		"implicitGrantSettings": {
+			"enableAccessTokenIssuance": false,
+			"enableIdTokenIssuance": true
+		},
+		"redirectUriSettings": [
+			{
+				"uri": "https://id.atlassian.com/login/saml/acs",
+				"index": null
+			},
+			{
+				"uri": "https://*.atlassian.net/*",
+				"index": null
+			}
+		]
+	},
+	"spa": {
+		"redirectUris": []
+	}
+}
+ Binary file addedBIN +2.53 KB 
+C.pfx
+Binary file not shown.
+ 728 changes: 728 additions & 0 deletions728  
+Unconfirmed 774134.crdownload
+Large diffs are not rendered by default.
+
+ Binary file addedBIN +88.5 KB 
+download.jpg
+Loading
+ 39 changes: 39 additions & 0 deletions39  
+m1.2xlarge_key.pem
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,39 @@
+-----BEGIN RSA PRIVATE KEY-----
+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
+-----END RSA PRIVATE KEY-----
+ 39 changes: 39 additions & 0 deletions39  
+n1.2xlarge_key.pem
+Original file line number	Diff line number	Diff line change
+@@ -0,0 +1,39 @@
+-----BEGIN RSA PRIVATE KEY-----
+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
+-----END RSA PRIVATE KEY-----
+Footer
+© 2025 GitHub, Inc.
+Footer navigation
+Terms
+Privacy
+Security
+Status
