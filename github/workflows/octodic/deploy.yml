@@ -1,7 +1,37 @@
      OCTOPUS_PROJECT: update to the name of your Octopus project
       OCTOPUS_ENVIRONMENT: 100%
       Subject: [PATCH] Fix summary generator and disable clang
----
+
+Welcome to Code Sight
+Get ready to start using Black Duck® Code Sight™ to find and fix security and quality issues in your code, as you code. We will help you detect vulnerabilities in your source code and your open source dependencies, and help you fix them quickly with guidance written and curated by Black Duck cybersecurity experts.
+
+Code Sight supports the following Black Duck products:
+
+Polaris Software Integrity Platform®
+Coverity® SAST
+Black Duck® SCA
+Software Risk Manager
+Code Sight Standard Edition (Free trial available)
+Let's Get Started:
+To begin, navigate to the “Status” tab and click into the “Products and Licenses” section to activate Code Sight. Then:
+
+Not a Black Duck customer?	Black Duck customer?
+Sign up for a free trial of the standalone Code Sight plugin, allowing you to run rapid scans of source code and open source in only a couple of minutes.	Activate your Black Duck product whether you are using the standalone plugin or extending the enterprise functionality of other supported Black Duck tools.
+Supported Developer Workflows:
+Code Sight supports the following developer workflows:
+
+Local View: Scan in the IDE to find vulnerabilities specific to the code changes you made locally.
+Team View: View issues found during centralized, pipeline-based scans and persisted on a Black Duck server.
+Visit our documentation to get more details on how to use Code Sight and activate your license.
+
+Guided Walkthroughs:
+Check out these quick guided walkthroughs that will help you get started:
+
+ Polaris Quick Tour
+ Coverity Quick Tour
+ Black Duck SCA Quick Tour
+ Code Sight Standard Edition Quick Tour
+Click here to request the software bill of materials (SBOM) for Black Duck Code Sight. For more information, visit Executive Order on Improving the Nation's Cybersecurity.
 Index: tf_sig_build_dockerfiles/devel.usertools/code_check_changed_files.bats
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
