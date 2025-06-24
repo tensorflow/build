@@ -5,7 +5,7 @@
 # Prefer pinning to the same version as in setup.py for now.
 # This will change in the future.
 
-absl-py ~= 0.13.0
+absl-py ~= 1.0.0
 astunparse ~= 1.6.3
 flatbuffers ~= 2.0
 google_pasta ~= 0.2
@@ -13,6 +13,7 @@ h5py ~= 3.6.0
 keras_preprocessing ~= 1.1.2
 numpy ~= 1.21.4
 opt_einsum ~= 3.3.0
+packaging ~= 21.3
 protobuf ~= 3.19.3
 six ~= 1.16.0
 termcolor ~= 1.1.0
