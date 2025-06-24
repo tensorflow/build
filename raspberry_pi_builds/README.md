@@ -13,7 +13,7 @@ Raspberry Pi](https://www.tensorflow.org/lite/guide/build_rpi) guide.**
 **This guide is a mirror of the old official documentation and may not work. If
 you'd like to own this and keep it up-to-date, please file a PR!**
 
-# Build from source for the Raspberry Pi
+# Build
 
 This guide builds a TensorFlow package for a
 [Raspberry Pi](https://www.raspberrypi.org/) device running
