@@ -15,7 +15,7 @@
 
 name: Dashboard Generator
 on:
-  # Only the default branch is supported.
+ Only the default branch is support
   branch_protection_rule:
   schedule:
     - cron: '*/5 * * * *'
