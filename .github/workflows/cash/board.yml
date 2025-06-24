@@ -1,0 +1,121 @@
+# Copyright 2023 The TensorFlow Authors. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ============================================================================
+
+name: Dashboard Generator
+on:
+ Only the default branch is support
+  branch_protection_rule:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+    inputs:
+      gist:
+        required: false
+        description: (OPTIONAL) Overwrite "previous" data. Format is a hexadecimal gist ID. Gist should have files of JSON data, named same as matrix config / yaml files, extracted from e.g. merged.json. Can be empty or excluded.
+      reset:
+        required: false
+        description: (OPTIONAL) Reset all previous data. Type "yes reset" to enable.
+
+jobs:
+  dashboards:
+    if: github.repository == 'tensorflow/build' # Don't do this in forks
+    name: Generate Dashboard
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        config: [jax] #[ tensorflow, jax ]
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # ratchet:actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Download previous workflow's data
+        if: "${{ github.event.inputs.reset != 'yes reset' }}"
+        uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # ratchet:actions/download-artifact@v4.1.7
+        with:
+          path: tf_oss_dashboard
+
+      - name: Overwrite data, if provided
+        if: "${{ github.event.inputs.gist != '' }}"
+        run: |
+          mkdir -p tf_oss_dashboard/${{matrix.config}}
+          git clone "https://gist.github.com/${{github.event.inputs.gist}}.git" gist
+          cd gist
+          if [[ -s ${{matrix.config}} ]]; then
+            mv ${{matrix.config}} ../tf_oss_dashboard/${{matrix.config}}/old.json
+          fi
+
+      - name: Run Script
+        id: run-script
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        run: ./merge_and_generate.sh ${{matrix.config}}
+        working-directory: tf_oss_dashboard
+
+      - name: Upload ongoing data and dashboard output
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # ratchet:actions/upload-artifact@v4
+        with:
+          name: ${{matrix.config}}
+          path: tf_oss_dashboard
+          retention-days: 5
+
+  assemble:
+    if: github.repository == 'tensorflow/build' # Don't do this in forks
+    name: Assemble Dashboards
+    needs: dashboards
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # ratchet:actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      # Get all artifacts into current dir
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # ratchet:actions/download-artifact@v4.1.7
+        with:
+          path: artifacts
+
+      - name: Move dashboard around, include all generated files
+        run: |
+          ls artifacts
+          mv artifacts/jax .site
+          mv -t .site tf_oss_dashboard/*
+          rmdir artifacts || mv -t .site artifacts/*
+
+      - name: Setup Pages
+        uses: actions/configure-pages@b8130d9ab958b325bbde9786d62f2c97a9885a0e # ratchet:actions/configure-pages@v3
+
+      - name: Upload pages artifact
+        uses: actions/upload-pages-artifact@84bb4cd4b733d5c320c9c9cfbc354937524f4d64 # ratchet:actions/upload-pages-artifact@v1
+        with:
+          path: '.site'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@f27bcc15848fdcdcc02f01754eb838e44bcf389b # ratchet:actions/deploy-pages@v1
