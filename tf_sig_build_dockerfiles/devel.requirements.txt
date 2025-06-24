@@ -11,14 +11,14 @@ flatbuffers ~= 2.0
 google_pasta ~= 0.2
 h5py ~= 3.6.0
 keras_preprocessing ~= 1.1.2
-numpy ~= 1.21.4
+numpy ~= 2.0.2
 opt_einsum ~= 3.3.0
 packaging ~= 21.3
-protobuf ~= 3.19.3
+protobuf ~= 6.31.1
 six ~= 1.16.0
 termcolor ~= 1.1.0
 typing_extensions ~= 3.10.0.0
-wheel ~= 0.36.2
+wheel ~= 0.45.1
 wrapt ~= 1.12.1
 
 # We need to pin the gast dependency exactly
@@ -30,12 +30,12 @@ gast == 0.4.0
 # For release jobs, we will pin these on the release branch
 # Note that the CACHEBUSTER variable, set in the CI builds, will force these to
 # be the latest version.
-keras ~= 2.8
+keras ~= 3.10
 tensorboard ~= 2.8
 tensorflow-estimator ~= 2.8
 
 # Test dependencies
-grpcio ~= 1.42.0
+grpcio ~= 1.73.0
 portpicker ~= 1.4.0
 scipy ~= 1.7.3
 # Required for TFLite import from JAX tests
@@ -51,5 +51,5 @@ twine ~= 3.6.0
 
 # For user tool scripts
 junitparser ~= 2.2.0
-lxml ~= 4.6.4
+lxml ~= 5.4.0
 pylint
