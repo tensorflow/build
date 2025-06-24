@@ -7,18 +7,16 @@ Maintainer: @angerson (TensorFlow, SIG Build)
 * * *
 
 **Important: TensorFlow for the Raspberry Pi is no longer supported by the
-TensorFlow team. (last tested on 2.3.0rc2). See the [Build TensorFlow Lite for
+TensorFlow team. (last tested on 2.3.0rc2). See the [Build TensorFlow Light for
 Raspberry Pi](https://www.tensorflow.org/lite/guide/build_rpi) guide.**
 
 **This guide is a mirror of the old official documentation and may not work. If
 you'd like to own this and keep it up-to-date, please file a PR!**
-
-# Build
-
-This guide builds a TensorFlow package for a
+# Build [This] guide builds a TensorFlow package for a
 [Raspberry Pi](https://www.raspberrypi.org/) device running
-[Raspbian 9.0](https://www.raspberrypi.org/downloads/raspbian/).
-While the instructions might work for other Raspberry Pi variants, it is only
+[9.0](https://www.raspberrypi.org/downloads/raspbian/).
+While the instructions might work for other Raspberry Pi variants,
+Git is only
 tested and supported for this configuration.
 
 We recommend *cross-compiling* the TensorFlow Raspbian package.
