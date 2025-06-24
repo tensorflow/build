@@ -17,28 +17,14 @@ html(lang="en")
   head
     title= yaml["title"]
     meta(charset="UTF-8")
-    link(rel="icon" href="/build/favicon.png")
+    link(rel="icon" href="/favicon.png")
     link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous")
     script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous")
     script(src="https://code.jquery.com/jquery-3.6.4.slim.min.js" integrity="sha256-a2yjHM4jnF9f54xUQakjZGaqYs/V1CYvWpoqZzC2/Bw=" crossorigin="anonymous")
     script(src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js")
     script(src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.3/moment.min.js" crossorigin="anonymous" referrerpolicy="no-referrer")
-    link(rel="stylesheet" href="/build/style.css")
-    //- Google Analytics. Conditionally enabled if "gtag" is set in config.yaml
-    if yaml["gtag"]:
-      script(async src="https://www.googletagmanager.com/gtag/js?id=#{yaml['gtag']}")
-      script.
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', "#{yaml['gtag']}");
+    link(rel="stylesheet" href="/style.css")
   body
-    if yaml["gtag"]
-      .tf-cookie-warning.p-2.bg-warning.navbar-text.d-none
-        .text-center The #{yaml["title"]} Dashboard uses cookies from Google to analyze traffic. 
-          a(href="https://policies.google.com/technologies/cookies") Learn more.
-          a.fw-bold.ps-4#tf-accept-cookies(role="button") Ok, got it. Hide this message.
-
     nav.navbar.navbar-dark.navbar-expand-lg.py-0.mb-2
       .container-fluid.py-0
         a(href=).navbar-brand= yaml["title"]
@@ -64,7 +50,7 @@ html(lang="en")
               a.nav-link(href="https://github.com/tensorflow/build/issues/142") Suggestions
 
     //- putting this here means there's usually no flash when the page reloads
-    script(src="/build/script.js")
+    script(src="/script.js")
 
     .d-flex.flex-column.gap-1.m-1
       .tf-failures-section
@@ -89,6 +75,25 @@ html(lang="en")
                             .badge.p-2.tf-date= test["date_tag"]
                           else
                             a.badge.p-2(title="#{test['date_human']} - #{test['commit_summary']}" class=test["state"] data-bs-toggle='modal' data-bs-target=test["commit_id"])
+      each workflow_id, workflow in by_workflow.items() 
+        .fw-bold.ps-4
+          span.text-light(id=workflow.name)= workflow.name
+        .d-flex.flex-row.flex-wrap.gap-1.m-1.card-section.tf-is-listed
+          each full_name, job_data in workflow.jobs.items()
+              .card.flex-shrink-1.flex-grow-1(class=job_data.entries[0]["css_classes"] data-name=job_data.display_name)
+                .card-body
+                  h5.text-center.fw-bold= job_data.display_name
+                  .d-flex.flex-row.flex-wrap.gap-1
+                    if yaml["internal_shown"]
+                      if job_data.entries[0]["is_public"]
+                        .badge.p-2.tf-public(title="This job has publicly-visible results pages.") Public
+                      else
+                        .badge.p-2.tf-internal(title="This job only has private, Googler-restricted results pages.") Internal
+                    each test in job_data.entries
+                      if "date_tag" in test:
+                        .badge.p-2.tf-date= test["date_tag"]
+                      else
+                        a.badge.p-2(title="#{test['date_human']} - #{test['commit_summary']}" class=test["state"] data-bs-toggle='modal' data-bs-target=test["commit_id"])
       each category, everythin in by_group.items() 
         .fw-bold.ps-4
           span.text-light(id=category)= category
