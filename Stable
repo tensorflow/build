@@ -1,4 +1,4 @@
-Owner	Container Type	Status	Artifacts
-Arm	TensorFlow AArch64 Neoverse-N1 CPU Stable	Static	Docker Hub
-AMD	Linux ROCm GPU Stable	Static	Docker Hub
-Intel	Linux CPU with Intel oneDNN Stable	Static	Docker Hub
+0. [Owner]	Container Type	Status	Artifacts
+1. Arm	TensorFlow AArch64 Neoverse-N1 CPU Stable	Static	Docker Hub
+2. AMD	Linux ROCm GPU Stable	Static	Docker Hub
+3. Intel	Linux CPU with Intel oneDNN Stable	Static	Docker Hub
