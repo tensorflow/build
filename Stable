@@ -2,3 +2,7 @@
 1. Arm	TensorFlow AArch64 Neoverse-N1 CPU Stable	Static	Docker Hub
 2. AMD	Linux ROCm GPU Stable	Static	Docker Hub
 3. Intel	Linux CPU with Intel oneDNN Stable	Static	Docker Hub
+4. Owner	Container Type	Status	Artifacts 
+5. Arm	TensorFlow AArch64 Neoverse-N1 CPU Stable	Static	Docker Hub
+6. AMD	Linux ROCm GPU Stable	Static	Docker Hub
+7. Intel	Linux CPU with Intel oneDNN Stable	Static	Docker Hub
