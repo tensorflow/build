@@ -1,0 +1,15 @@
+name: Manual trigger
+on:
+  push:
+    paths:
+      - '.github/workflows/mac-testing.yml'
+jobs:
+    hello:
+        runs-on: [self-hosted, macOS, ARM64]
+        steps:
+        - name: Checkout TensorFlow IO
+          uses: actions/checkout@v3
+          with:
+            repository: tensorflow/io
+        - name: Hello Step
+          run: echo "Hello world!"
