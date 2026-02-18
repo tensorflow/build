@@ -59,11 +59,13 @@ jobs:
         if: "${{ github.event.inputs.gist != '' }}"
         run: |
           mkdir -p tf_oss_dashboard/${{matrix.config}}
-          git clone "https://gist.github.com/${{github.event.inputs.gist}}.git" gist
+          git clone "https://gist.github.com/${GITHUB_EVENT_INPUTS_GIST}.git" gist
           cd gist
           if [[ -s ${{matrix.config}} ]]; then
             mv ${{matrix.config}} ../tf_oss_dashboard/${{matrix.config}}/old.json
           fi
+        env:
+          GITHUB_EVENT_INPUTS_GIST: ${{github.event.inputs.gist}}
 
       - name: Run Script
         id: run-script
